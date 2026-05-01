@@ -1,4 +1,4 @@
-import React, { useRef, memo } from 'react';
+import React, { useRef, useCallback, memo } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {

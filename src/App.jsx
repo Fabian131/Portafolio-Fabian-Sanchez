@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Moon, Sun, Mail, Code2, Cpu, Globe, Database, Layout, Server, Send, User, Briefcase, Wrench, ExternalLink, Download, ChevronDown, ChevronLeft, ChevronRight, MonitorSmartphone, Terminal } from 'lucide-react';
 import * as THREE from 'three';
-// Importamos la librerÃ­a revolucionaria de Cheng Lou
+// Importamos la librería revolucionaria de Cheng Lou
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
 import { GooeyButton } from './components/GooeyButton';
 import { Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon } from './components/atoms/Icons';
@@ -256,7 +256,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
   const links = useMemo(() => [
     { id: 'inicio', label: 'Inicio' },
-    { id: 'sobre-mi', label: 'Sobre MÃ­' },
+    { id: 'sobre-mi', label: 'Sobre Mí' },
     { id: 'skills', label: 'Skills' },
     { id: 'proyectos', label: 'Proyectos' },
     { id: 'contacto', label: 'Contacto' }
@@ -484,7 +484,7 @@ const Background3D = memo(({ theme }) => {
       const progress = scrollY / maxScroll;
 
       const positions = particles.geometry.attributes.position.array;
-      // Restaurar actualizaciÃ³n en cada frame pero con optimizaciÃ³n interna
+      // Restaurar actualización en cada frame pero con optimización interna
       for (let i = 0; i < particleCount * 3; i += 3) {
         const x = positions[i];
         const z = positions[i + 2];
@@ -542,10 +542,10 @@ export default function App() {
     setIsManualScrolling(true);
     clearTimeout(manualScrollTimeoutRef.current);
     
-    // Actualizar inmediatamente la secciÃ³n activa para que la burbuja vaya directo
+    // Actualizar inmediatamente la sección activa para que la burbuja vaya directo
     setActiveSection(sectionId);
     
-    // Reactivar la detecciÃ³n por scroll despuÃ©s de que termine el smooth scroll
+    // Reactivar la detección por scroll después de que termine el smooth scroll
     manualScrollTimeoutRef.current = setTimeout(() => {
       setIsManualScrolling(false);
     }, 1000); // Tiempo suficiente para el smooth scroll
@@ -615,7 +615,7 @@ export default function App() {
 
   const toggleTheme = useCallback(() => setTheme(theme === 'dark' ? 'light' : 'dark'), [theme]);
 
-  // Detectar si es mÃ³vil (menor a 768px)
+  // Detectar si es móvil (menor a 768px)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
   useEffect(() => {
@@ -657,7 +657,7 @@ export default function App() {
             <ScrollReveal direction="up" delay={100} className="mb-8">
                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
                 <div className="w-full h-full rounded-full overflow-hidden">
-                    <img src="/img/photo.jpg" alt="FabiÃ¡n SÃ¡nchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
                </div>
             </ScrollReveal>
@@ -665,7 +665,7 @@ export default function App() {
             <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
               <ScrollReveal direction="up" delay={300}>
                 <span className="block bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-2">
-                  FabiÃ¡n SÃ¡nchez
+Fabián Sánchez
                 </span>
               </ScrollReveal>
               <ScrollReveal direction="up" delay={500}>
@@ -678,7 +678,7 @@ export default function App() {
             
             <ScrollReveal direction="up" delay={700}>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-                Estudiante de IngenierÃ­a en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con cÃ³digo limpio.
+                Estudiante de Ingeniería en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con código limpio.
               </p>
             </ScrollReveal>
             
@@ -716,11 +716,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* SOBRE MÃ SECTION */}
+        {/* SOBRE MÍ SECTION */}
         <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
           <div className="md:w-5/12 flex justify-center">
             <ScrollReveal direction="left" delay={200}>
-              {/* RESTAURADO: Exactamente como tenÃ­as el renderizador de la Laptop 3D */}
+              {/* RESTAURADO: Exactamente como tenías el renderizador de la Laptop 3D */}
               <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center">
                  <model-viewer 
                     alt="laptop 3D" 
@@ -741,7 +741,7 @@ export default function App() {
                  
                  <div className="absolute bottom-6 left-6 right-6 bg-white/80 dark:bg-black/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-xl p-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
                     <p className="text-gray-800 dark:text-white text-sm font-medium flex items-center gap-2">
-                      <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> IngenierÃ­a en Sistemas, UNA
+                      <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> Ingeniería en Sistemas, UNA
                     </p>
                  </div>
               </GlassCard>
@@ -753,30 +753,30 @@ export default function App() {
                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight flex items-center md:justify-start justify-center gap-3">
                 <User className="text-cyan-500 shrink-0" size={32} /> 
                 <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                  Sobre MÃ­
+                  Sobre Mí
                 </span>
               </h2>
             </ScrollReveal>
             
-            {/* IMPLEMENTACIÃ“N DE PRETEXT: PÃ¡rrafos ultra rÃ¡pidos en Canvas */}
+            {/* IMPLEMENTACIÓN DE PRETEXT: Párrafos ultra rápidos en Canvas */}
             <ScrollReveal direction="right" delay={300}>
               <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Estudiante de Ãºltimo aÃ±o de IngenierÃ­a en Sistemas de InformaciÃ³n en la Universidad Nacional (UNA) en bÃºsqueda de una empresa para realizar mi PrÃ¡ctica Profesional Supervisada (PPS). Me especializo en el desarrollo backend, con un enfoque principal en el diseÃ±o, construcciÃ³n y optimizaciÃ³n de APIs RESTful.'
+                text='Estudiante de último año de Ingeniería en Sistemas de Información en la Universidad Nacional (UNA) en búsqueda de una empresa para realizar mi Práctica Profesional Supervisada (PPS). Me especializo en el desarrollo backend, con un enfoque principal en el diseño, construcción y optimización de APIs RESTful.'
               />
             </ScrollReveal>
             
             <ScrollReveal direction="right" delay={400}>
                <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Mi trabajo se define por el rigor tÃ©cnico y la calidad del cÃ³digo. Desarrollo software aplicando estrictamente los principios SOLID, la regla DRY (Do not Repeat Yourself) y patrones de diseÃ±o, garantizando arquitecturas limpias, escalables y mantenibles a largo plazo. Redacto la documentaciÃ³n tÃ©cnica de mis proyectos y repositorios Ã­ntegramente en inglÃ©s.'
+                text='Mi trabajo se define por el rigor técnico y la calidad del código. Desarrollo software aplicando estrictamente los principios SOLID, la regla DRY (Do not Repeat Yourself) y patrones de diseño, garantizando arquitecturas limpias, escalables y mantenibles a largo plazo. Redacto la documentación técnica de mis proyectos y repositorios íntegramente en inglés.'
               />
             </ScrollReveal>
 
             <ScrollReveal direction="right" delay={500}>
                <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Especialista en Java (Spring Boot) y PHP (Laravel). Experiencia en bases de datos PostgreSQL, SQL Server y MySQL. Manejo de Docker, CI/CD, servidores Ubuntu y HTTPS. Desarrollo mÃ³vil con Kotlin (MVVM) y React Native. Scrum Master certificado con enfoque en QA y revisiÃ³n rigurosa de cÃ³digo. Aporto disciplina de ingenierÃ­a y capacidad para resolver problemas complejos en entornos empresariales exigentes.'
+                text='Especialista en Java (Spring Boot) y PHP (Laravel). Experiencia en bases de datos PostgreSQL, SQL Server y MySQL. Manejo de Docker, CI/CD, servidores Ubuntu y HTTPS. Desarrollo móvil con Kotlin (MVVM) y React Native. Scrum Master certificado con enfoque en QA y revisión rigurosa de código. Aporto disciplina de ingeniería y capacidad para resolver problemas complejos en entornos empresariales exigentes.'
               />
             </ScrollReveal>
           </div>
@@ -788,7 +788,7 @@ export default function App() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
               <Wrench className="text-blue-500 shrink-0" size={32} />
               <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                Stack TecnolÃ³gico
+                Stack Tecnológico
               </span>
             </h2>
           </ScrollReveal>
@@ -886,11 +886,11 @@ export default function App() {
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-cyan-500 transition-colors"><ExternalLink size={20} /></a>
                   </h3>
                   
-                  {/* PRETEXT AQUÃ */}
+                  {/* PRETEXT AQUÍ */}
                   <PretextParagraph 
                     className="mb-6 flex-1"
                     isDark={theme === 'dark'}
-                    text='Arquitectura limpia implementada en Spring Boot y React. GestiÃ³n integral de recursos humanos, inventario y facturaciÃ³n usando SQL Server.'
+                    text='Arquitectura limpia implementada en Spring Boot y React. Gestión integral de recursos humanos, inventario y facturación usando SQL Server.'
                   />
 
                   <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
@@ -915,11 +915,11 @@ export default function App() {
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-purple-500 transition-colors"><ExternalLink size={20} /></a>
                   </h3>
                   
-                  {/* PRETEXT AQUÃ */}
+                  {/* PRETEXT AQUÍ */}
                   <PretextParagraph 
                     className="mb-6 flex-1"
                     isDark={theme === 'dark'}
-                    text='Desarrollo de una API RESTful con Laravel y MySQL. Manejo de autenticaciÃ³n, carrito de compras, pasarela de pagos y panel administrativo completo.'
+                    text='Desarrollo de una API RESTful con Laravel y MySQL. Manejo de autenticación, carrito de compras, pasarela de pagos y panel administrativo completo.'
                   />
 
                   <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
@@ -939,7 +939,7 @@ export default function App() {
              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
               <Mail className="text-cyan-500 shrink-0" size={32} />
               <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                Hablemos de CÃ³digo
+                Hablemos de Código
               </span>
             </h2>
           </ScrollReveal>
@@ -949,7 +949,7 @@ export default function App() {
               
               <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Busco oportunidades en entornos tecnolÃ³gicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
+                text='Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
               />
 
               <div className="flex flex-col gap-4 sm:gap-6">
@@ -981,7 +981,7 @@ export default function App() {
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
-                    <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="Â¿En quÃ© te puedo ayudar?" required></textarea>
+                    <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="¿En qué te puedo ayudar?" required></textarea>
                   </div>
                   <BlobButton darkTheme={theme === 'dark'} onClick={(e) => e.preventDefault()}>
                     Enviar Mensaje <Send size={18} />
@@ -994,7 +994,7 @@ export default function App() {
 
         {/* FOOTER */}
         <footer className="py-12 text-center text-gray-500 dark:text-gray-500 relative z-10 w-full border-t border-gray-200 dark:border-white/5">
-          <p>Â© {new Date().getFullYear()} FabiÃ¡n SÃ¡nchez. Universidad Nacional de Costa Rica.</p>
+          <p>© {new Date().getFullYear()} Fabián Sánchez. Universidad Nacional de Costa Rica.</p>
         </footer>
 
       </main>
@@ -1044,7 +1044,7 @@ export default function App() {
           transform: scale(1.02);
         }
 
-        /* Ocultar barra de scroll en el Navbar para mÃ³viles */
+        /* Ocultar barra de scroll en el Navbar para móviles */
         .hide-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;

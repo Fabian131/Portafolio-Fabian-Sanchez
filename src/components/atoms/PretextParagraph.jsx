@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, memo } from 'react';
+import React, { useRef, useEffect, useCallback, memo } from 'react';
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
 
 const PretextParagraph = memo(({ text, isDark, className = '' }) => {
@@ -6,6 +6,7 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
   const containerRef = useRef(null);
   const preparedRef = useRef(null);
   const lastFontRef = useRef(null);
+  const rafIdRef = useRef(null);
 
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
@@ -16,7 +17,7 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
     
     const textColor = isDark ? '#d1d5db' : '#374151';
 
-    // Funci³n para obtener config actual basada en viewport
+    // Función para obtener config actual basada en viewport
     const getConfig = () => {
       const fontSize = window.innerWidth < 768 ? 16 : 18;
       const lineHeight = window.innerWidth < 768 ? 26 : 28;
@@ -25,14 +26,14 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
       return { fontSize, lineHeight, font };
     };
 
-    // 2. Layout y render
+    // 1. Layout y render
     const renderText = () => {
       const width = container.clientWidth;
       if (width === 0) return;
 
       const { lineHeight, font } = getConfig();
 
-      // Si el font cambi³, re-preparar el texto
+      // Si el font cambió, re-preparar el texto
       if (font !== lastFontRef.current) {
         lastFontRef.current = font;
         preparedRef.current = prepareWithSegments(text, font);
@@ -64,17 +65,20 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
     renderText();
 
     // Re-render en resize
-    let rafId;
     const handleResize = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(renderText);
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      rafIdRef.current = requestAnimationFrame(renderText);
     };
 
     window.addEventListener('resize', handleResize, { passive: true });
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(rafId);
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
   }, [text, isDark]);
 
