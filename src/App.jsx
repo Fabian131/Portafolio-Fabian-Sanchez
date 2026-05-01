@@ -1,293 +1,19 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+﻿import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Moon, Sun, Mail, Code2, Cpu, Globe, Database, Layout, Server, Send, User, Briefcase, Wrench, ExternalLink, Download, ChevronDown, ChevronLeft, ChevronRight, MonitorSmartphone, Terminal } from 'lucide-react';
 import * as THREE from 'three';
-// Importamos la librería revolucionaria de Cheng Lou
+// Importamos la librerÃ­a revolucionaria de Cheng Lou
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
 import { GooeyButton } from './components/GooeyButton';
 import { Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon } from './components/atoms/Icons';
+import MagneticButton from './components/atoms/MagneticButton';
+import GlassCard from './components/atoms/GlassCard';
+import ScrollReveal from './components/atoms/ScrollReveal';
+import TypeAsync from './components/atoms/TypeAsync';
+import BlobButton from './components/atoms/BlobButton';
+import PretextParagraph from './components/atoms/PretextParagraph';
 // --- COMPONENTE PRETEXT CORREGIDO ---
 // Basado en https://github.com/chenglou/pretext
-const PretextParagraph = memo(({ text, isDark, className = '' }) => {
-  const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const preparedRef = useRef(null);
-  const lastFontRef = useRef(null);
-
-  useEffect(() => {
-    if (!canvasRef.current || !containerRef.current) return;
-    
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const container = containerRef.current;
-    
-    const textColor = isDark ? '#d1d5db' : '#374151';
-
-    // Función para obtener config actual basada en viewport
-    const getConfig = () => {
-      const fontSize = window.innerWidth < 768 ? 16 : 18;
-      const lineHeight = window.innerWidth < 768 ? 26 : 28;
-      const font = `${fontSize}px system-ui, -apple-system, sans-serif`;
-      return { fontSize, lineHeight, font };
-    };
-
-    // 2. Layout y render
-    const renderText = () => {
-      const width = container.clientWidth;
-      if (width === 0) return;
-
-      const { lineHeight, font } = getConfig();
-
-      // Si el font cambió, re-preparar el texto
-      if (font !== lastFontRef.current) {
-        lastFontRef.current = font;
-        preparedRef.current = prepareWithSegments(text, font);
-      }
-
-      const { lines } = layoutWithLines(preparedRef.current, width, lineHeight);
-      const height = lines.length * lineHeight;
-
-      // Configurar canvas
-      const scale = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(width * scale);
-      canvas.height = Math.floor(height * scale);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      // Limpiar y renderizar
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(scale, scale);
-      ctx.font = font;
-      ctx.fillStyle = textColor;
-      ctx.textBaseline = 'top';
-
-      for (let i = 0; i < lines.length; i++) {
-        ctx.fillText(lines[i].text, 0, i * lineHeight);
-      }
-    };
-
-    // Render inicial
-    renderText();
-
-    // Re-render en resize (recalcula font y re-prepara si es necesario)
-    let rafId;
-    const handleResize = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(renderText);
-    };
-
-    window.addEventListener('resize', handleResize, { passive: true });
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(rafId);
-    };
-  }, [text, isDark]);
-
-  // Limpiar refs cuando el texto cambia
-  useEffect(() => {
-    preparedRef.current = null;
-    lastFontRef.current = null;
-  }, [text]);
-
-  return (
-    <div ref={containerRef} className={`w-full ${className}`}>
-      <p className="sr-only">{text}</p>
-      <canvas ref={canvasRef} className="block w-full" />
-    </div>
-  );
-});
-
-// --- MICRO-INTERACCIONES Y COMPONENTES PREMIUM ---
-
-const MagneticButton = memo(({ children, className = '' }) => {
-  const ref = useRef(null);
-  const animationFrameRef = useRef(null);
-
-  const handleMouseMove = useCallback((e) => {
-    if (!ref.current) return;
-    
-    cancelAnimationFrame(animationFrameRef.current);
-    animationFrameRef.current = requestAnimationFrame(() => {
-      const { left, top, width, height } = ref.current.getBoundingClientRect();
-      const x = e.clientX - (left + width / 2);
-      const y = e.clientY - (top + height / 2);
-      ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!ref.current) return;
-    cancelAnimationFrame(animationFrameRef.current);
-    ref.current.style.transform = `translate(0px, 0px)`;
-  }, []);
-
-  return (
-    <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className={`transition-transform duration-300 ease-out ${className}`}>
-      {children}
-    </div>
-  );
-});
-
-const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = false }) => {
-  const cardRef = useRef(null);
-  const animationFrameRef = useRef(null);
-
-  const handleMouseMove = useCallback((e) => {
-    if (!tilt || !cardRef.current || window.innerWidth < 768) return;
-    
-    cancelAnimationFrame(animationFrameRef.current);
-    animationFrameRef.current = requestAnimationFrame(() => {
-      const card = cardRef.current;
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -12;
-      const rotateY = ((x - centerX) / centerX) * 12;
-
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03) translateY(-4px)`;
-    });
-  }, [tilt]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!tilt || !cardRef.current) return;
-    cancelAnimationFrame(animationFrameRef.current);
-    cardRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateY(0px)`;
-  }, [tilt]);
-
-  return (
-    <div className={`relative group ${isNavbar ? 'rounded-full' : 'rounded-3xl'} w-full`}>
-      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] blur-xl opacity-0 ${tilt ? 'group-hover:opacity-40' : ''} transition-opacity duration-700 -z-10`}></div>
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform
-          ${isNavbar ? 'rounded-full' : 'rounded-3xl'}
-          bg-white/60 dark:bg-[#0f111a]/60
-          backdrop-blur-md supports-[backdrop-filter]:backdrop-blur-xl
-          border border-white/60 dark:border-white/10
-          shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]
-          hover:border-white/80 dark:hover:border-blue-500/30
-          ${className}`}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 dark:opacity-5 pointer-events-none rounded-[inherit]"></div>
-        {children}
-      </div>
-    </div>
-  );
-});
-
-const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.1 });
-
-  const getTranslate = useCallback(() => {
-    if (direction === 'up') return 'translateY(64px)';
-    if (direction === 'down') return 'translateY(-64px)';
-    if (direction === 'left') return 'translateX(64px)';
-    if (direction === 'right') return 'translateX(-64px)';
-    return 'translateY(0)';
-  }, [direction]);
-
-  return (
-    <motion.div
-      ref={ref}
-      className={`will-change-transform ${className}`}
-      initial={{
-        opacity: 0,
-        filter: 'blur(8px)',
-        transform: getTranslate()
-      }}
-      animate={isInView ? {
-        opacity: 1,
-        filter: 'blur(0px)',
-        transform: 'translateY(0) translateX(0)'
-      } : {
-        opacity: 0,
-        filter: 'blur(8px)',
-        transform: getTranslate()
-      }}
-      transition={{
-        duration: 0.75,
-        ease: [0.25, 0.1, 0.25, 1],
-        delay: delay / 1000
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-});
-
-const TypeAsync = memo(({ words, className = '' }) => {
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  const getTypeInterval = () => {
-    // Slower typing: 50-200ms per character
-    const randomMs = 150 * Math.random() + 50;
-    return randomMs;
-  };
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const runAnimation = async () => {
-      const currentWord = words[currentWordIndex];
-
-      if (isPaused) {
-        // Longer display duration: 3.5 seconds
-        await sleep(3500);
-        if (cancelled) return;
-        setIsPaused(false);
-        setIsDeleting(true);
-        return;
-      }
-
-      if (isDeleting) {
-        // Deleting mode (slower deletion)
-        if (displayText.length > 0) {
-          await sleep(getTypeInterval() * 0.7);
-          if (cancelled) return;
-          setDisplayText(prev => prev.slice(0, -1));
-        } else {
-          // Move to next word
-          setIsDeleting(false);
-          setCurrentWordIndex((prev) => (prev + 1) % words.length);
-        }
-      } else {
-        // Typing mode
-        if (displayText.length < currentWord.length) {
-          await sleep(getTypeInterval());
-          if (cancelled) return;
-          setDisplayText(currentWord.slice(0, displayText.length + 1));
-        } else {
-          // Word complete, pause before deleting
-          setIsPaused(true);
-        }
-      }
-    };
-
-    runAnimation();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [displayText, isDeleting, isPaused, currentWordIndex, words]);
-
-  return (
-    <span className={`${className}`}>
-      {displayText}
-      <span className="blinking-cursor">_</span>
-    </span>
-  );
-});
 
 const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) => {
   const trackRef = useRef(null);
@@ -521,32 +247,6 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   );
 });
 
-const BlobButton = memo(({ children, onClick, darkTheme }) => {
-  const btnRef = useRef(null);
-
-  const handleMouseMove = useCallback((e) => {
-    if(!btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    btnRef.current.style.setProperty("--x", `${x}px`);
-    btnRef.current.style.setProperty("--y", `${y}px`);
-    btnRef.current.style.setProperty("--height", `${rect.height}px`);
-    btnRef.current.style.setProperty("--width", `${rect.width}px`);
-  }, []);
-
-  return (
-    <div className={`blob-container ${darkTheme ? 'blob-dark' : 'blob-light'}`}>
-      <div className="blob-inner" ref={btnRef} onMouseMove={handleMouseMove} onClick={onClick}>
-        <button type="button" className="flex items-center gap-2">
-          {children}
-        </button>
-        <div className="blob"></div>
-      </div>
-    </div>
-  );
-});
-
 // NAVBAR RESPONSIVE: Desktop = pill nav, Mobile = hamburger menu
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const navRef = useRef(null);
@@ -556,7 +256,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
   const links = useMemo(() => [
     { id: 'inicio', label: 'Inicio' },
-    { id: 'sobre-mi', label: 'Sobre Mí' },
+    { id: 'sobre-mi', label: 'Sobre MÃ­' },
     { id: 'skills', label: 'Skills' },
     { id: 'proyectos', label: 'Proyectos' },
     { id: 'contacto', label: 'Contacto' }
@@ -784,7 +484,7 @@ const Background3D = memo(({ theme }) => {
       const progress = scrollY / maxScroll;
 
       const positions = particles.geometry.attributes.position.array;
-      // Restaurar actualización en cada frame pero con optimización interna
+      // Restaurar actualizaciÃ³n en cada frame pero con optimizaciÃ³n interna
       for (let i = 0; i < particleCount * 3; i += 3) {
         const x = positions[i];
         const z = positions[i + 2];
@@ -842,10 +542,10 @@ export default function App() {
     setIsManualScrolling(true);
     clearTimeout(manualScrollTimeoutRef.current);
     
-    // Actualizar inmediatamente la sección activa para que la burbuja vaya directo
+    // Actualizar inmediatamente la secciÃ³n activa para que la burbuja vaya directo
     setActiveSection(sectionId);
     
-    // Reactivar la detección por scroll después de que termine el smooth scroll
+    // Reactivar la detecciÃ³n por scroll despuÃ©s de que termine el smooth scroll
     manualScrollTimeoutRef.current = setTimeout(() => {
       setIsManualScrolling(false);
     }, 1000); // Tiempo suficiente para el smooth scroll
@@ -915,7 +615,7 @@ export default function App() {
 
   const toggleTheme = useCallback(() => setTheme(theme === 'dark' ? 'light' : 'dark'), [theme]);
 
-  // Detectar si es móvil (menor a 768px)
+  // Detectar si es mÃ³vil (menor a 768px)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
   useEffect(() => {
@@ -957,7 +657,7 @@ export default function App() {
             <ScrollReveal direction="up" delay={100} className="mb-8">
                <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
                 <div className="w-full h-full rounded-full overflow-hidden">
-                    <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <img src="/img/photo.jpg" alt="FabiÃ¡n SÃ¡nchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
                </div>
             </ScrollReveal>
@@ -965,7 +665,7 @@ export default function App() {
             <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
               <ScrollReveal direction="up" delay={300}>
                 <span className="block bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-2">
-                  Fabián Sánchez
+                  FabiÃ¡n SÃ¡nchez
                 </span>
               </ScrollReveal>
               <ScrollReveal direction="up" delay={500}>
@@ -978,7 +678,7 @@ export default function App() {
             
             <ScrollReveal direction="up" delay={700}>
               <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-                Estudiante de Ingeniería en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con código limpio.
+                Estudiante de IngenierÃ­a en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con cÃ³digo limpio.
               </p>
             </ScrollReveal>
             
@@ -1016,11 +716,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* SOBRE MÍ SECTION */}
+        {/* SOBRE MÃ SECTION */}
         <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
           <div className="md:w-5/12 flex justify-center">
             <ScrollReveal direction="left" delay={200}>
-              {/* RESTAURADO: Exactamente como tenías el renderizador de la Laptop 3D */}
+              {/* RESTAURADO: Exactamente como tenÃ­as el renderizador de la Laptop 3D */}
               <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center">
                  <model-viewer 
                     alt="laptop 3D" 
@@ -1041,7 +741,7 @@ export default function App() {
                  
                  <div className="absolute bottom-6 left-6 right-6 bg-white/80 dark:bg-black/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-xl p-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
                     <p className="text-gray-800 dark:text-white text-sm font-medium flex items-center gap-2">
-                      <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> Ingeniería en Sistemas, UNA
+                      <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> IngenierÃ­a en Sistemas, UNA
                     </p>
                  </div>
               </GlassCard>
@@ -1053,30 +753,30 @@ export default function App() {
                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight flex items-center md:justify-start justify-center gap-3">
                 <User className="text-cyan-500 shrink-0" size={32} /> 
                 <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                  Sobre Mí
+                  Sobre MÃ­
                 </span>
               </h2>
             </ScrollReveal>
             
-            {/* IMPLEMENTACIÓN DE PRETEXT: Párrafos ultra rápidos en Canvas */}
+            {/* IMPLEMENTACIÃ“N DE PRETEXT: PÃ¡rrafos ultra rÃ¡pidos en Canvas */}
             <ScrollReveal direction="right" delay={300}>
               <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Estudiante de último año de Ingeniería en Sistemas de Información en la Universidad Nacional (UNA) en búsqueda de una empresa para realizar mi Práctica Profesional Supervisada (PPS). Me especializo en el desarrollo backend, con un enfoque principal en el diseño, construcción y optimización de APIs RESTful.'
+                text='Estudiante de Ãºltimo aÃ±o de IngenierÃ­a en Sistemas de InformaciÃ³n en la Universidad Nacional (UNA) en bÃºsqueda de una empresa para realizar mi PrÃ¡ctica Profesional Supervisada (PPS). Me especializo en el desarrollo backend, con un enfoque principal en el diseÃ±o, construcciÃ³n y optimizaciÃ³n de APIs RESTful.'
               />
             </ScrollReveal>
             
             <ScrollReveal direction="right" delay={400}>
                <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Mi trabajo se define por el rigor técnico y la calidad del código. Desarrollo software aplicando estrictamente los principios SOLID, la regla DRY (Do not Repeat Yourself) y patrones de diseño, garantizando arquitecturas limpias, escalables y mantenibles a largo plazo. Redacto la documentación técnica de mis proyectos y repositorios íntegramente en inglés.'
+                text='Mi trabajo se define por el rigor tÃ©cnico y la calidad del cÃ³digo. Desarrollo software aplicando estrictamente los principios SOLID, la regla DRY (Do not Repeat Yourself) y patrones de diseÃ±o, garantizando arquitecturas limpias, escalables y mantenibles a largo plazo. Redacto la documentaciÃ³n tÃ©cnica de mis proyectos y repositorios Ã­ntegramente en inglÃ©s.'
               />
             </ScrollReveal>
 
             <ScrollReveal direction="right" delay={500}>
                <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Especialista en Java (Spring Boot) y PHP (Laravel). Experiencia en bases de datos PostgreSQL, SQL Server y MySQL. Manejo de Docker, CI/CD, servidores Ubuntu y HTTPS. Desarrollo móvil con Kotlin (MVVM) y React Native. Scrum Master certificado con enfoque en QA y revisión rigurosa de código. Aporto disciplina de ingeniería y capacidad para resolver problemas complejos en entornos empresariales exigentes.'
+                text='Especialista en Java (Spring Boot) y PHP (Laravel). Experiencia en bases de datos PostgreSQL, SQL Server y MySQL. Manejo de Docker, CI/CD, servidores Ubuntu y HTTPS. Desarrollo mÃ³vil con Kotlin (MVVM) y React Native. Scrum Master certificado con enfoque en QA y revisiÃ³n rigurosa de cÃ³digo. Aporto disciplina de ingenierÃ­a y capacidad para resolver problemas complejos en entornos empresariales exigentes.'
               />
             </ScrollReveal>
           </div>
@@ -1088,7 +788,7 @@ export default function App() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
               <Wrench className="text-blue-500 shrink-0" size={32} />
               <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                Stack Tecnológico
+                Stack TecnolÃ³gico
               </span>
             </h2>
           </ScrollReveal>
@@ -1186,11 +886,11 @@ export default function App() {
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-cyan-500 transition-colors"><ExternalLink size={20} /></a>
                   </h3>
                   
-                  {/* PRETEXT AQUÍ */}
+                  {/* PRETEXT AQUÃ */}
                   <PretextParagraph 
                     className="mb-6 flex-1"
                     isDark={theme === 'dark'}
-                    text='Arquitectura limpia implementada en Spring Boot y React. Gestión integral de recursos humanos, inventario y facturación usando SQL Server.'
+                    text='Arquitectura limpia implementada en Spring Boot y React. GestiÃ³n integral de recursos humanos, inventario y facturaciÃ³n usando SQL Server.'
                   />
 
                   <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
@@ -1215,11 +915,11 @@ export default function App() {
                     <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-purple-500 transition-colors"><ExternalLink size={20} /></a>
                   </h3>
                   
-                  {/* PRETEXT AQUÍ */}
+                  {/* PRETEXT AQUÃ */}
                   <PretextParagraph 
                     className="mb-6 flex-1"
                     isDark={theme === 'dark'}
-                    text='Desarrollo de una API RESTful con Laravel y MySQL. Manejo de autenticación, carrito de compras, pasarela de pagos y panel administrativo completo.'
+                    text='Desarrollo de una API RESTful con Laravel y MySQL. Manejo de autenticaciÃ³n, carrito de compras, pasarela de pagos y panel administrativo completo.'
                   />
 
                   <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
@@ -1239,7 +939,7 @@ export default function App() {
              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
               <Mail className="text-cyan-500 shrink-0" size={32} />
               <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-                Hablemos de Código
+                Hablemos de CÃ³digo
               </span>
             </h2>
           </ScrollReveal>
@@ -1249,7 +949,7 @@ export default function App() {
               
               <PretextParagraph 
                 isDark={theme === 'dark'}
-                text='Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
+                text='Busco oportunidades en entornos tecnolÃ³gicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
               />
 
               <div className="flex flex-col gap-4 sm:gap-6">
@@ -1281,7 +981,7 @@ export default function App() {
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
-                    <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="¿En qué te puedo ayudar?" required></textarea>
+                    <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="Â¿En quÃ© te puedo ayudar?" required></textarea>
                   </div>
                   <BlobButton darkTheme={theme === 'dark'} onClick={(e) => e.preventDefault()}>
                     Enviar Mensaje <Send size={18} />
@@ -1294,7 +994,7 @@ export default function App() {
 
         {/* FOOTER */}
         <footer className="py-12 text-center text-gray-500 dark:text-gray-500 relative z-10 w-full border-t border-gray-200 dark:border-white/5">
-          <p>© {new Date().getFullYear()} Fabián Sánchez. Universidad Nacional de Costa Rica.</p>
+          <p>Â© {new Date().getFullYear()} FabiÃ¡n SÃ¡nchez. Universidad Nacional de Costa Rica.</p>
         </footer>
 
       </main>
@@ -1344,7 +1044,7 @@ export default function App() {
           transform: scale(1.02);
         }
 
-        /* Ocultar barra de scroll en el Navbar para móviles */
+        /* Ocultar barra de scroll en el Navbar para mÃ³viles */
         .hide-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;
@@ -1766,3 +1466,6 @@ export default function App() {
     </div>
   );
 }
+
+
+
