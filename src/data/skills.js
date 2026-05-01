@@ -1,0 +1,48 @@
+﻿export const skillsByCategory = {
+  backend: {
+    title: 'Backend & Core',
+    iconKey: 'Server',
+    color: 'cyan',
+    direction: 'left',
+    items: [
+      { name: 'Java', iconKey: 'JavaIcon' },
+      { name: 'Spring Boot', iconKey: 'SpringBootIcon' },
+      { name: 'PHP', iconKey: 'PhpIcon' },
+      { name: 'Laravel', iconKey: 'LaravelIcon' },
+      { name: 'Node.js', iconKey: 'NodeJsIcon' },
+      { name: 'C++', iconKey: 'CppIcon' },
+      { name: 'PostgreSQL', iconKey: 'PostgresqlIcon' },
+      { name: 'MySQL', iconKey: 'MysqlIcon' },
+    ],
+  },
+  frontend: {
+    title: 'Frontend & Web',
+    iconKey: 'Layout',
+    color: 'purple',
+    direction: 'right',
+    items: [
+      { name: 'HTML5', iconKey: 'HtmlIcon' },
+      { name: 'CSS3', iconKey: 'CssIcon' },
+      { name: 'JavaScript', iconKey: 'JavaScriptIcon' },
+      { name: 'React', iconKey: 'ReactIcon' },
+      { name: 'React Native', iconKey: 'ReactNativeIcon' },
+      { name: 'Tailwind', iconKey: 'TailwindIcon' },
+      { name: 'Bootstrap', iconKey: 'BootstrapIcon' },
+      { name: 'JSON', iconKey: 'JsonIcon' },
+    ],
+  },
+  devops: {
+    title: 'DevOps & Tools',
+    iconKey: 'Wrench',
+    color: 'emerald',
+    direction: 'left',
+    items: [
+      { name: 'Docker', iconKey: 'DockerIcon' },
+      { name: 'Git', iconKey: 'GitIcon' },
+      { name: 'GitHub', iconKey: 'GithubIcon' },
+      { name: 'Linux', iconKey: 'LinuxIcon' },
+      { name: 'Bash', iconKey: 'BashIcon' },
+      { name: 'Scrum', iconKey: 'User' },
+    ],
+  },
+};

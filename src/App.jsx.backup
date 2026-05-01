@@ -1,0 +1,1817 @@
+import React, { useState, useEffect, useRef, memo, useMemo, useCallback } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { Moon, Sun, Mail, Code2, Cpu, Globe, Database, Layout, Server, Send, User, Briefcase, Wrench, ExternalLink, Download, ChevronDown, MonitorSmartphone, Terminal } from 'lucide-react';
+import * as THREE from 'three';
+// Importamos la librería revolucionaria de Cheng Lou
+import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
+
+
+const Github = ({ size = 24, className = "" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-github ${className}`}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+);
+
+const Linkedin = ({ size = 24, className = "" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-linkedin ${className}`}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+);
+
+// --- COMPONENTE PRETEXT PARA RENDERIZADO ULTRA-RÁPIDO ---
+// Usa Canvas para evitar reflows del DOM, manteniendo SEO mediante sr-only
+const PretextParagraph = ({ text, isDark, className = '' }) => {
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!canvasRef.current || !containerRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const container = containerRef.current;
+
+    let animationFrameId;
+
+    const renderText = () => {
+      const width = container.clientWidth;
+      if (width === 0) return;
+
+      // Configuraciones reactivas (Móvil vs PC)
+      const isMobile = window.innerWidth < 768;
+      const fontSize = isMobile ? 16 : 18; 
+      const lineHeight = isMobile ? 26 : 28;
+      
+      // La fuente debe coincidir exactamente con el CSS nativo
+      const font = `300 ${fontSize}px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+      const textColor = isDark ? '#d1d5db' : '#374151'; // Equivalente a text-gray-300 y text-gray-700
+
+      // 1. Pretext: Análisis ultra rápido de segmentación
+      const prepared = prepareWithSegments(text, font);
+      
+      // 2. Pretext: Cálculo matemático de líneas sin tocar el DOM
+      const { height, lines } = layoutWithLines(prepared, width, lineHeight);
+
+      // Escalado para pantallas Retina (alta definición)
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.scale(scale, scale);
+      ctx.font = font;
+      ctx.fillStyle = textColor;
+      ctx.textBaseline = 'top';
+
+      // 3. Renderizado directo a la GPU vía Canvas
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i].text, 0, i * lineHeight);
+      }
+    };
+
+    renderText();
+
+    const handleResize = () => {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(renderText);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [text, isDark]);
+
+  return (
+    <div ref={containerRef} className={`w-full ${className}`}>
+      {/* Texto oculto para que Google y los lectores de pantalla puedan leerlo (SEO/Accesibilidad) */}
+      <p className="sr-only">{text}</p>
+      {/* Texto renderizado por hardware */}
+      <canvas ref={canvasRef} className="block w-full pointer-events-none" />
+    </div>
+  );
+};
+
+// --- MICRO-INTERACCIONES Y COMPONENTES PREMIUM ---
+
+const MagneticButton = ({ children, className = '' }) => {
+  const ref = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+    const { left, top, width, height } = ref.current.getBoundingClientRect();
+    const x = e.clientX - (left + width / 2);
+    const y = e.clientY - (top + height / 2);
+    ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!ref.current) return;
+    ref.current.style.transform = `translate(0px, 0px)`;
+  };
+
+  return (
+    <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className={`transition-transform duration-300 ease-out ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+const GlassCard = ({ children, className = '', tilt = false, isNavbar = false }) => {
+  const cardRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!tilt || !cardRef.current || window.innerWidth < 768) return;
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03) translateY(-4px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!tilt || !cardRef.current) return;
+    cardRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateY(0px)`;
+  };
+
+  return (
+    <div className={`relative group ${isNavbar ? 'rounded-full' : 'rounded-3xl'} w-full`}>
+      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] blur-xl opacity-0 ${tilt ? 'group-hover:opacity-40' : ''} transition-opacity duration-700 -z-10`}></div>
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform
+          ${isNavbar ? 'rounded-full' : 'rounded-3xl'}
+          bg-white/60 dark:bg-[#0f111a]/60
+          backdrop-blur-md supports-[backdrop-filter]:backdrop-blur-xl
+          border border-white/60 dark:border-white/10
+          shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]
+          hover:border-white/80 dark:hover:border-blue-500/30
+          ${className}`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 dark:opacity-5 pointer-events-none rounded-[inherit]"></div>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const ScrollReveal = ({ children, delay = 0, direction = 'up', className = '' }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, amount: 0.1 });
+
+  const getTranslate = () => {
+    if (direction === 'up') return 'translateY(64px)';
+    if (direction === 'down') return 'translateY(-64px)';
+    if (direction === 'left') return 'translateX(64px)';
+    if (direction === 'right') return 'translateX(-64px)';
+    return 'translateY(0)';
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      className={`will-change-transform gpu-accelerated ${className}`}
+      initial={{
+        opacity: 0,
+        filter: 'blur(8px)',
+        transform: getTranslate()
+      }}
+      animate={isInView ? {
+        opacity: 1,
+        filter: 'blur(0px)',
+        transform: 'translateY(0) translateX(0)'
+      } : {
+        opacity: 0,
+        filter: 'blur(8px)',
+        transform: getTranslate()
+      }}
+      transition={{
+        duration: 0.75,
+        ease: [0.25, 0.1, 0.25, 1],
+        delay: delay / 1000
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const Typewriter = ({ words, delay = 100, pause = 1500 }) => {
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentWord = words[currentWordIndex];
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        setText(currentWord.substring(0, text.length + 1));
+        if (text.length === currentWord.length) {
+          setTimeout(() => setIsDeleting(true), pause);
+        }
+      } else {
+        setText(currentWord.substring(0, text.length - 1));
+        if (text.length === 0) {
+          setIsDeleting(false);
+          setCurrentWordIndex((prev) => (prev + 1) % words.length);
+        }
+      }
+    }, isDeleting ? delay / 2 : delay);
+    return () => clearTimeout(timeout);
+  }, [text, isDeleting, currentWordIndex, words, delay, pause]);
+
+  return <span className="inline-block">{text}<span className="animate-pulse font-light text-inherit">|</span></span>;
+};
+
+const BlobButton = ({ children, onClick, darkTheme }) => {
+  const btnRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if(!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    btnRef.current.style.setProperty("--x", `${x}px`);
+    btnRef.current.style.setProperty("--y", `${y}px`);
+    btnRef.current.style.setProperty("--height", `${rect.height}px`);
+    btnRef.current.style.setProperty("--width", `${rect.width}px`);
+  };
+
+  return (
+    <div className={`blob-container ${darkTheme ? 'blob-dark' : 'blob-light'}`}>
+      <div className="blob-inner" ref={btnRef} onMouseMove={handleMouseMove} onClick={onClick}>
+        <button type="button" className="flex items-center gap-2">
+          {children}
+        </button>
+        <div className="blob"></div>
+      </div>
+    </div>
+  );
+};
+
+// NAVBAR RESPONSIVE: Desktop = pill nav, Mobile = hamburger menu
+const LiquidNav = ({ activeSection, toggleTheme, isDark }) => {
+  const navRef = useRef(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const links = [
+    { id: 'inicio', label: 'Inicio' },
+    { id: 'sobre-mi', label: 'Sobre Mí' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'proyectos', label: 'Proyectos' },
+    { id: 'contacto', label: 'Contacto' }
+  ];
+
+  const updateIndicator = (activeId) => {
+    if (!navRef.current) return;
+    const activeEl = navRef.current.querySelector(`li[data-id="${activeId}"]`);
+    if (!activeEl) return;
+    
+    setIndicatorStyle({
+      left: activeEl.offsetLeft,
+      width: activeEl.offsetWidth
+    });
+  };
+
+  useEffect(() => {
+    updateIndicator(activeSection || 'inicio');
+  }, [activeSection]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      updateIndicator(activeSection || 'inicio');
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    setTimeout(handleResize, 150);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    const closeOnScroll = () => setMobileOpen(false);
+    window.addEventListener('scroll', closeOnScroll, { passive: true });
+    return () => window.removeEventListener('scroll', closeOnScroll);
+  }, []);
+
+  return (
+    <>
+      {/* DESKTOP NAV (hidden on mobile) */}
+      <nav className="liquid-nav max-w-[95vw] overflow-x-auto hide-scrollbar desktop-nav-only">
+        <ul ref={navRef} className="liquid-nav-container">
+          <div 
+             className="liquid-nav-pill" 
+             style={{
+               transform: `translateX(${indicatorStyle.left}px)`, 
+               width: `${indicatorStyle.width}px` 
+             }} 
+          />
+          
+          {links.map(link => (
+            <li key={link.id} data-id={link.id} className={activeSection === link.id ? 'active' : ''}>
+              <a href={`#${link.id}`} onClick={() => updateIndicator(link.id)} className="liquid-nav-link text-base">
+                 {link.label}
+              </a>
+            </li>
+          ))}
+          
+          <li className="theme-toggle-li">
+             <button onClick={toggleTheme} className="liquid-nav-link theme-btn flex justify-center items-center h-full px-2" aria-label="Toggle Theme">
+                {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
+             </button>
+          </li>
+        </ul>
+      </nav>
+
+      {/* MOBILE NAV (visible only on mobile) */}
+      <div className="md:hidden relative">
+        <div className="mobile-nav-bar">
+          <button onClick={toggleTheme} className="mobile-nav-theme" aria-label="Toggle Theme">
+            {isDark ? <Sun size={18} className="stroke-[2.5]" /> : <Moon size={18} className="stroke-[2.5]" />}
+          </button>
+          <span className="mobile-nav-title">{links.find(l => l.id === activeSection)?.label || 'Inicio'}</span>
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="mobile-nav-hamburger" aria-label="Menu">
+            <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[6px]' : ''}`}></span>
+            <span className={`hamburger-line ${mobileOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`hamburger-line ${mobileOpen ? '-rotate-45 -translate-y-[6px]' : ''}`}></span>
+          </button>
+        </div>
+
+        {/* Mobile dropdown */}
+        <div className={`mobile-nav-dropdown ${mobileOpen ? 'mobile-nav-open' : 'mobile-nav-closed'}`}>
+          {links.map(link => (
+            <a 
+              key={link.id}
+              href={`#${link.id}`} 
+              onClick={() => setMobileOpen(false)}
+              className={`mobile-nav-item ${activeSection === link.id ? 'mobile-nav-active' : ''}`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+// --- MOTOR 3D OPTIMIZADO ---
+const Background3D = ({ theme }) => {
+  const mountRef = useRef(null);
+  const textureRef = useRef(null);
+
+  const createParticleTexture = () => {
+    if (textureRef.current) return textureRef.current;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 64, 64);
+    
+    textureRef.current = new THREE.CanvasTexture(canvas);
+    return textureRef.current;
+  };
+
+  useEffect(() => {
+    if (!mountRef.current) return;
+    
+    // Limpieza estricta inicial para evitar lienzos dobles
+    mountRef.current.innerHTML = '';
+
+    const isDark = theme === 'dark';
+    const bgColor = isDark ? '#03050a' : '#f8fafc'; 
+    
+    const scene = new THREE.Scene();
+    scene.background = null; 
+    scene.fog = new THREE.FogExp2(bgColor, 0.03);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 5, 15);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    
+    // Fijamos el canvas 3D
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    
+    mountRef.current.appendChild(renderer.domElement);
+
+    const particleCount = 1500; // Reducido para mejor rendimiento
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const color1 = new THREE.Color(isDark ? 0x0ea5e9 : 0x0284c7); 
+    const color2 = new THREE.Color(isDark ? 0x8b5cf6 : 0x7e22ce); 
+    
+    // Optimización: pre-calcular valores para mejor rendimiento
+    const halfRange = 20;
+    const heightRange = 5;
+    
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      positions[i] = (Math.random() - 0.5) * halfRange * 2;     
+      positions[i + 1] = (Math.random() - 0.5) * heightRange * 2; 
+      positions[i + 2] = (Math.random() - 0.5) * halfRange * 2; 
+
+      const mixedColor = color1.clone().lerp(color2, Math.random());
+      colors[i] = mixedColor.r;
+      colors[i + 1] = mixedColor.g;
+      colors[i + 2] = mixedColor.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const particleTexture = createParticleTexture();
+    const material = new THREE.PointsMaterial({
+      size: isDark ? 0.25 : 0.35, // Ligeramente más pequeño para mejor rendimiento
+      map: particleTexture,
+      vertexColors: true,
+      transparent: true,
+      opacity: isDark ? 0.8 : 0.4, 
+      blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
+      depthWrite: false
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    let mouseX = 0;
+    let mouseY = 0;
+    const onMouseMove = (event) => {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', onMouseMove);
+
+    let scrollY = window.scrollY;
+    let targetScrollY = window.scrollY;
+    const onScroll = () => { targetScrollY = window.scrollY; };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const onResize = () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', onResize);
+
+    const clock = new THREE.Clock();
+    let animationFrameId;
+    let lastTime = 0;
+    const targetFPS = 60;
+    const frameInterval = 1000 / targetFPS;
+
+    const animate = (currentTime) => {
+        animationFrameId = requestAnimationFrame(animate);
+        
+        // Optimización: limitar FPS para mejor rendimiento
+        if (currentTime - lastTime < frameInterval) {
+            return;
+        }
+        lastTime = currentTime;
+        
+        const time = clock.getElapsedTime() * 0.15; // Reducido para menos cálculos
+
+        scrollY += (targetScrollY - scrollY) * 0.08; // Ligeramente más rápido
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const progress = scrollY / maxScroll;
+
+        // Optimización: usar Math.fround para mejor precisión y rendimiento
+        const positions = particles.geometry.attributes.position.array;
+        const sinTime = Math.sin(time);
+        const cosTime = Math.cos(time);
+        
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            const x = positions[i];
+            const z = positions[i + 2];
+            positions[i + 1] = Math.fround((Math.sin(x * 0.3 + sinTime) + Math.cos(z * 0.3 + cosTime)) * 1.2);
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+        
+        // Optimización: reducir actualizaciones de cámara
+        camera.position.x += (mouseX * 2 - camera.position.x) * 0.03;
+        camera.position.y += (mouseY * 1 - camera.position.y) * 0.03;
+        camera.position.z = 15 + Math.sin(progress * Math.PI) * 5;
+        camera.lookAt(0, 0, 0);
+        
+        renderer.render(scene, camera);
+    };
+    
+    animate(0); // Iniciar con timestamp
+
+    return () => {
+        // Fix de RAM: Detenemos el bucle y liberamos VRAM
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+        
+        geometry.dispose();
+        material.dispose();
+        particleTexture.dispose();
+        renderer.dispose();
+        
+        if (mountRef.current) mountRef.current.innerHTML = '';
+    };
+  }, [theme]);
+
+  return <div ref={mountRef} className="fixed inset-0 z-[0] w-full h-screen overflow-hidden pointer-events-none" />;
+};
+
+
+// --- APLICACIÓN PRINCIPAL OPTIMIZADA ---
+const App = memo(() => {
+  const [theme, setTheme] = useState('dark');
+  const [activeSection, setActiveSection] = useState('inicio');
+  const [isMounted, setIsMounted] = useState(false);
+  const cursorGlowRef = useRef(null); 
+
+  // Optimización: memoizar callbacks
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
+
+  // Optimización: prevenir hidratación issues
+  useEffect(() => {
+    setIsMounted(true);
+    // Cargar model-viewer script dinámicamente
+    if (!document.querySelector('script[id="model-viewer-script"]')) {
+      const script = document.createElement('script');
+      script.id = 'model-viewer-script';
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // LA LAPTOP 3D INTERACTIVA ORIGINAL
+  useEffect(() => {
+    if (!document.querySelector('script[id="model-viewer-script"]')) {
+      const script = document.createElement('script');
+      script.id = 'model-viewer-script';
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // RESTAURADO: Lógica original de Scroll para el Navbar (Funciona perfecto)
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['inicio', 'sobre-mi', 'skills', 'proyectos', 'contacto'];
+      let current = '';
+      sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element && window.scrollY >= (element.offsetTop - 300)) {
+          current = section;
+        }
+      });
+      if (current && current !== activeSection) setActiveSection(current);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
+
+  // Cursor interactivo
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      if (cursorGlowRef.current) {
+        cursorGlowRef.current.style.setProperty('--mouse-x', `${e.clientX}px`);
+        cursorGlowRef.current.style.setProperty('--mouse-y', `${e.clientY}px`);
+      }
+    };
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, []);
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+
+  if (!isMounted) return null;
+
+  const socialLinks = [
+    { name: 'GitHub', href: '#', icon: <Github size={20} /> },
+    { name: 'LinkedIn', href: '#', icon: <Linkedin size={20} /> },
+    { name: 'Email', href: 'mailto:contacto@fabian.com', icon: <Mail size={20} /> },
+  ];
+
+  return (
+    <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>
+      
+      {/* Resplandor interactivo del mouse */}
+      <div 
+        ref={cursorGlowRef}
+        className="pointer-events-none fixed inset-0 z-[1] h-full w-full bg-[radial-gradient(circle_at_var(--mouse-x,_0)_var(--mouse-y,_0),rgba(14,165,233,0.15)_0%,transparent_50%)] transition-opacity duration-700"
+      ></div>
+
+      <Background3D theme={theme} />
+                 
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center drop-shadow-2xl">
+        <ScrollReveal direction="down" delay={200}>
+           <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} />
+        </ScrollReveal>
+      </div>
+
+      <main className="relative z-10 w-full overflow-x-hidden">
+        
+        {/* INICIO SECTION */}
+        <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full">
+          <div className="text-center max-w-5xl mx-auto space-y-6 relative z-10">
+            <ScrollReveal direction="up" delay={100} className="mb-8">
+               <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                    <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                </div>
+               </div>
+            </ScrollReveal>
+
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
+              <ScrollReveal direction="up" delay={300}>
+                <span className="block bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-2">
+                  Fabián Sánchez
+                </span>
+              </ScrollReveal>
+              <ScrollReveal direction="up" delay={500}>
+                <span className="block text-xl sm:text-2xl md:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
+                  <span className="font-light text-gray-500 dark:text-gray-400 mr-3">Full Stack</span> 
+                  <Typewriter words={['Developer', 'Software Engineer', 'Architect', 'Problem Solver']} delay={80} pause={2500} />
+                </span>
+              </ScrollReveal>
+            </h1>
+            
+            <ScrollReveal direction="up" delay={700}>
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+                Estudiante de Ingeniería en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con código limpio.
+              </p>
+            </ScrollReveal>
+            
+            <ScrollReveal direction="up" delay={900}>
+              <div className="pt-10 flex flex-col items-center justify-center gap-8">
+                
+                <MagneticButton>
+                  <BlobButton darkTheme={theme === 'dark'} onClick={() => window.open('/cv.pdf', '_blank')}>
+                    Descargar CV <Download size={18} />
+                  </BlobButton>
+                </MagneticButton>
+
+                <div className="flex gap-6 mt-4">
+                  {socialLinks.map((link) => (
+                    <MagneticButton key={link.name}>
+                      <GlassCard tilt={true} isNavbar={true} className="p-4 flex items-center justify-center">
+                        <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="text-gray-700 dark:text-gray-300 group-hover:text-cyan-500 transition-colors">
+                          {link.icon}
+                        </a>
+                      </GlassCard>
+                    </MagneticButton>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+          
+          <div className="absolute bottom-10 animate-bounce text-gray-400">
+            <ChevronDown size={32} />
+          </div>
+        </section>
+
+        {/* SOBRE MÍ SECTION */}
+        <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
+          <div className="md:w-5/12 flex justify-center">
+            <ScrollReveal direction="left" delay={200}>
+              {/* RESTAURADO: Exactamente como tenías el renderizador de la Laptop 3D */}
+              <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center">
+                 <model-viewer 
+                    alt="laptop 3D" 
+                    src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb" 
+                    shadow-intensity="1"  
+                    camera-controls="true" 
+                    touch-action="pan-y"  
+                    environment-image="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/dancing_hall_2k.hdr" 
+                    exposure="1.5"   
+                    disable-zoom="true" 
+                    disable-tap="true"  
+                    camera-orbit="-45deg 60deg 9m" 
+                    autoplay="true"
+                    style={{ width: '100%', height: '100%', '--poster-color': 'transparent' }}
+                 ></model-viewer>
+                 
+                 <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/20 to-purple-600/20 mix-blend-overlay rounded-2xl pointer-events-none"></div>
+                 
+                 <div className="absolute bottom-6 left-6 right-6 bg-white/80 dark:bg-black/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-xl p-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
+                    <p className="text-gray-800 dark:text-white text-sm font-medium flex items-center gap-2">
+                      <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> Ingeniería en Sistemas, UNA
+                    </p>
+                 </div>
+              </GlassCard>
+            </ScrollReveal>
+          </div>
+
+          <div className="md:w-7/12 space-y-6">
+            <ScrollReveal direction="right" delay={200}>
+               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight flex items-center md:justify-start justify-center gap-3">
+                <User className="text-cyan-500 shrink-0" size={32} /> 
+                <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                  Sobre Mí
+                </span>
+              </h2>
+            </ScrollReveal>
+            
+            {/* IMPLEMENTACIÓN DE PRETEXT: Párrafos ultra rápidos en Canvas */}
+            <ScrollReveal direction="right" delay={300}>
+              <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Estudiante de tercer año de Ingeniería en Sistemas de Información en la Universidad Nacional de Costa Rica (UNA), apasionado por el desarrollo de software y la construcción de aplicaciones robustas y escalables.'
+              />
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={400}>
+               <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Mi trabajo se basa en buenas prácticas de ingeniería de software, aplicando el patrón MVC, arquitecturas limpias y el desarrollo de APIs RESTful. Me motiva resolver problemas complejos con soluciones eficientes y bien estructuradas.'
+              />
+            </ScrollReveal>
+
+            <ScrollReveal direction="right" delay={500}>
+               <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Adaptado a entornos dinámicos mediante metodologías ágiles (Scrum), siempre busco participar activamente en el ciclo completo de vida del software, colaborando en equipos multidisciplinarios para entregar valor continuo.'
+              />
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* SKILLS SECTION */}
+        <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
+              <Wrench className="text-blue-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Arsenal Tecnológico
+              </span>
+            </h2>
+          </ScrollReveal>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <ScrollReveal direction="up" delay={200}>
+                <h3 className="text-2xl font-bold flex items-center justify-center md:justify-start gap-2 text-cyan-600 dark:text-cyan-500"><Server /> Backend & Core</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+                  {[
+                    { name: 'Java / Spring', icon: <Code2 /> },
+                    { name: 'PHP / Laravel', icon: <Terminal /> },
+                    { name: 'Node.js', icon: <Cpu /> },
+                    { name: 'C++', icon: <Code2 /> },
+                    { name: 'SQL Server', icon: <Database /> },
+                    { name: 'Oracle / MySQL', icon: <Database /> },
+                  ].map((skill, i) => (
+                    <ScrollReveal key={i} direction="up" delay={300 + (i * 50)}>
+                      <MagneticButton>
+                        <GlassCard tilt={true} className="p-4 flex flex-col items-center justify-center text-center gap-3">
+                          <div className="p-3 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all duration-300">
+                            {skill.icon}
+                          </div>
+                          <span className="font-medium text-sm text-gray-700 dark:text-gray-300 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{skill.name}</span>
+                        </GlassCard>
+                      </MagneticButton>
+                    </ScrollReveal>
+                  ))}
+                </div>
+              </ScrollReveal>
+            </div>
+
+            <div className="space-y-8">
+              <ScrollReveal direction="up" delay={400}>
+                <h3 className="text-2xl font-bold flex items-center justify-center md:justify-start gap-2 text-purple-600 dark:text-purple-500"><Layout /> Frontend & Tools</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+                  {[
+                    { name: 'React', icon: <Code2 /> },
+                    { name: 'JavaScript', icon: <Globe /> },
+                    { name: 'Tailwind CSS', icon: <Layout /> },
+                    { name: 'Arquitectura MVC', icon: <Briefcase /> },
+                    { name: 'APIs RESTful', icon: <Globe /> },
+                    { name: 'Scrum / Agile', icon: <User /> },
+                  ].map((skill, i) => (
+                    <ScrollReveal key={i} direction="up" delay={500 + (i * 50)}>
+                      <MagneticButton>
+                        <GlassCard tilt={true} className="p-4 flex flex-col items-center justify-center text-center gap-3">
+                          <div className="p-3 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:scale-110 group-hover:bg-purple-500/20 transition-all duration-300">
+                            {skill.icon}
+                          </div>
+                          <span className="font-medium text-sm text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{skill.name}</span>
+                        </GlassCard>
+                      </MagneticButton>
+                    </ScrollReveal>
+                  ))}
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* PROYECTOS SECTION */}
+        <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
+              <Briefcase className="text-purple-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Proyectos Destacados
+              </span>
+            </h2>
+          </ScrollReveal>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <ScrollReveal direction="up" delay={200}>
+              <GlassCard tilt={true} className="p-6 flex flex-col gap-6 cursor-pointer h-full border-t border-t-cyan-500/30">
+                <div className="w-full h-40 sm:h-52 md:h-64 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden relative group-hover:shadow-[0_0_30px_rgba(14,165,233,0.3)] transition-shadow duration-500">
+                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"></div>
+                   <div className="absolute inset-0 bg-gradient-to-t from-white/90 dark:from-[#0f111a]/90 to-transparent opacity-90 transition-opacity group-hover:opacity-60"></div>
+                   <h3 className="text-2xl sm:text-3xl font-black z-10 drop-shadow-lg text-gray-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 group-hover:-translate-y-2 transition-all duration-300">Sistema Gestor Empresarial</h3>
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <h3 className="text-2xl font-bold mb-4 flex justify-between items-center text-gray-900 dark:text-white">
+                    ERP Modular
+                    <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-cyan-500 transition-colors"><ExternalLink size={20} /></a>
+                  </h3>
+                  
+                  {/* PRETEXT AQUÍ */}
+                  <PretextParagraph 
+                    className="mb-6 flex-1"
+                    isDark={theme === 'dark'}
+                    text='Arquitectura limpia implementada en Spring Boot y React. Gestión integral de recursos humanos, inventario y facturación usando SQL Server.'
+                  />
+
+                  <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
+                    <span className="px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">Java / Spring Boot</span>
+                    <span className="px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">React</span>
+                    <span className="px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">SQL Server</span>
+                  </div>
+                </div>
+              </GlassCard>
+            </ScrollReveal>
+
+            <ScrollReveal direction="up" delay={400}>
+              <GlassCard tilt={true} className="p-6 flex flex-col gap-6 cursor-pointer h-full border-t border-t-purple-500/30">
+                <div className="w-full h-40 sm:h-52 md:h-64 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center overflow-hidden relative group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-shadow duration-500">
+                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"></div>
+                   <div className="absolute inset-0 bg-gradient-to-t from-white/90 dark:from-[#0f111a]/90 to-transparent opacity-90 transition-opacity group-hover:opacity-60"></div>
+                   <h3 className="text-2xl sm:text-3xl font-black z-10 drop-shadow-lg text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-300 group-hover:-translate-y-2 transition-all duration-300">E-Commerce Core</h3>
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <h3 className="text-2xl font-bold mb-4 flex justify-between items-center text-gray-900 dark:text-white">
+                    Plataforma de Ventas
+                    <a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-purple-500 transition-colors"><ExternalLink size={20} /></a>
+                  </h3>
+                  
+                  {/* PRETEXT AQUÍ */}
+                  <PretextParagraph 
+                    className="mb-6 flex-1"
+                    isDark={theme === 'dark'}
+                    text='Desarrollo de una API RESTful con Laravel y MySQL. Manejo de autenticación, carrito de compras, pasarela de pagos y panel administrativo completo.'
+                  />
+
+                  <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
+                    <span className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">PHP / Laravel</span>
+                    <span className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">MySQL</span>
+                    <span className="px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">REST API</span>
+                  </div>
+                </div>
+              </GlassCard>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* CONTACTO SECTION */}
+        <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
+          <ScrollReveal direction="up">
+             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
+              <Mail className="text-cyan-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Hablemos de Código
+              </span>
+            </h2>
+          </ScrollReveal>
+          
+          <div className="grid md:grid-cols-2 gap-12">
+            <ScrollReveal direction="left" delay={200} className="space-y-8">
+              
+              <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
+              />
+
+              <div className="flex flex-col gap-4 sm:gap-6">
+                {socialLinks.map((link) => (
+                  <MagneticButton key={link.name}>
+                    <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 sm:gap-4 text-base sm:text-lg font-medium text-gray-800 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group">
+                      <div className="w-auto shrink-0">
+                        <GlassCard tilt={true} isNavbar={true} className="p-2.5 sm:p-3">
+                          {link.icon}
+                        </GlassCard>
+                      </div>
+                      <span className="group-hover:translate-x-2 transition-transform">{link.name}</span>
+                    </a>
+                  </MagneticButton>
+                ))}
+              </div>
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={400}>
+              <GlassCard tilt={true} className="p-8">
+                <form className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
+                    <input type="text" id="name" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-sm text-gray-900 dark:text-white" placeholder="Tu nombre" required />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                    <input type="email" id="email" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-sm text-gray-900 dark:text-white" placeholder="tu@email.com" required />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
+                    <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="¿En qué te puedo ayudar?" required></textarea>
+                  </div>
+                  <BlobButton darkTheme={theme === 'dark'} onClick={(e) => e.preventDefault()}>
+                    Enviar Mensaje <Send size={18} />
+                  </BlobButton>
+                </form>
+              </GlassCard>
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="py-12 text-center text-gray-500 dark:text-gray-500 relative z-10 w-full border-t border-gray-200 dark:border-white/5">
+          <p>© {new Date().getFullYear()} Fabián Sánchez. Universidad Nacional de Costa Rica.</p>
+        </footer>
+
+      </main>
+
+      {/* --- ESTILOS INYECTADOS --- */}
+      <style dangerouslySetInnerHTML={{__html: `
+        html { scroll-behavior: smooth; }
+        
+        @keyframes animated-gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .text-gradient-animated {
+          background-size: 200% 200%;
+          animation: animated-gradient 6s linear infinite;
+        }
+
+        /* Ocultar barra de scroll en el Navbar para móviles */
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* MOBILE NAV CSS */
+        .mobile-nav-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 20px;
+          border-radius: 99em;
+          min-height: 48px;
+          background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
+          backdrop-filter: blur(16px) saturate(150%);
+          -webkit-backdrop-filter: blur(16px) saturate(150%);
+          box-shadow: 0px 6px 16px 0px rgba(0,0,0,0.15);
+          gap: 12px;
+        }
+        
+        .mobile-nav-title {
+          font-weight: 600;
+          font-size: 0.95rem;
+          color: var(--c-content, #2a2a35);
+          letter-spacing: 0.3px;
+        }
+
+        .mobile-nav-theme {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--c-content, #2a2a35);
+          padding: 6px;
+          display: flex;
+          align-items: center;
+        }
+
+        .mobile-nav-hamburger {
+          background: none;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          padding: 6px;
+        }
+
+        .hamburger-line {
+          display: block;
+          width: 20px;
+          height: 2px;
+          background: var(--c-content, #2a2a35);
+          border-radius: 2px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
+        }
+
+        .mobile-nav-dropdown {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 0;
+          right: 0;
+          border-radius: 20px;
+          background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 24%, transparent);
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
+          box-shadow: 0px 12px 32px 0px rgba(0,0,0,0.2);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-nav-open {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+          max-height: 300px;
+          padding: 8px 0;
+        }
+
+        .mobile-nav-closed {
+          opacity: 0;
+          transform: translateY(-10px);
+          pointer-events: none;
+          max-height: 0;
+          padding: 0;
+        }
+
+        .mobile-nav-item {
+          padding: 14px 24px;
+          font-weight: 500;
+          font-size: 0.95rem;
+          color: var(--c-content, #2a2a35);
+          text-decoration: none;
+          transition: background 0.2s, color 0.2s;
+        }
+
+        .mobile-nav-item:hover {
+          background: rgba(14,165,233,0.08);
+          color: var(--c-action, #0ea5e9);
+        }
+
+        .mobile-nav-active {
+          color: var(--c-action, #0ea5e9);
+          font-weight: 700;
+          background: rgba(14,165,233,0.06);
+        }
+
+        /* BLOB BUTTON CSS */
+        .blob-container {
+          --elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          --x: 0px;
+          --y: 0px;
+          --t: rgba(255, 255, 255, 0.001);
+          --lightest: rgba(14, 165, 233, 0.8);
+          --light: rgba(59, 130, 246, 0.8);
+          --dark: rgba(139, 92, 246, 0.8);
+          --darkest: transparent;
+          position: relative;
+          display: inline-flex;
+          justify-content: center;
+          z-index: 1;
+        }
+
+        .blob-inner {
+          display: inline-block;
+          position: relative;
+          pointer-events: all;
+          z-index: 2;
+          cursor: pointer;
+          border-radius: 999px;
+        }
+
+        .blob-inner:hover::before {
+          filter: blur(4px) brightness(1.2);
+          background-size: 0px 0px, 100% 100%, 100%;
+          transition: transform 0.5s var(--elastic), background-size 0.25s ease-in-out;
+        }
+
+        .blob-inner::before {
+          content: "";
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          top: 0rem;
+          left: 0rem;
+          filter: blur(4px) brightness(0.8);
+          background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, var(--t) 20%),
+                      radial-gradient(circle at center, var(--lightest), var(--light) 15%, var(--dark) 40%, var(--darkest) 70%),
+                      var(--darkest);
+          background-size: 0px 0px, 0px 0px, 100%;
+          background-position: 50% 50%;
+          background-repeat: no-repeat;
+          opacity: 1;
+          mix-blend-mode: screen;
+          transition: transform 0.5s var(--elastic), background-size 0.25s ease-in-out, filter 0.5s ease-in-out;
+          transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%));
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        .blob-container.blob-light .blob-inner::before {
+           mix-blend-mode: normal;
+           filter: blur(6px) brightness(0.9);
+        }
+
+        .blob-inner button {
+          padding: 1rem 2.5rem;
+          border: none;
+          font-size: 1rem;
+          font-weight: 600;
+          position: relative;
+          background: rgba(15, 23, 42, 0.6);
+          color: #fff;
+          z-index: 3;
+          cursor: pointer;
+          border-radius: 99px;
+          border: 1px solid rgba(14, 165, 233, 0.4);
+          backdrop-filter: blur(12px);
+          transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+          letter-spacing: 0.5px;
+        }
+        
+        .blob-container.blob-light .blob-inner button {
+           background: rgba(255, 255, 255, 0.9);
+           color: #0f172a;
+           border: 1px solid rgba(14, 165, 233, 0.6);
+        }
+
+        .blob-inner:hover button {
+           transform: scale(1.02);
+           background: rgba(15, 23, 42, 0.8);
+           box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+        }
+        
+        .blob-container.blob-light .blob-inner:hover button {
+           background: #ffffff;
+           box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
+        }
+
+        .blob {
+          position: absolute;
+          pointer-events: none;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          background: transparent;
+          filter: blur(10px);
+          z-index: 1;
+          border-radius: 99px;
+          overflow: hidden;
+        }
+
+        .blob::before {
+          content: "";
+          position: absolute;
+          background: rgba(14, 165, 233, 0.4);
+          width: 20%;
+          height: auto;
+          z-index: 2;
+          transition: transform 750ms var(--elastic);
+          aspect-ratio: 1/1;
+          left: 0;
+          top: 0;
+          border-radius: 100%;
+          transform: translate(clamp(10%, calc(var(--x) - 50%), 550%), clamp(1rem, calc(var(--y) - 50%), 5rem)) scale(0);
+        }
+        
+        .blob-inner:hover .blob::before {
+          transform: translate(clamp(5%, calc(var(--x) - 50%), 550%), clamp(0.5rem, calc(var(--y) - 50%), 2rem)) scale(1.5);
+        }
+
+        /* LIQUID NAV CSS */
+        :root {
+          --c-glass: #bbbbbc;
+          --c-light: #fff;
+          --c-dark: #000;
+          --c-content: #2a2a35;
+          --c-action: #0ea5e9;
+          --glass-reflex-dark: 1;
+          --glass-reflex-light: 1;
+          --saturation: 150%;
+        }
+
+        html.dark {
+          --c-content: #e1e1e1;
+          --c-action: #38bdf8;
+          --glass-reflex-dark: 2;
+          --glass-reflex-light: 0.3;
+          --c-glass: #bbbbbc;
+          --saturation: 150%;
+        }
+
+        .liquid-nav {
+           display: inline-flex;
+        }
+
+        /* Responsive nav visibility via CSS media queries to prevent Tailwind conflicts */
+        .desktop-nav-only {
+          display: none !important;
+        }
+        @media (min-width: 768px) {
+          .desktop-nav-only {
+            display: inline-flex !important;
+          }
+        }
+
+        .liquid-nav-container {
+          position: relative;
+          display: flex;
+          align-items: stretch;
+          margin: 0;
+          padding: 8px 12px;
+          border-radius: 99em;
+          min-height: 56px;
+          list-style: none;
+          background-color: color-mix(in srgb, var(--c-glass) 18%, transparent);
+          backdrop-filter: blur(16px) saturate(var(--saturation));
+          -webkit-backdrop-filter: blur(16px) saturate(var(--saturation));
+          box-shadow: 
+            inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+            inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
+            inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent), 
+            inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent), 
+            inset -0.3px -1px 4px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent), 
+            inset -1.5px 2.5px 0px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent), 
+            inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent), 
+            inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent), 
+            0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent), 
+            0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+          transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1), box-shadow 400ms cubic-bezier(1, 0.0, 0.4, 1);
+        }
+
+        .liquid-nav-pill {
+          position: absolute;
+          top: 8px;   
+          bottom: 8px;
+          left: 0;
+          z-index: 0;
+          border-radius: 99em;
+          pointer-events: none;
+          background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
+          box-shadow: 
+            inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+            inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
+            inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent), 
+            inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent), 
+            inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent), 
+            inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent), 
+            0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+          transition: transform 380ms cubic-bezier(0.2, 0.85, 0.25, 1), 
+                      width 380ms cubic-bezier(0.2, 0.85, 0.25, 1);
+        }
+
+        .liquid-nav-container li {
+          display: flex;
+          align-items: center;
+          position: relative;
+          z-index: 10;
+        }
+
+        .liquid-nav-link {
+          padding: 0 18px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 500;
+          font-size: 0.96rem;
+          color: var(--c-content);
+          text-decoration: none;
+          white-space: nowrap;
+          transition: scale 200ms cubic-bezier(0.5, 0, 0, 1), color 200ms;
+        }
+        
+        .liquid-nav-link.theme-btn {
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          outline: none;
+          padding: 0 16px; 
+        }
+
+        .liquid-nav-container li:not(.active) a:hover,
+        .liquid-nav-container li:not(.active) button:hover {
+          color: var(--c-action);
+          scale: 1.15;
+          cursor: pointer;
+        }
+
+        .liquid-nav-container li.active .liquid-nav-link {
+           color: var(--c-content);
+           scale: 1;
+           font-weight: 700;
+           cursor: default;
+        }
+      `}} />
+    </div>
+  );
+};
+
+LiquidNav.displayName = 'LiquidNav';
+
+// --- APLICACIÓN PRINCIPAL OPTIMIZADA ---
+const App = memo(() => {
+  const [theme, setTheme] = useState('dark');
+  const [activeSection, setActiveSection] = useState('inicio');
+  const [isMounted, setIsMounted] = useState(false);
+  const cursorGlowRef = useRef(null); 
+
+  // Optimización: memoizar callbacks
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
+
+  // Optimización: prevenir hidratación issues
+  useEffect(() => {
+    setIsMounted(true);
+    // Cargar model-viewer script dinámicamente
+    if (!document.querySelector('script[id="model-viewer-script"]')) {
+      const script = document.createElement('script');
+      script.id = 'model-viewer-script';
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // RESTAURADO: Lógica original de Scroll para el Navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['inicio', 'sobre-mi', 'skills', 'proyectos', 'contacto'];
+      let current = '';
+      sections.forEach(section => {
+        const element = document.getElementById(section);
+        if (element && window.scrollY >= (element.offsetTop - 300)) {
+          current = section;
+        }
+      });
+      if (current && current !== activeSection) setActiveSection(current);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
+
+  // Cursor interactivo
+  useEffect(() => {
+    const handleGlobalMouseMove = (e) => {
+      if (cursorGlowRef.current) {
+        cursorGlowRef.current.style.setProperty('--mouse-x', `${e.clientX}px`);
+        cursorGlowRef.current.style.setProperty('--mouse-y', `${e.clientY}px`);
+      }
+    };
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, []);
+
+  // Prevenir hidratación issues
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-300">
+        <div className="flex items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`min-h-screen bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-300 ${theme === 'dark' ? 'dark' : ''}`}>
+      {/* Cursor interactivo global */}
+      <div 
+        ref={cursorGlowRef}
+        className="pointer-events-none fixed inset-0 z-50 transition duration-300 opacity-0"
+        style={{
+          background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(6, 182, 212, 0.1), transparent 40%)`,
+        }}
+      />
+      
+      <Background3D theme={theme} />
+      
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center drop-shadow-2xl">
+        <ScrollReveal direction="down" delay={200}>
+           <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} />
+        </ScrollReveal>
+      </div>
+
+      <main className="relative z-10 w-full overflow-x-hidden">
+        {/* INICIO SECTION */}
+        <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full">
+          <div className="text-center max-w-5xl mx-auto space-y-6 relative z-10">
+            <ScrollReveal direction="up" delay={100} className="mb-8">
+               <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                    <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                </div>
+               </div>
+            </ScrollReveal>
+
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
+              <ScrollReveal direction="up" delay={300}>
+                <span className="block bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-2">
+                  Fabián Sánchez
+                </span>
+              </ScrollReveal>
+              <ScrollReveal direction="up" delay={500}>
+                <span className="block text-xl sm:text-2xl md:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
+                  <span className="font-light text-gray-500 dark:text-gray-400 mr-3">Full Stack</span> 
+                  <Typewriter words={['Developer', 'Software Engineer', 'Architect', 'Problem Solver']} delay={80} pause={2500} />
+                </span>
+              </ScrollReveal>
+            </h1>
+            
+            <ScrollReveal direction="up" delay={700}>
+              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
+                Estudiante de Ingeniería en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con código limpio.
+              </p>
+            </ScrollReveal>
+            
+            <ScrollReveal direction="up" delay={900}>
+              <div className="pt-10 flex flex-col items-center justify-center gap-8">
+                
+                <MagneticButton>
+                  <BlobButton onClick={toggleTheme} darkTheme={theme === 'dark'}>
+                    <div className="flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold">
+                      {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+                      <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                    </div>
+                  </BlobButton>
+                </MagneticButton>
+
+                <div className="flex gap-4">
+                  {[
+                    { icon: <Github size={24} />, href: 'https://github.com', label: 'GitHub' },
+                    { icon: <Linkedin size={24} />, href: 'https://linkedin.com', label: 'LinkedIn' },
+                    { icon: <Mail size={24} />, href: 'mailto:contacto@ejemplo.com', label: 'Email' },
+                    { icon: <Download size={24} />, href: '/cv.pdf', label: 'CV' }
+                  ].map((social, i) => (
+                    <MagneticButton key={i}>
+                      <BlobButton darkTheme={theme === 'dark'}>
+                        <a 
+                          href={social.href} 
+                          target={social.label === 'Email' || social.label === 'CV' ? '_self' : '_blank'}
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center p-4 text-gray-600 dark:text-gray-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors duration-300"
+                          aria-label={social.label}
+                        >
+                          {social.icon}
+                        </a>
+                      </BlobButton>
+                    </MagneticButton>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+          
+          <div className="absolute bottom-10 animate-bounce text-gray-400">
+            <ChevronDown size={32} />
+          </div>
+        </section>
+
+        {/* SOBRE MÍ SECTION */}
+        <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
+          <div className="md:w-5/12 flex justify-center">
+            <ScrollReveal direction="left" delay={200}>
+              <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center">
+                 <model-viewer 
+                    src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.4.0/assets/models/strawberry/scene.gltf"
+                    ios-src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.4.0/assets/models/strawberry/scene.usdz"
+                    alt="Laptop 3D"
+                    camera-orbit="30deg 75deg 2.5m"
+                    interaction-prompt="none"
+                    ar-modes="webxr scene-viewer quicklook"
+                    environment-image="neutral"
+                    auto-rotate
+                    auto-rotate-delay="0.5"
+                    rotation-per-second="30deg"
+                    camera-controls
+                    style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                  >
+                    <div slot="poster" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}></div>
+                  </model-viewer>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 dark:opacity-0 pointer-events-none rounded-[inherit]"></div>
+                 </GlassCard>
+            </ScrollReveal>
+          </div>
+
+          <div className="md:w-7/12 space-y-6">
+            <ScrollReveal direction="right" delay={200}>
+               <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight flex items-center md:justify-start justify-center gap-3">
+                <User className="text-cyan-500 shrink-0" size={32} /> 
+                <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                  Sobre Mí
+                </span>
+              </h2>
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={300}>
+              <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Estudiante de tercer año de Ingeniería en Sistemas de Información en la Universidad Nacional de Costa Rica (UNA), apasionado por el desarrollo de software y la construcción de aplicaciones robustas y escalables.'
+              />
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={400}>
+               <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Mi trabajo se basa en buenas prácticas de ingeniería de software, aplicando el patrón MVC, arquitecturas limpias y el desarrollo de APIs RESTful. Me motiva resolver problemas complejos con soluciones eficientes y bien estructuradas.'
+              />
+            </ScrollReveal>
+
+            <ScrollReveal direction="right" delay={500}>
+               <PretextParagraph 
+                isDark={theme === 'dark'}
+                text='Adaptado a entornos dinámicos mediante metodologías ágiles (Scrum), siempre busco participar activamente en el ciclo completo de vida del software, colaborando en equipos multidisciplinarios para entregar valor continuo.'
+              />
+            </ScrollReveal>
+          </div>
+        </section>
+
+        {/* SKILLS SECTION */}
+        <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
+              <Wrench className="text-blue-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Arsenal Tecnológico
+              </span>
+            </h2>
+          </ScrollReveal>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <ScrollReveal direction="up" delay={200}>
+                <h3 className="text-2xl font-bold flex items-center justify-center md:justify-start gap-2 text-cyan-600 dark:text-cyan-500"><Server /> Backend & Core</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+                  {[
+                    { name: 'Node.js', icon: <Database /> },
+                    { name: 'Python', icon: <Database /> },
+                    { name: 'SQL Server', icon: <Database /> },
+                    { name: 'Oracle / MySQL', icon: <Database /> },
+                  ].map((skill, i) => (
+                    <ScrollReveal key={i} direction="up" delay={300 + (i * 50)}>
+                      <MagneticButton>
+                        <GlassCard tilt={true} className="p-4 flex flex-col items-center justify-center text-center gap-3">
+                          <div className="p-3 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all duration-300">
+                            {skill.icon}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
+                        </GlassCard>
+                      </MagneticButton>
+                    </ScrollReveal>
+                  ))}
+                </div>
+              </ScrollReveal>
+            </div>
+
+            <div className="space-y-8">
+              <ScrollReveal direction="up" delay={200}>
+                <h3 className="text-2xl font-bold flex items-center justify-center md:justify-start gap-2 text-purple-600 dark:text-purple-500"><Layout /> Frontend & UI</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+                  {[
+                    { name: 'React', icon: <Code2 /> },
+                    { name: 'TypeScript', icon: <Code2 /> },
+                    { name: 'TailwindCSS', icon: <Layout /> },
+                    { name: 'Next.js', icon: <Globe /> },
+                  ].map((skill, i) => (
+                    <ScrollReveal key={i} direction="up" delay={300 + (i * 50)}>
+                      <MagneticButton>
+                        <GlassCard tilt={true} className="p-4 flex flex-col items-center justify-center text-center gap-3">
+                          <div className="p-3 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:scale-110 group-hover:bg-purple-500/20 transition-all duration-300">
+                            {skill.icon}
+                          </div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.name}</span>
+                        </GlassCard>
+                      </MagneticButton>
+                    </ScrollReveal>
+                  ))}
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* PROYECTOS SECTION */}
+        <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
+              <Briefcase className="text-purple-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Proyectos Destacados
+              </span>
+            </h2>
+          </ScrollReveal>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'E-Commerce Platform',
+                description: 'Plataforma de comercio electrónico con carrito de compras, pasarela de pago y panel de administración.',
+                tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+                github: 'https://github.com',
+                demo: 'https://demo.com',
+                icon: <Database />,
+                color: 'from-blue-500 to-purple-600'
+              },
+              {
+                title: 'Task Management System',
+                description: 'Sistema de gestión de tareas con drag & drop, notificaciones y colaboración en tiempo real.',
+                tech: ['Vue.js', 'Express', 'Socket.io', 'PostgreSQL'],
+                github: 'https://github.com',
+                demo: 'https://demo.com',
+                icon: <Server />,
+                color: 'from-green-500 to-teal-600'
+              },
+              {
+                title: 'AI Content Generator',
+                description: 'Generador de contenido impulsado por IA con múltiples modelos y personalización.',
+                tech: ['Python', 'FastAPI', 'OpenAI', 'React'],
+                github: 'https://github.com',
+                demo: 'https://demo.com',
+                icon: <Cpu />,
+                color: 'from-purple-500 to-pink-600'
+              }
+            ].map((project, i) => (
+              <ScrollReveal key={i} direction="up" delay={200 + (i * 100)}>
+                <MagneticButton>
+                  <GlassCard tilt={true} className="p-6 h-full flex flex-col">
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${project.color} flex items-center justify-center text-white mb-4 text-2xl shadow-lg`}>
+                      {project.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{project.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {project.tech.map((tech, j) => (
+                        <span key={j} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-3 mt-auto">
+                      <BlobButton darkTheme={theme === 'dark'} className="flex-1">
+                        <a 
+                          href={project.github} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 w-full py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                        >
+                          <Github size={18} />
+                          Código
+                        </a>
+                      </BlobButton>
+                      <BlobButton darkTheme={theme === 'dark'} className="flex-1">
+                        <a 
+                          href={project.demo} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 w-full py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                        >
+                          <ExternalLink size={18} />
+                          Demo
+                        </a>
+                      </BlobButton>
+                    </div>
+                  </GlassCard>
+                </MagneticButton>
+              </ScrollReveal>
+            ))}
+          </div>
+        </section>
+
+        {/* CONTACTO SECTION */}
+        <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto w-full">
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
+              <Send className="text-green-500 shrink-0" size={32} />
+              <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
+                Contacto
+              </span>
+            </h2>
+          </ScrollReveal>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <ScrollReveal direction="left" delay={200}>
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Conectemos</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-8">
+                  Estoy siempre abierto a nuevas oportunidades y colaboraciones. Si tienes un proyecto en mente o simplemente quieres charlar sobre tecnología, ¡no dudes en contactarme!
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
+                      <Mail size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">Email</p>
+                      <p className="text-gray-600 dark:text-gray-300">contacto@ejemplo.com</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                      <MonitorSmartphone size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">Teléfono</p>
+                      <p className="text-gray-600 dark:text-gray-300">+506 1234-5678</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400">
+                      <Terminal size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">Ubicación</p>
+                      <p className="text-gray-600 dark:text-gray-300">San José, Costa Rica</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+            
+            <ScrollReveal direction="right" delay={300}>
+              <GlassCard tilt={true} className="p-8">
+                <form className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
+                    <input 
+                      type="text" 
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Tu nombre"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                    <input 
+                      type="email" 
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+                      placeholder="tu@email.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
+                    <textarea 
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 resize-none"
+                      placeholder="Tu mensaje..."
+                    />
+                  </div>
+                  
+                  <BlobButton darkTheme={theme === 'dark'} className="w-full">
+                    <button 
+                      type="submit"
+                      className="w-full py-3 flex items-center justify-center gap-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                    >
+                      <Send size={20} />
+                      Enviar Mensaje
+                    </button>
+                  </BlobButton>
+                </form>
+              </GlassCard>
+            </ScrollReveal>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+});
+
+App.displayName = 'App';
+
+export default App;
