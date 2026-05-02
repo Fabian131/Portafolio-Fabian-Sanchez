@@ -1,19 +1,23 @@
 # Plan de Refactorización: App.jsx
 
-Este documento detalla los pasos para refactorizar `App.jsx` y alinearlo con una arquitectura de Componentes Atómicos.
+Este documento detalla los pasos para refactorizar `App.jsx` y alinearlo con una arquitectura de Componentes Atómicos, mejorando su estructura y mantenibilidad.
+
+## Fase 0: Preparación
+- [ ] **Control de Versiones**: Asegúrate de que todos los cambios actuales estén en un commit de `git`. Crea una nueva rama para la refactorización (ej: `feature/refactor-atomic-design`).
+- [ ] **Linter/Formatter**: Verifica que las herramientas de calidad de código (ESLint, Prettier) estén funcionando correctamente.
 
 ## Fase 1: Estructura de Carpetas
 
 - [ ] Crear la carpeta `src/components/molecules`.
 - [ ] Crear la carpeta `src/components/organisms`.
 
-## Fase 2: Creación de Componentes (Molecules y Organisms)
+## Fase 2: Creación de Componentes (Moléculas)
 
 El objetivo es extraer la lógica en componentes reutilizables, dejando a `App.jsx` como el ensamblador principal.
 
 ### 2.1 Refactorizar `GlassCard`
 - [ ] **Mover `GlassCard.jsx`**: El componente `GlassCard` es más una molécula que un átomo. Mover el archivo de `src/components/atoms/GlassCard.jsx` a `src/components/molecules/GlassCard.jsx`.
-- [ ] Actualizar las importaciones en los archivos que lo usen.
+- [ ] Actualizar las importaciones en todos los archivos donde se utilice.
 
 ### 2.2 Crear `SectionHeader.jsx` (Molécula)
 - [ ] Crear el archivo `src/components/molecules/SectionHeader.jsx`.
@@ -63,7 +67,13 @@ Los organismos son las secciones principales de tu página. Vivirán en `src/com
 
 ## Fase 4: Limpieza Final
 
-- [ ] Revisar `App.jsx`. Ahora debería ser un archivo mucho más pequeño y legible, principalmente compuesto por importaciones de datos y la renderización de los componentes de organismos.
+- [ ] Revisar `App.jsx`. Ahora debería ser un archivo mucho más pequeño y legible, compuesto principalmente por la carga de datos y la renderización de los organismos.
 - [ ] Eliminar todas las importaciones que ya no se usan en `App.jsx` (como `GlassCard`, `TypeAsync`, etc.).
-- [ ] Verificar que la aplicación funcione exactamente igual que antes.
+- [ ] Ejecutar el formateador de código (ej. `prettier --write .`) para asegurar consistencia.
+
+## Fase 5: Verificación y Cierre
+
+- [ ] **Verificación Funcional**: Navegar por la aplicación y confirmar que todo funciona y se ve exactamente igual que antes.
+- [ ] **Revisión de Estilos**: Asegurarse de que los estilos no se hayan roto. Si algún componente nuevo necesita sus propios estilos, crear un archivo `.css` o `.module.css` en la misma carpeta del componente.
+- [ ] **Merge**: Una vez verificado, hacer un commit final y fusionar la rama de vuelta a `main` o `develop`.
 - [ ] Marcar todas las casillas de este plan.
