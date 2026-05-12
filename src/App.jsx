@@ -269,51 +269,48 @@ html { scroll-behavior: smooth; }
           padding: 10px 20px;
           border-radius: 99em;
           min-height: 48px;
+          background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
+          backdrop-filter: blur(16px) saturate(150%);
+          -webkit-backdrop-filter: blur(16px) saturate(150%);
+          box-shadow: 0px 6px 16px 0px rgba(0,0,0,0.15);
+          gap: 12px;
         }
 
         .mobile-nav-theme {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--c-content, #2a2a35);
+          padding: 6px;
           display: flex;
           align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.1);
-          backdrop-blur-md;
-          border: 1px solid rgba(255,255,255,0.1);
-          cursor: pointer;
-          transition: all 0.3s;
         }
 
         .mobile-nav-title {
           font-weight: 600;
           font-size: 0.95rem;
-          color: inherit;
+          color: var(--c-content, #2a2a35);
+          letter-spacing: 0.3px;
         }
 
         .mobile-nav-hamburger {
+          background: none;
+          border: none;
+          cursor: pointer;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          gap: 5px;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.1);
-          backdrop-blur-md;
-          border: 1px solid rgba(255,255,255,0.1);
-          cursor: pointer;
-          transition: all 0.3s;
+          gap: 4px;
+          padding: 6px;
         }
 
         .hamburger-line {
           display: block;
-          width: 18px;
+          width: 20px;
           height: 2px;
-          background: currentColor;
+          background: var(--c-content, #2a2a35);
           border-radius: 2px;
-          transition: all 0.3s;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform-origin: center;
         }
 
         .mobile-nav-dropdown {
@@ -321,47 +318,51 @@ html { scroll-behavior: smooth; }
           top: calc(100% + 8px);
           left: 0;
           right: 0;
-          background: rgba(255,255,255,0.95);
-          dark:bg-[#0f111a]/95;
-          backdrop-blur-xl;
-          border: 1px solid rgba(255,255,255,0.2);
-          border-radius: 1.5rem;
-          padding: 0.5rem;
+          border-radius: 20px;
+          background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 24%, transparent);
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
+          box-shadow: 0px 12px 32px 0px rgba(0,0,0,0.2);
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
-          transform-origin: top;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          overflow: hidden;
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .mobile-nav-closed {
-          transform: scaleY(0) translateY(-10px);
           opacity: 0;
+          transform: translateY(-10px);
           pointer-events: none;
+          max-height: 0;
+          padding: 0;
         }
 
         .mobile-nav-open {
-          transform: scaleY(1) translateY(0);
           opacity: 1;
+          transform: translateY(0);
           pointer-events: auto;
+          max-height: 300px;
+          padding: 8px 0;
         }
 
         .mobile-nav-item {
-          display: block;
-          padding: 0.875rem 1.5rem;
-          border-radius: 0.875rem;
+          padding: 14px 24px;
           font-weight: 500;
-          transition: all 0.2s;
-          text-align: center;
+          font-size: 0.95rem;
+          color: var(--c-content, #2a2a35);
+          text-decoration: none;
+          transition: background 0.2s, color 0.2s;
         }
 
         .mobile-nav-item:hover {
-          background: rgba(14, 165, 233, 0.1);
+          background: rgba(14,165,233,0.08);
+          color: var(--c-action, #0ea5e9);
         }
 
         .mobile-nav-active {
-          background: rgba(14, 165, 233, 0.15);
-          color: #0891b2;
+          color: var(--c-action, #0ea5e9);
+          font-weight: 700;
+          background: rgba(14,165,233,0.06);
         }
 
         .liquid-nav {
@@ -420,8 +421,17 @@ html { scroll-behavior: smooth; }
             inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
             inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
             0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
-          transition: transform 380ms cubic-bezier(0.2, 0.85, 0.25, 1),
-                      width 380ms cubic-bezier(0.2, 0.85, 0.25, 1);
+          transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                      width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                      scale 200ms ease-out;
+          will-change: transform, width;
+        }
+
+        .liquid-nav-pill.moving {
+          scale: 0.98 1.02;
+          transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                      width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                      scale 200ms ease-in;
         }
 
         .liquid-nav-container li {

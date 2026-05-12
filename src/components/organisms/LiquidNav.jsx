@@ -5,7 +5,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const navRef = useRef(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
   const resizeTimeoutRef = useRef(null);
+  const movingTimeoutRef = useRef(null);
 
   const links = useMemo(() => [
     { id: 'inicio', label: 'Inicio' },
@@ -19,6 +21,10 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     if (!navRef.current) return;
     const activeEl = navRef.current.querySelector(`li[data-id="${activeId}"]`);
     if (!activeEl) return;
+
+    setIsMoving(true);
+    clearTimeout(movingTimeoutRef.current);
+    movingTimeoutRef.current = setTimeout(() => setIsMoving(false), 200);
 
     setIndicatorStyle({
       left: activeEl.offsetLeft,
@@ -43,6 +49,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeoutRef.current);
+      clearTimeout(movingTimeoutRef.current);
     };
   }, [activeSection, updateIndicator]);
 
@@ -56,13 +63,13 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     <>
       <nav className="liquid-nav max-w-[95vw] overflow-x-auto hide-scrollbar desktop-nav-only">
         <ul ref={navRef} className="liquid-nav-container">
-          <div
-             className="liquid-nav-pill"
-             style={{
-               transform: `translateX(${indicatorStyle.left}px)`,
-               width: `${indicatorStyle.width}px`
-             }}
-          />
+<div
+              className={`liquid-nav-pill ${isMoving ? 'moving' : ''}`}
+              style={{
+                transform: `translateX(${indicatorStyle.left}px)`,
+                width: `${indicatorStyle.width}px`
+              }}
+            />
 
           {links.map(link => (
             <li key={link.id} data-id={link.id} className={activeSection === link.id ? 'active' : ''}>
