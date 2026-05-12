@@ -164,7 +164,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
         }}
       >
         {duplicatedItems.map((skill, i) => (
-          <SkillCard key={`${skill.name}-${i}`} skill={skill} index={i} color={color} />
+          <SkillCard key={`${skill.name}-${i}`} skill={skill} color={color} />
         ))}
       </div>
     </div>

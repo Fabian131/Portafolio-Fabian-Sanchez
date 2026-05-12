@@ -1,17 +1,65 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Integrando colores base al body para que no se recorte el color en el scroll infinito */
 @layer base {
   body {
     @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+:root {
+  --c-glass: #bbbbbc;
+  --c-light: #fff;
+  --c-dark: #000;
+  --c-content: #2a2a35;
+  --c-action: #0ea5e9;
+  --glass-reflex-dark: 1;
+  --glass-reflex-light: 1;
+  --saturation: 150%;
+}
+
+html.dark {
+  --c-content: #e1e1e1;
+  --c-action: #38bdf8;
+  --glass-reflex-dark: 2;
+  --glass-reflex-light: 0.3;
+  --c-glass: #bbbbbc;
+  --saturation: 150%;
+}
+
+@property --mouse-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --mouse-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
 }
 
 @layer utilities {
   .text-gradient-animated {
     background-size: 200% 200%;
     animation: animated-gradient 6s linear infinite;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .blinking-cursor {
+    animation: blink 1s step-end infinite;
   }
 }
 
@@ -21,8 +69,240 @@
   100% { background-position: 0% 50%; }
 }
 
-html {
-  scroll-behavior: smooth;
+@keyframes sketchStroke {
+  0% {
+    stroke-dashoffset: 20;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 4;
+    opacity: 0;
+  }
+}
+
+.sketch-lines.animate .sketch-line,
+.sketch-lines.animate .sketch-line-blur {
+  animation: sketchStroke 0.8s ease-out forwards;
+}
+
+.sketch-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sketch-card:hover {
+  transform: scale(1.02);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Mobile Navigation Styles */
+.mobile-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-radius: 99em;
+  min-height: 48px;
+  background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: 0px 6px 16px 0px rgba(0,0,0,0.15);
+  gap: 12px;
+}
+
+.mobile-nav-theme {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--c-content, #2a2a35);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-nav-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--c-content, #2a2a35);
+  letter-spacing: 0.3px;
+}
+
+.mobile-nav-hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+}
+
+.hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--c-content, #2a2a35);
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.mobile-nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  border-radius: 20px;
+  background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 24%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0px 12px 32px 0px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-nav-closed {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  max-height: 0;
+  padding: 0;
+}
+
+.mobile-nav-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 300px;
+  padding: 8px 0;
+}
+
+.mobile-nav-item {
+  padding: 14px 24px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--c-content, #2a2a35);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.mobile-nav-item:hover {
+  background: rgba(14,165,233,0.08);
+  color: var(--c-action, #0ea5e9);
+}
+
+.mobile-nav-active {
+  color: var(--c-action, #0ea5e9);
+  font-weight: 700;
+  background: rgba(14,165,233,0.06);
+}
+
+/* Liquid Navigation Styles */
+.liquid-nav {
+  display: inline-flex;
+}
+
+.desktop-nav-only {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav-only {
+    display: inline-flex !important;
+  }
+}
+
+.liquid-nav-container {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 99em;
+  min-height: 56px;
+  list-style: none;
+  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+  backdrop-filter: blur(20px) saturate(var(--saturation));
+  -webkit-backdrop-filter: blur(20px) saturate(var(--saturation));
+  border: 1px solid color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent);
+  transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.liquid-nav-pill {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  z-index: 0;
+  border-radius: 99em;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
+  transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              scale 200ms ease-out;
+  will-change: transform, width;
+}
+
+.liquid-nav-pill.moving {
+  scale: 0.98 1.02;
+  transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              scale 200ms ease-in;
+}
+
+.liquid-nav-container li {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.liquid-nav-link {
+  padding: 0 18px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 0.96rem;
+  color: var(--c-content);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: scale 200ms cubic-bezier(0.5, 0, 0, 1), color 200ms;
+}
+
+.liquid-nav-link.theme-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0 16px;
+}
+
+.liquid-nav-container li:not(.active) a:hover,
+.liquid-nav-container li:not(.active) button:hover {
+  color: var(--c-action);
+  scale: 1.15;
+  cursor: pointer;
+}
+
+.liquid-nav-container li.active .liquid-nav-link {
+  color: var(--c-content);
+  scale: 1;
+  font-weight: 700;
+  cursor: default;
 }
 
 /* Scrollbar personalizado con efectos premium */
