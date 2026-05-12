@@ -383,25 +383,17 @@ html { scroll-behavior: smooth; }
           display: flex;
           align-items: stretch;
           margin: 0;
-          padding: 8px 12px;
+          padding: 10px 20px;
           border-radius: 99em;
           min-height: 56px;
           list-style: none;
-          background-color: color-mix(in srgb, var(--c-glass) 18%, transparent);
-          backdrop-filter: blur(16px) saturate(var(--saturation));
-          -webkit-backdrop-filter: blur(16px) saturate(var(--saturation));
-          box-shadow:
-            inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
-            inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
-            inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
-            inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
-            inset -0.3px -1px 4px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
-            inset -1.5px 2.5px 0px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-            inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-            inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-            0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-            0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
-          transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1), box-shadow 400ms cubic-bezier(1, 0.0, 0.4, 1);
+          background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+          backdrop-filter: blur(20px) saturate(var(--saturation));
+          -webkit-backdrop-filter: blur(20px) saturate(var(--saturation));
+          border: 1px solid color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent);
+          transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1);
+          overflow: hidden;
+          isolation: isolate;
         }
 
         .liquid-nav-pill {
@@ -413,14 +405,6 @@ html { scroll-behavior: smooth; }
           border-radius: 99em;
           pointer-events: none;
           background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
-          box-shadow:
-            inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
-            inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
-            inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
-            inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
-            inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
-            inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
-            0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
           transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
                       width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
                       scale 200ms ease-out;
