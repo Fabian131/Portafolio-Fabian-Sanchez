@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, memo } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useInView } from 'framer-motion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
   const ref = useRef(null);
@@ -14,31 +14,18 @@ const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = 
   }, [direction]);
 
   return (
-    <motion.div
+    <div
       ref={ref}
       className={`will-change-transform ${className}`}
-      initial={{
-        opacity: 0,
-        filter: 'blur(8px)',
-        transform: getTranslate()
-      }}
-      animate={isInView ? {
-        opacity: 1,
-        filter: 'blur(0px)',
-        transform: 'translateY(0) translateX(0)'
-      } : {
-        opacity: 0,
-        filter: 'blur(8px)',
-        transform: getTranslate()
-      }}
-      transition={{
-        duration: 0.75,
-        ease: [0.25, 0.1, 0.25, 1],
-        delay: delay / 1000
+      style={{
+        opacity: isInView ? 1 : 0,
+        filter: isInView ? 'blur(0px)' : 'blur(8px)',
+        transform: isInView ? 'translateY(0) translateX(0)' : getTranslate(),
+        transition: `opacity 0.75s ease ${delay / 1000}s, filter 0.75s ease ${delay / 1000}s, transform 0.75s ease ${delay / 1000}s`
       }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 });
 

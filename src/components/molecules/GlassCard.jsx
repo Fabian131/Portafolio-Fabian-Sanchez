@@ -6,7 +6,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
 
   const handleMouseMove = useCallback((e) => {
     if (!tilt || !cardRef.current || window.innerWidth < 768) return;
-    
+
     cancelAnimationFrame(animationFrameRef.current);
     animationFrameRef.current = requestAnimationFrame(() => {
       const card = cardRef.current;
@@ -31,7 +31,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
   return (
     <div className={`relative group ${isNavbar ? 'rounded-full' : 'rounded-3xl'} w-full`}>
       <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] blur-xl opacity-0 ${tilt ? 'group-hover:opacity-40' : ''} transition-opacity duration-700 -z-10`}></div>
-      <div 
+      <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}

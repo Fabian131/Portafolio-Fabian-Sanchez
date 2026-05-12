@@ -1,17 +1,15 @@
 import React, { useRef, useEffect } from "react";
 
-export function GooeyButton({ 
-  text = "Go Ahead", 
+export function GooeyButton({
+  text = "Go Ahead",
   onClick,
-  // Colores personalizables - por defecto los originales rosa/morado
   lightest = "#f897d5",
-  light = "#f567c2", 
+  light = "#f567c2",
   dark = "#755ad0",
   darkest = "#1a2a6c"
 }) {
   const innerRef = useRef(null);
 
-  // Recrea el cálculo original del tamaño para el text-shadow de forma inmediata
   useEffect(() => {
     if (innerRef.current) {
       const rect = innerRef.current.getBoundingClientRect();
@@ -23,8 +21,7 @@ export function GooeyButton({
   const handleMouseMove = (e) => {
     const inner = innerRef.current;
     if (!inner) return;
-    
-    // Usamos el bounding rect del contenedor padre (.inner) para evitar saltos al pasar por el botón
+
     const rect = inner.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -36,7 +33,7 @@ export function GooeyButton({
   };
 
   return (
-    <div 
+    <div
       className="gooey-container"
       style={{
         "--lightest": lightest,
@@ -60,7 +57,7 @@ export function GooeyButton({
           --light: #f567c2;
           --dark: #755ad0;
           --darkest: #1a2a6c;
-          
+
           position: relative;
           width: auto;
           overflow: hidden;
@@ -81,10 +78,8 @@ export function GooeyButton({
           pointer-events: all;
           z-index: 2;
           cursor: pointer;
-          /* Aplicamos nuestro filtro de Chroma Key que hace transparente el color blanco */
           filter: url(#remove-white);
-          /* Aislamos para que los mix-blend-modes internos no afecten el fondo real */
-          isolation: isolate; 
+          isolation: isolate;
         }
 
         .gooey-inner:hover:before {
@@ -203,9 +198,6 @@ export function GooeyButton({
         }
       `}</style>
 
-      {/* FILTRO SVG DE LUMINANCIA (LUMA KEY):
-          Toma todos los blancos puros generados por el truco original y los convierte 
-          en verdadera transparencia matemática, manteniendo los colores neon intactos. */}
       <svg style={{ position: "absolute", width: 0, height: 0, pointerEvents: "none" }}>
         <filter id="remove-white" colorInterpolationFilters="sRGB">
           <feColorMatrix in="SourceGraphic" type="luminanceToAlpha" result="luma" />

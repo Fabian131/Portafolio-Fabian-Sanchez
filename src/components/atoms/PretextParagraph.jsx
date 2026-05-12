@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, memo } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import { prepareWithSegments, layoutWithLines } from '@chenglou/pretext';
 
 const PretextParagraph = memo(({ text, isDark, className = '' }) => {

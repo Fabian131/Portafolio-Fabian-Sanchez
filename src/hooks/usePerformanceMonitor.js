@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 
 export const usePerformanceMonitor = () => {
   const frameCountRef = useRef(0);
-  const lastTimeRef = useRef(performance.now());
+  const lastTimeRef = useRef(0);
   const [fps, setFps] = useState(0);
   const [isLagging, setIsLagging] = useState(false);
 
   useEffect(() => {
+    lastTimeRef.current = performance.now();
+    
     let animationFrameId;
     
     const measureFPS = () => {
