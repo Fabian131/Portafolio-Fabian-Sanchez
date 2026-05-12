@@ -56,7 +56,7 @@ Fabián Sánchez
             <div className="flex gap-6 mt-4">
               {socialLinks.map((link) => (
                 <MagneticButton key={link.name}>
-                  <GlassCard tilt={true} isNavbar={true} className="w-12 h-12 p-0 flex items-center justify-center">
+                  <GlassCard tilt={true} isNavbar={true} className="w-16 h-16 p-0 flex items-center justify-center">
                     <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="w-full h-full flex items-center justify-center text-gray-700 dark:text-gray-300 group-hover:text-cyan-500 transition-colors">
                       {link.icon}
                     </a>

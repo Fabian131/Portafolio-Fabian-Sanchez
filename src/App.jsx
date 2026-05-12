@@ -21,32 +21,32 @@ import { projects } from './data/projects';
 
 const skills = {
   backend: [
-    { name: 'Java', icon: <JavaIcon size={24} /> },
-    { name: 'Spring Boot', icon: <SpringBootIcon size={24} /> },
-    { name: 'PHP', icon: <PhpIcon size={24} /> },
-    { name: 'Laravel', icon: <LaravelIcon size={24} /> },
-    { name: 'Node.js', icon: <NodeJsIcon size={24} /> },
-    { name: 'C++', icon: <CppIcon size={24} /> },
-    { name: 'PostgreSQL', icon: <PostgresqlIcon size={24} /> },
-    { name: 'MySQL', icon: <MysqlIcon size={24} /> },
+    { name: 'Java', icon: <JavaIcon size={32} /> },
+    { name: 'Spring Boot', icon: <SpringBootIcon size={32} /> },
+    { name: 'PHP', icon: <PhpIcon size={32} /> },
+    { name: 'Laravel', icon: <LaravelIcon size={32} /> },
+    { name: 'Node.js', icon: <NodeJsIcon size={32} /> },
+    { name: 'C++', icon: <CppIcon size={32} /> },
+    { name: 'PostgreSQL', icon: <PostgresqlIcon size={32} /> },
+    { name: 'MySQL', icon: <MysqlIcon size={32} /> },
   ],
   frontend: [
-    { name: 'HTML5', icon: <HtmlIcon size={24} /> },
-    { name: 'CSS3', icon: <CssIcon size={24} /> },
-    { name: 'JavaScript', icon: <JavaScriptIcon size={24} /> },
-    { name: 'React', icon: <ReactIcon size={24} /> },
-    { name: 'React Native', icon: <ReactNativeIcon size={24} /> },
-    { name: 'Tailwind', icon: <TailwindIcon size={24} /> },
-    { name: 'Bootstrap', icon: <BootstrapIcon size={24} /> },
-    { name: 'JSON', icon: <JsonIcon size={24} /> },
+    { name: 'HTML5', icon: <HtmlIcon size={32} /> },
+    { name: 'CSS3', icon: <CssIcon size={32} /> },
+    { name: 'JavaScript', icon: <JavaScriptIcon size={32} /> },
+    { name: 'React', icon: <ReactIcon size={32} /> },
+    { name: 'React Native', icon: <ReactNativeIcon size={32} /> },
+    { name: 'Tailwind', icon: <TailwindIcon size={32} /> },
+    { name: 'Bootstrap', icon: <BootstrapIcon size={32} /> },
+    { name: 'JSON', icon: <JsonIcon size={32} /> },
   ],
   devops: [
-    { name: 'Docker', icon: <DockerIcon size={24} /> },
-    { name: 'Git', icon: <GitIcon size={24} /> },
-    { name: 'GitHub', icon: <GithubIcon size={24} /> },
-    { name: 'Linux', icon: <LinuxIcon size={24} /> },
-    { name: 'Bash', icon: <BashIcon size={24} /> },
-    { name: 'Scrum', icon: <ScrumIcon size={24} /> },
+    { name: 'Docker', icon: <DockerIcon size={32} /> },
+    { name: 'Git', icon: <GitIcon size={32} /> },
+    { name: 'GitHub', icon: <GithubIcon size={32} /> },
+    { name: 'Linux', icon: <LinuxIcon size={32} /> },
+    { name: 'Bash', icon: <BashIcon size={32} /> },
+    { name: 'Scrum', icon: <ScrumIcon size={32} /> },
   ],
 };
 
@@ -145,12 +145,12 @@ export default function App() {
   }, []);
 
   const socialLinks = useMemo(() => [
-    { name: 'GitHub', href: 'https://github.com/Fabian131', icon: <Github size={20} /> },
-    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/fabian-sanchez-salinas-270862361/', icon: <Linkedin size={20} /> },
-    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', icon: <GmailIcon size={20} /> },
+    { name: 'GitHub', href: 'https://github.com/Fabian131', icon: <Github size={36} /> },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/fabian-sanchez-salinas-270862361/', icon: <Linkedin size={36} /> },
+    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', icon: <GmailIcon size={36} /> },
   ], []);
 
-  const handleCVDownload = useCallback(() => {
+  const handleCVDownload = useCallback(() => {  
     window.open('/cv.pdf', '_blank');
   }, []);
 

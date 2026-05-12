@@ -33,8 +33,8 @@ const SkillCard = memo(({ skill, color = 'cyan' }) => {
           </svg>
         </div>
 
-        <div className={`p-2 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
-          {skill.icon}
+        <div className={`p-3 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
+          <div className="scale-[1.25]">{skill.icon}</div>
         </div>
         <span className={`font-medium text-sm whitespace-nowrap relative z-20 transition-colors duration-300 ${isHovered ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>{skill.name}</span>
       </div>

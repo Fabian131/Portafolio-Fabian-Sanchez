@@ -31,7 +31,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
               <MagneticButton key={link.name}>
                 <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 sm:gap-4 text-base sm:text-lg font-medium text-gray-800 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group">
                   <div className="w-auto shrink-0">
-                    <GlassCard tilt={true} isNavbar={true} className="w-10 h-10 sm:w-12 sm:h-12 p-0 flex items-center justify-center">
+                    <GlassCard tilt={true} isNavbar={true} className="w-14 h-14 sm:w-16 sm:h-16 p-0 flex items-center justify-center">
                       {link.icon}
                     </GlassCard>
                   </div>

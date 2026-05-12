@@ -144,7 +144,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
 
   return (
     <div
-      className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none h-16"
+      className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none h-24"
       style={{ contain: 'layout' }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
