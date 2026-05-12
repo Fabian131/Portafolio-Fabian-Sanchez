@@ -5,13 +5,13 @@ const TypeAsync = memo(({ words, className = '' }) => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
 
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   const getTypeInterval = () => {
-    // Slower typing: 50-200ms per character
-    const randomMs = 150 * Math.random() + 50;
-    return randomMs;
+    const baseMs = 100 * Math.random() + 40;
+    return baseMs;
   };
 
   useEffect(() => {
@@ -21,8 +21,7 @@ const TypeAsync = memo(({ words, className = '' }) => {
       const currentWord = words[currentWordIndex];
 
       if (isPaused) {
-        // Longer display duration: 3.5 seconds
-        await sleep(3500);
+        await sleep(2800);
         if (cancelled) return;
         setIsPaused(false);
         setIsDeleting(true);
@@ -30,24 +29,20 @@ const TypeAsync = memo(({ words, className = '' }) => {
       }
 
       if (isDeleting) {
-        // Deleting mode (slower deletion)
         if (displayText.length > 0) {
-          await sleep(getTypeInterval() * 0.7);
+          await sleep(getTypeInterval() * 0.5);
           if (cancelled) return;
           setDisplayText(prev => prev.slice(0, -1));
         } else {
-          // Move to next word
           setIsDeleting(false);
           setCurrentWordIndex((prev) => (prev + 1) % words.length);
         }
       } else {
-        // Typing mode
         if (displayText.length < currentWord.length) {
           await sleep(getTypeInterval());
           if (cancelled) return;
           setDisplayText(currentWord.slice(0, displayText.length + 1));
         } else {
-          // Word complete, pause before deleting
           setIsPaused(true);
         }
       }
@@ -60,10 +55,17 @@ const TypeAsync = memo(({ words, className = '' }) => {
     };
   }, [displayText, isDeleting, isPaused, currentWordIndex, words]);
 
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
   return (
     <span className={`${className}`}>
       {displayText}
-      <span className="blinking-cursor">_</span>
+      <span style={{ opacity: showCursor ? 1 : 0, transition: 'opacity 80ms' }}>|</span>
     </span>
   );
 });

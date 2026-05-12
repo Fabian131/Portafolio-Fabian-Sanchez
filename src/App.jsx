@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Mail, ChevronDown } from 'lucide-react';
 import { GooeyButton } from './components/atoms/GooeyButton';
-import { Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon } from './components/atoms/Icons';
+import { Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon, ScrumIcon, GmailIcon } from './components/atoms/Icons';
 import MagneticButton from './components/atoms/MagneticButton';
 import ScrollReveal from './components/atoms/ScrollReveal';
 import BlobButton from './components/atoms/BlobButton';
@@ -46,7 +46,7 @@ const skills = {
     { name: 'GitHub', icon: <GithubIcon size={24} /> },
     { name: 'Linux', icon: <LinuxIcon size={24} /> },
     { name: 'Bash', icon: <BashIcon size={24} /> },
-    { name: 'Scrum', icon: <span className="text-cyan-500" size={24}>&#9899;</span> },
+    { name: 'Scrum', icon: <ScrumIcon size={24} /> },
   ],
 };
 
@@ -147,7 +147,7 @@ export default function App() {
   const socialLinks = useMemo(() => [
     { name: 'GitHub', href: 'https://github.com/Fabian131', icon: <Github size={20} /> },
     { name: 'LinkedIn', href: 'https://www.linkedin.com/in/fabian-sanchez-salinas-270862361/', icon: <Linkedin size={20} /> },
-    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', icon: <Mail size={20} /> },
+    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', icon: <GmailIcon size={20} /> },
   ], []);
 
   const handleCVDownload = useCallback(() => {
