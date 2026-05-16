@@ -193,4 +193,4 @@ Cualquier persona puede usar, modificar y adaptar este código para sus propios 
 
 ---
 
-Desarrollado con ❤️ por **Fabian Sanchez Salinas**
+Desarrollado por **Fabian Sanchez Salinas**
