@@ -50,10 +50,7 @@ const Background3D = memo(({ theme }) => {
 
     mountElement.appendChild(renderer.domElement);
 
-    let particleCount = isMobile ? 750 : 2000;
-    if (isMobile && navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
-      particleCount = 300;
-    }
+    let particleCount = isMobile ? 950 : 2000;
 
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
