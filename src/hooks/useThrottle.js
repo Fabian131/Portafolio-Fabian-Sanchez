@@ -6,12 +6,17 @@ export const useThrottle = (callback, delay) => {
 
   return useCallback((...args) => {
     const now = Date.now();
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      if (now - lastRan.current >= delay) {
+    const timeSinceLastRun = now - lastRan.current;
+
+    if (timeSinceLastRun >= delay) {
+      callback(...args);
+      lastRan.current = now;
+    } else {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
         callback(...args);
-        lastRan.current = now;
-      }
-    }, delay - (now - lastRan.current));
+        lastRan.current = Date.now();
+      }, delay - timeSinceLastRun);
+    }
   }, [callback, delay]);
 };

@@ -30,12 +30,15 @@ const Background3D = memo(({ theme }) => {
 
     const scene = new THREE.Scene();
     scene.background = null;
-    scene.fog = new THREE.FogExp2(bgColor, 0.03);
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 5, 15);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 
@@ -47,7 +50,11 @@ const Background3D = memo(({ theme }) => {
 
     mountElement.appendChild(renderer.domElement);
 
-    const particleCount = isMobile ? 750 : 2000;
+    let particleCount = isMobile ? 750 : 2000;
+    if (isMobile && navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+      particleCount = 300;
+    }
+
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -82,6 +89,10 @@ const Background3D = memo(({ theme }) => {
 
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
+
+    if (!isMobile) {
+      scene.fog = new THREE.FogExp2(bgColor, 0.03);
+    }
 
     let scrollY = window.scrollY;
     let targetScrollY = window.scrollY;
@@ -155,6 +166,13 @@ const Background3D = memo(({ theme }) => {
       };
     }
 
+    const onResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+
     const clock = new THREE.Clock();
     let lastTime = 0;
     const targetFPS = 30;
@@ -185,6 +203,7 @@ const Background3D = memo(({ theme }) => {
     return () => {
       cancelAnimationFrame(animationFrameRef.current);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
 
       if (geometry) geometry.dispose();
       if (material) material.dispose();

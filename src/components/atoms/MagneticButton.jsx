@@ -9,6 +9,7 @@ const MagneticButton = memo(({ children, className = '' }) => {
     
     cancelAnimationFrame(animationFrameRef.current);
     animationFrameRef.current = requestAnimationFrame(() => {
+      if (!ref.current) return;
       const { left, top, width, height } = ref.current.getBoundingClientRect();
       const x = e.clientX - (left + width / 2);
       const y = e.clientY - (top + height / 2);

@@ -3,6 +3,7 @@ import SkillCard from '../molecules/SkillCard';
 
 const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) => {
   const trackRef = useRef(null);
+  const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const animationRef = useRef(null);
   const positionRef = useRef(0);
@@ -11,17 +12,38 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   const [setWidth, setSetWidth] = useState(0);
   const isReady = useRef(false);
   const lastFrameTime = useRef(0);
+  const isVisible = useRef(true);
 
-  const duplicatedItems = useMemo(() => [
-    ...items, ...items, ...items, ...items, ...items, ...items
-  ], [items]);
+  const isMobile = window.innerWidth < 768;
+  const duplicateCount = isMobile ? 3 : 6;
+
+  const duplicatedItems = useMemo(() => {
+    return Array(duplicateCount).fill(null).flatMap(() => items);
+  }, [items, duplicateCount]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible.current = entry.isIntersecting;
+        if (!entry.isIntersecting) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (trackRef.current && !isReady.current) {
       requestAnimationFrame(() => {
         if (trackRef.current) {
           const totalWidth = trackRef.current.scrollWidth;
-          const oneSetWidth = totalWidth / 6;
+          const oneSetWidth = totalWidth / duplicateCount;
           setSetWidth(oneSetWidth);
 
           if (direction === 'right') {
@@ -33,10 +55,10 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
         }
       });
     }
-  }, [direction]);
+  }, [direction, duplicateCount]);
 
   useEffect(() => {
-    if (isDragging || setWidth === 0) {
+    if (isDragging || setWidth === 0 || !isVisible.current) {
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -46,6 +68,11 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
     const frameInterval = 1000 / targetFPS;
 
     const animate = (timestamp) => {
+      if (!isVisible.current) {
+        cancelAnimationFrame(animationRef.current);
+        return;
+      }
+
       if (timestamp - lastFrameTime.current < frameInterval) {
         animationRef.current = requestAnimationFrame(animate);
         return;
@@ -144,6 +171,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
 
   return (
     <div
+      ref={containerRef}
       className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none h-24"
       style={{ contain: 'layout' }}
       onMouseDown={handleMouseDown}

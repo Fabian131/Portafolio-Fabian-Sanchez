@@ -387,3 +387,23 @@ html.dark {
 ::-webkit-scrollbar-thumb:hover {
   animation: scrollbar-glow 2s ease-in-out infinite;
 }
+
+@media (max-width: 767px) {
+  .mobile-nav-bar {
+    backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(100%);
+  }
+
+  .mobile-nav-dropdown {
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+  }
+
+  .gooey-blob {
+    display: none !important;
+  }
+
+  .gooey-inner {
+    filter: none !important;
+  }
+}

@@ -210,7 +210,7 @@ export function GooeyButton({
 
       <div className="gooey-inner" ref={innerRef} onMouseMove={handleMouseMove}>
         <button type="button" onClick={onClick}>{text}</button>
-        <div className="gooey-blob"></div>
+        <div className="gooey-blob hidden md:block"></div>
       </div>
     </div>
   );

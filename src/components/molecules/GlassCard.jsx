@@ -10,6 +10,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
     cancelAnimationFrame(animationFrameRef.current);
     animationFrameRef.current = requestAnimationFrame(() => {
       const card = cardRef.current;
+      if (!card) return;
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -38,7 +39,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
         className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform $
           isNavbar ? 'rounded-full' : 'rounded-3xl'}
           bg-white/60 dark:bg-[#0f111a]/60
-          backdrop-blur-md supports-[backdrop-filter]:backdrop-blur-xl
+          backdrop-blur-sm supports-[backdrop-filter]:md:backdrop-blur-xl
           border border-white/60 dark:border-white/10
           shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]
           hover:border-white/80 dark:hover:border-blue-500/30

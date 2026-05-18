@@ -10,20 +10,20 @@ const AboutSection = memo(({ theme }) => {
       <div className="md:w-5/12 flex justify-center">
         <ScrollReveal direction="left" delay={200}>
           <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center">
-             <model-viewer
-                alt="laptop 3D"
-                src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb"
-                shadow-intensity="1"
-                camera-controls="true"
-                touch-action="pan-y"
-                environment-image="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/dancing_hall_2k.hdr"
-                exposure="1.5"
-                disable-zoom="true"
-                disable-tap="true"
-                camera-orbit="-45deg 60deg 9m"
-                autoplay="true"
-                style={{ width: '100%', height: '100%', '--poster-color': 'transparent' }}
-             ></model-viewer>
+              <model-viewer
+                 alt="laptop 3D"
+                 src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb"
+                 shadow-intensity="1"
+                 camera-controls="true"
+                 touch-action="pan-y"
+                 environment-image="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/dancing_hall_2k.hdr"
+                 exposure="1.5"
+                 disable-zoom="true"
+                 disable-tap="true"
+                 camera-orbit="-45deg 60deg 9m"
+                 autoplay="true"
+                 style={{ width: '100%', height: '100%', '--poster-color': 'transparent' }}
+              ></model-viewer>
 
              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/20 to-purple-600/20 mix-blend-overlay rounded-2xl pointer-events-none"></div>
 

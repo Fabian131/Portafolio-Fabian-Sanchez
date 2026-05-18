@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    target: 'esnext',
+    target: 'es2022',
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -18,9 +18,6 @@ export default defineConfig({
           }
           if (id.includes('three')) {
             return 'three';
-          }
-          if (id.includes('framer-motion')) {
-            return 'framer';
           }
           if (id.includes('lucide-react')) {
             return 'icons';
@@ -36,7 +33,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'three', 'framer-motion', 'lucide-react'],
+    include: ['react', 'react-dom', 'three', 'lucide-react'],
   },
   define: {
     global: 'globalThis',

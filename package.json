@@ -4,21 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.6",
-    "@developer-hub/liquid-glass": "^1.2.3",
-    "framer-motion": "^12.38.0",
-    "html2canvas": "^1.4.1",
-    "liquid-glass-react": "^1.1.1",
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-magic-ui": "^1.0.9",
     "three": "^0.183.2"
   },
   "devDependencies": {
