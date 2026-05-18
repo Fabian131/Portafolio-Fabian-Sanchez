@@ -159,10 +159,12 @@ export default function App() {
   return (
     <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>
 
-      <div
-        ref={cursorGlowRef}
-        className="pointer-events-none fixed inset-0 z-[1] h-full w-full bg-[radial-gradient(circle_at_var(--mouse-x,_0)_var(--mouse-y,_0),rgba(14,165,233,0.15)_0%,transparent_50%)] transition-opacity duration-700"
-      ></div>
+      {!isMobile && (
+        <div
+          ref={cursorGlowRef}
+          className="pointer-events-none fixed inset-0 z-[1] h-full w-full bg-[radial-gradient(circle_at_var(--mouse-x,_0)_var(--mouse-y,_0),rgba(14,165,233,0.15)_0%,transparent_50%)] transition-opacity duration-700"
+        ></div>
+      )}
 
       <Background3D theme={theme} />
 

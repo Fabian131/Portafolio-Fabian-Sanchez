@@ -3,7 +3,7 @@ import { useInView, useReducedMotion } from 'framer-motion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, amount: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
   const prefersReducedMotion = useReducedMotion();
 
   const getTranslate = useCallback(() => {
