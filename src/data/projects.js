@@ -25,4 +25,20 @@
     link: '#',
     accentColor: 'purple',
   },
+  {
+    title: 'AgroVeterinaria Rio Frio',
+    subtitle: 'Sistema Veterinario Integral',
+    imageUrl: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=2070&auto=format&fit=crop',
+    description: 'Plataforma web empresarial para administración completa de clínicas veterinarias. Citas, mascotas, productos, dashboard analítico y más. Service Layer, testing integral (Pest+Dusk), Docker y CI/CD con GitHub Actions.',
+    tags: [
+      { label: 'PHP / Laravel 12', color: 'purple' },
+      { label: 'MySQL 8.0', color: 'purple' },
+      { label: 'Docker', color: 'purple' },
+      { label: 'TailwindCSS', color: 'purple' },
+      { label: 'CI/CD', color: 'purple' },
+    ],
+    link: '',
+    videoUrl: 'YOUTUBE_URL_AQUI',
+    accentColor: 'purple',
+  },
 ];
