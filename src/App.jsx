@@ -27,7 +27,8 @@ export default function App() {
   const cursorGlowRef = useRef(null);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
   const manualScrollTimeoutRef = useRef(null);
-  const scrollTimeoutRef = useRef(null);
+  const isManualRef = useRef(false);
+  const activeSectionRef = useRef('inicio');
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
@@ -36,6 +37,7 @@ export default function App() {
 
   const handleNavClick = useCallback((sectionId) => {
     setIsManualScrolling(true);
+    isManualRef.current = true;
     clearTimeout(manualScrollTimeoutRef.current);
     setActiveSection(sectionId);
     manualScrollTimeoutRef.current = setTimeout(() => {
@@ -62,29 +64,65 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
-        if (isManualScrolling) return;
+    isManualRef.current = isManualScrolling;
+  }, [isManualScrolling]);
 
-        const sections = ['inicio', 'sobre-mi', 'skills', 'proyectos', 'contacto'];
-        let current = '';
-        sections.forEach(section => {
-          const element = document.getElementById(section);
-          if (element && window.scrollY >= (element.offsetTop - 300)) {
-            current = section;
+  useEffect(() => {
+    activeSectionRef.current = activeSection;
+  }, [activeSection]);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const sections = ['inicio', 'sobre-mi', 'skills', 'proyectos', 'contacto'];
+
+    const getCurrentSection = () => {
+      let current = '';
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 300) {
+            current = id;
           }
-        });
-        if (current && current !== activeSection) setActiveSection(current);
-      }, 16);
+        }
+      }
+      return current || sections[0];
     };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          if (isManualRef.current) {
+            ticking = false;
+            return;
+          }
+
+          const current = getCurrentSection();
+          if (current && current !== activeSectionRef.current) {
+            setActiveSection(current);
+          }
+          ticking = false;
+        });
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    const check = () => {
+      const current = getCurrentSection();
+      if (current && current !== activeSectionRef.current) {
+        setActiveSection(current);
+      }
+    };
+    setTimeout(check, 100);
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeoutRef.current);
-      clearTimeout(manualScrollTimeoutRef.current);
+      ticking = false;
     };
-  }, [activeSection, isManualScrolling]);
+  }, []);
 
   useEffect(() => {
     let ticking = false;
