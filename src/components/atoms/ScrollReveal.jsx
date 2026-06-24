@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, memo } from 'react';
+import React, { useCallback, memo } from 'react';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 

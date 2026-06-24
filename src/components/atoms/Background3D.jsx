@@ -1,9 +1,19 @@
-import React, { useEffect, useRef, memo, useCallback } from 'react';
+import React, { useEffect, useRef, memo, useCallback, useState } from 'react';
 import * as THREE from 'three';
 
 const Background3D = memo(({ theme }) => {
   const mountRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(prev => prev !== mobile ? mobile : prev);
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const createParticleTexture = useCallback(() => {
     const canvas = document.createElement('canvas');
@@ -25,7 +35,6 @@ const Background3D = memo(({ theme }) => {
     mountElement.innerHTML = '';
 
     const isDark = theme === 'dark';
-    const isMobile = window.innerWidth < 768;
     const bgColor = isDark ? '#03050a' : '#f8fafc';
 
     const scene = new THREE.Scene();
@@ -209,7 +218,7 @@ const Background3D = memo(({ theme }) => {
 
       if (mountElement) mountElement.innerHTML = '';
     };
-  }, [theme, createParticleTexture]);
+  }, [theme, isMobile, createParticleTexture]);
 
   return <div ref={mountRef} className="fixed inset-0 z-[0] w-full h-screen overflow-hidden pointer-events-none" />;
 });

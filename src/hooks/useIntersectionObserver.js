@@ -4,6 +4,7 @@ export const useIntersectionObserver = (options = {}) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const targetRef = useRef(null);
   const timeoutRef = useRef(null);
+  const { threshold = 0.1, rootMargin = '50px' } = options;
 
   useEffect(() => {
     const target = targetRef.current;
@@ -14,11 +15,7 @@ export const useIntersectionObserver = (options = {}) => {
       timeoutRef.current = setTimeout(() => {
         setIsIntersecting(entry.isIntersecting);
       }, 16);
-    }, {
-      threshold: 0.1,
-      rootMargin: '50px',
-      ...options
-    });
+    }, { threshold, rootMargin, ...options });
 
     observer.observe(target);
 
@@ -26,7 +23,7 @@ export const useIntersectionObserver = (options = {}) => {
       observer.unobserve(target);
       clearTimeout(timeoutRef.current);
     };
-  }, [options.threshold, options.rootMargin, options]);
+  }, [threshold, rootMargin]);
 
   return [targetRef, isIntersecting];
 };

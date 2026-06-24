@@ -75,7 +75,7 @@ Fabián Sánchez
         </ScrollReveal>
       </div>
 
-      <div className="absolute bottom-10 animate-bounce text-gray-400">
+      <div className="absolute bottom-10 animate-bounce text-gray-400" aria-hidden="true">
         <ChevronDown size={32} />
       </div>
     </section>

@@ -15,25 +15,20 @@ import { skills } from './data/skills.jsx';
 export default function App() {
   const [theme, setTheme] = useState('dark');
   const [activeSection, setActiveSection] = useState('inicio');
-  const [isMounted, setIsMounted] = useState(false);
   const cursorGlowRef = useRef(null);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
   const manualScrollTimeoutRef = useRef(null);
   const isManualRef = useRef(false);
   const activeSectionRef = useRef('inicio');
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 0);
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleNavClick = useCallback((sectionId) => {
     setIsManualScrolling(true);
     isManualRef.current = true;
     clearTimeout(manualScrollTimeoutRef.current);
-    setActiveSection(sectionId);
+    setActive(sectionId);
     manualScrollTimeoutRef.current = setTimeout(() => {
       setIsManualScrolling(false);
+      isManualRef.current = false;
     }, 1000);
   }, []);
 
@@ -55,13 +50,10 @@ export default function App() {
     }
   }, []);
 
-  useEffect(() => {
-    isManualRef.current = isManualScrolling;
-  }, [isManualScrolling]);
-
-  useEffect(() => {
-    activeSectionRef.current = activeSection;
-  }, [activeSection]);
+  const setActive = useCallback((section) => {
+    activeSectionRef.current = section;
+    setActiveSection(section);
+  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -93,7 +85,7 @@ export default function App() {
 
           const current = getCurrentSection();
           if (current && current !== activeSectionRef.current) {
-            setActiveSection(current);
+            setActive(current);
           }
           ticking = false;
         });
@@ -105,7 +97,7 @@ export default function App() {
     const check = () => {
       const current = getCurrentSection();
       if (current && current !== activeSectionRef.current) {
-        setActiveSection(current);
+        setActive(current);
       }
     };
     setTimeout(check, 100);
@@ -153,8 +145,6 @@ export default function App() {
   const handleCVDownload = useCallback(() => {  
     window.open('/cv.pdf', '_blank');
   }, []);
-
-  if (!isMounted) return null;
 
   return (
     <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>

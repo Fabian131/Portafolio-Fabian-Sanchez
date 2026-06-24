@@ -9,17 +9,26 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   const positionRef = useRef(0);
   const dragStartX = useRef(0);
   const dragStartPos = useRef(0);
-  const [setWidth, setSetWidth] = useState(0);
+  const [oneSetWidth, setOneSetWidth] = useState(0);
   const isReady = useRef(false);
   const lastFrameTime = useRef(0);
   const isVisible = useRef(true);
 
-  const isMobile = window.innerWidth < 768;
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const duplicateCount = isMobile ? 3 : 6;
 
   const duplicatedItems = useMemo(() => {
     return Array(duplicateCount).fill(null).flatMap(() => items);
   }, [items, duplicateCount]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(prev => prev !== mobile ? mobile : prev);
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -44,7 +53,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
         if (trackRef.current) {
           const totalWidth = trackRef.current.scrollWidth;
           const oneSetWidth = totalWidth / duplicateCount;
-          setSetWidth(oneSetWidth);
+          setOneSetWidth(oneSetWidth);
 
           if (direction === 'right') {
             positionRef.current = -oneSetWidth;
@@ -58,7 +67,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   }, [direction, duplicateCount]);
 
   useEffect(() => {
-    if (isDragging || setWidth === 0 || !isVisible.current) {
+    if (isDragging || oneSetWidth === 0 || !isVisible.current) {
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -82,16 +91,16 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
       positionRef.current += speed;
 
       if (direction === 'left') {
-        if (positionRef.current <= -setWidth) {
-          positionRef.current += setWidth;
+        if (positionRef.current <= -oneSetWidth) {
+          positionRef.current += oneSetWidth;
         } else if (positionRef.current > 0) {
-          positionRef.current -= setWidth;
+          positionRef.current -= oneSetWidth;
         }
       } else {
         if (positionRef.current >= 0) {
-          positionRef.current -= setWidth;
-        } else if (positionRef.current < -setWidth) {
-          positionRef.current += setWidth;
+          positionRef.current -= oneSetWidth;
+        } else if (positionRef.current < -oneSetWidth) {
+          positionRef.current += oneSetWidth;
         }
       }
 
@@ -104,21 +113,21 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
 
     animationRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationRef.current);
-  }, [isDragging, setWidth, direction]);
+  }, [isDragging, oneSetWidth, direction]);
 
   const normalizePosition = useCallback((pos) => {
     let normalized = pos;
-    const maxDrag = setWidth * 2;
+    const maxDrag = oneSetWidth * 2;
 
     if (direction === 'left') {
-      while (normalized < -maxDrag) normalized += setWidth;
-      while (normalized > setWidth) normalized -= setWidth;
+      while (normalized < -maxDrag) normalized += oneSetWidth;
+      while (normalized > oneSetWidth) normalized -= oneSetWidth;
     } else {
-      while (normalized > 0) normalized -= setWidth;
-      while (normalized < -maxDrag) normalized += setWidth;
+      while (normalized > 0) normalized -= oneSetWidth;
+      while (normalized < -maxDrag) normalized += oneSetWidth;
     }
     return normalized;
-  }, [setWidth, direction]);
+  }, [oneSetWidth, direction]);
 
   const handleMouseDown = useCallback((e) => {
     e.preventDefault();
@@ -129,7 +138,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   }, []);
 
   const handleMouseMove = useCallback((e) => {
-    if (!isDragging || setWidth === 0) return;
+    if (!isDragging || oneSetWidth === 0) return;
     e.preventDefault();
 
     const deltaX = e.clientX - dragStartX.current;
@@ -138,7 +147,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
     if (trackRef.current) {
       trackRef.current.style.transform = `translate3d(${positionRef.current}px, 0, 0)`;
     }
-  }, [isDragging, setWidth, normalizePosition]);
+  }, [isDragging, oneSetWidth, normalizePosition]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
@@ -156,14 +165,14 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
   }, []);
 
   const handleTouchMove = useCallback((e) => {
-    if (!isDragging || setWidth === 0) return;
+    if (!isDragging || oneSetWidth === 0) return;
     const deltaX = e.touches[0].clientX - dragStartX.current;
     positionRef.current = normalizePosition(dragStartPos.current + deltaX);
 
     if (trackRef.current) {
       trackRef.current.style.transform = `translate3d(${positionRef.current}px, 0, 0)`;
     }
-  }, [isDragging, setWidth, normalizePosition]);
+  }, [isDragging, oneSetWidth, normalizePosition]);
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);

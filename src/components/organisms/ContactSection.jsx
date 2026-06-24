@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { Mail, Send } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
@@ -13,6 +13,10 @@ const ContactSection = memo(({ socialLinks, theme }) => {
     linkedin: <Linkedin size={36} />,
     email: <GmailIcon size={36} />,
   }), []);
+
+  const handleSubmit = useCallback((e) => {
+    e.preventDefault();
+  }, []);
 
   return (
     <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
@@ -51,20 +55,20 @@ const ContactSection = memo(({ socialLinks, theme }) => {
 
         <ScrollReveal direction="right" delay={400}>
           <GlassCard tilt={true} className="p-8">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
-                <input type="text" id="name" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-sm text-gray-900 dark:text-white" placeholder="Tu nombre" required />
+                <input type="text" id="name" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder="Tu nombre" required />
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                <input type="email" id="email" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-sm text-gray-900 dark:text-white" placeholder="tu@email.com" required />
+                <input type="email" id="email" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder="tu@email.com" required />
               </div>
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
-                <textarea id="message" rows="4" className="w-full px-4 py-3 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-none text-sm text-gray-900 dark:text-white" placeholder="¿En qué te puedo ayudar?" required></textarea>
+                <textarea id="message" rows="4" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-y text-base text-gray-900 dark:text-white min-h-[44px]" placeholder="¿En qué te puedo ayudar?" required></textarea>
               </div>
-              <BlobButton darkTheme={theme === 'dark'} onClick={(e) => e.preventDefault()}>
+              <BlobButton darkTheme={theme === 'dark'} onClick={handleSubmit}>
                 Enviar Mensaje <Send size={18} />
               </BlobButton>
             </form>
