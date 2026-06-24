@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Mail, Send } from 'lucide-react';
+import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
 import PretextParagraph from '../atoms/PretextParagraph';
@@ -7,6 +8,12 @@ import BlobButton from '../atoms/BlobButton';
 import MagneticButton from '../atoms/MagneticButton';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
+  const iconMap = useMemo(() => ({
+    github: <Github size={36} />,
+    linkedin: <Linkedin size={36} />,
+    email: <GmailIcon size={36} />,
+  }), []);
+
   return (
     <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
       <ScrollReveal direction="up">
@@ -32,7 +39,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
                 <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 sm:gap-4 text-base sm:text-lg font-medium text-gray-800 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group">
                   <div className="w-auto shrink-0">
                     <GlassCard tilt={true} isNavbar={true} className="w-14 h-14 sm:w-16 sm:h-16 p-0 flex items-center justify-center">
-                      {link.icon}
+                      {iconMap[link.iconKey]}
                     </GlassCard>
                   </div>
                   <span className="group-hover:translate-x-2 transition-transform">{link.name}</span>

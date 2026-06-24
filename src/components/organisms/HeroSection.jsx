@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
 import GooeyButton from '../atoms/GooeyButton';
@@ -8,6 +9,12 @@ import GlassCard from '../atoms/GlassCard';
 import MagneticButton from '../atoms/MagneticButton';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
+  const iconMap = useMemo(() => ({
+    github: <Github size={36} />,
+    linkedin: <Linkedin size={36} />,
+    email: <GmailIcon size={36} />,
+  }), []);
+
   return (
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full">
       <div className="text-center max-w-5xl mx-auto space-y-6 relative z-10">
@@ -58,7 +65,7 @@ Fabián Sánchez
                 <MagneticButton key={link.name}>
                   <GlassCard tilt={true} isNavbar={true} className="w-16 h-16 p-0 flex items-center justify-center">
                     <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="w-full h-full flex items-center justify-center text-gray-700 dark:text-gray-300 group-hover:text-cyan-500 transition-colors">
-                      {link.icon}
+                      {iconMap[link.iconKey]}
                     </a>
                   </GlassCard>
                 </MagneticButton>

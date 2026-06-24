@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Github, Linkedin, GmailIcon } from './components/atoms/Icons';
 
 import LiquidNav from './components/organisms/LiquidNav';
-import Background3D from './components/atoms/Background3D';
+import BackgroundOrganism from './components/organisms/BackgroundOrganism';
 import HeroSection from './components/organisms/HeroSection';
 import AboutSection from './components/organisms/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection';
@@ -146,9 +145,9 @@ export default function App() {
   }, []);
 
   const socialLinks = useMemo(() => [
-    { name: 'GitHub', href: 'https://github.com/Fabian131', icon: <Github size={36} /> },
-    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/fabian-sanchez-salinas-270862361/', icon: <Linkedin size={36} /> },
-    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', icon: <GmailIcon size={36} /> },
+    { name: 'GitHub', href: 'https://github.com/Fabian131', iconKey: 'github' },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/fabian-sanchez-salinas-270862361/', iconKey: 'linkedin' },
+    { name: 'Email', href: 'mailto:fabian.sanchez.salinas@est.una.ac.cr', iconKey: 'email' },
   ], []);
 
   const handleCVDownload = useCallback(() => {  
@@ -167,7 +166,7 @@ export default function App() {
         ></div>
       )}
 
-      <Background3D theme={theme} />
+      <BackgroundOrganism theme={theme} />
 
       <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
 
