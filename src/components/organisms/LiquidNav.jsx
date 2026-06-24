@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { Moon, Sun } from 'lucide-react';
+import ScrollReveal from '../atoms/ScrollReveal';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const navRef = useRef(null);
@@ -60,7 +61,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   }, []);
 
   return (
-    <>
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center">
+    <ScrollReveal direction="down" delay={200}>
+      <>
       <nav className="liquid-nav max-w-[95vw] overflow-x-auto hide-scrollbar desktop-nav-only">
         <ul ref={navRef} className="liquid-nav-container">
 <div
@@ -114,6 +117,8 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
         </div>
       </div>
     </>
+    </ScrollReveal>
+    </div>
   );
 });
 

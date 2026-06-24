@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Github, Linkedin, GmailIcon } from './components/atoms/Icons';
 
-import Navbar from './components/organisms/Navbar';
+import LiquidNav from './components/organisms/LiquidNav';
 import Background3D from './components/atoms/Background3D';
 import HeroSection from './components/organisms/HeroSection';
 import AboutSection from './components/organisms/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection';
 import ContactSection from './components/organisms/ContactSection';
-import Footer from './components/atoms/Footer';
+import Footer from './components/organisms/Footer';
 
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
@@ -169,7 +169,7 @@ export default function App() {
 
       <Background3D theme={theme} />
 
-      <Navbar activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
+      <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
 
       <main className="relative z-10 w-full overflow-x-hidden">
         <HeroSection
