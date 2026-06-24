@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Mail, ChevronDown } from 'lucide-react';
-import { GooeyButton } from './components/atoms/GooeyButton';
-import { Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon, ScrumIcon, GmailIcon } from './components/atoms/Icons';
-import MagneticButton from './components/atoms/MagneticButton';
-import ScrollReveal from './components/atoms/ScrollReveal';
-import BlobButton from './components/atoms/BlobButton';
-import GlassCard from './components/molecules/GlassCard';
-import PretextParagraph from './components/atoms/PretextParagraph';
+import { Github, Linkedin, GmailIcon } from './components/atoms/Icons';
 
-import LiquidNav from './components/organisms/LiquidNav';
-import Background3D from './components/organisms/Background3D';
+import Navbar from './components/organisms/Navbar';
+import Background3D from './components/atoms/Background3D';
 import HeroSection from './components/organisms/HeroSection';
 import AboutSection from './components/organisms/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection';
 import ContactSection from './components/organisms/ContactSection';
-import Footer from './components/organisms/Footer';
+import Footer from './components/atoms/Footer';
 
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
@@ -176,11 +169,7 @@ export default function App() {
 
       <Background3D theme={theme} />
 
-      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center">
-        <ScrollReveal direction="down" delay={200}>
-          <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
-        </ScrollReveal>
-      </div>
+      <Navbar activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
 
       <main className="relative z-10 w-full overflow-x-hidden">
         <HeroSection

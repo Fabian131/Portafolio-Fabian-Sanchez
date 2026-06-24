@@ -4,7 +4,7 @@ import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
 import GooeyButton from '../atoms/GooeyButton';
 import BlobButton from '../atoms/BlobButton';
-import GlassCard from '../molecules/GlassCard';
+import GlassCard from '../atoms/GlassCard';
 import MagneticButton from '../atoms/MagneticButton';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {

@@ -30,4 +30,6 @@ const MagneticButton = memo(({ children, className = '' }) => {
   );
 });
 
+MagneticButton.displayName = 'MagneticButton';
+
 export default MagneticButton;

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Mail, Send } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
-import GlassCard from '../molecules/GlassCard';
+import GlassCard from '../atoms/GlassCard';
 import PretextParagraph from '../atoms/PretextParagraph';
 import BlobButton from '../atoms/BlobButton';
 import MagneticButton from '../atoms/MagneticButton';

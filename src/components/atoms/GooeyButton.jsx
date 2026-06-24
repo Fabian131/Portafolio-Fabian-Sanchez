@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, memo } from "react";
 
-export function GooeyButton({
+function GooeyButton({
   text = "Go Ahead",
   onClick,
   lightest = "#f897d5",
@@ -216,4 +216,4 @@ export function GooeyButton({
   );
 }
 
-export default GooeyButton;
+export default memo(GooeyButton);

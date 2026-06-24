@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
-import SkillCard from '../molecules/SkillCard';
+import SkillCard from '../atoms/SkillCard';
 
 const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) => {
   const trackRef = useRef(null);

@@ -1,39 +1,9 @@
-import React, { useRef, useCallback, memo, useState, useEffect } from 'react';
-
-const useInView = (ref, options = {}) => {
-  const [isInView, setIsInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setIsInView(true); observer.disconnect(); } },
-      { threshold: options.amount || 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [ref, options.amount]);
-  return isInView;
-};
-
-const useReducedMotion = () => {
-  const [reduced, setReduced] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
-    return false;
-  });
-  useEffect(() => {
-    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handler = (e) => setReduced(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
-  return reduced;
-};
+import React, { useRef, useCallback, memo } from 'react';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.1 });
+  const [targetRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
   const prefersReducedMotion = useReducedMotion();
 
   const getTranslate = useCallback(() => {
@@ -47,7 +17,7 @@ const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = 
 
   return (
     <div
-      ref={ref}
+      ref={targetRef}
       className={`will-change-transform ${className}`}
       style={{
         opacity: isInView || prefersReducedMotion ? 1 : 0,
@@ -61,5 +31,7 @@ const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = 
     </div>
   );
 });
+
+ScrollReveal.displayName = 'ScrollReveal';
 
 export default ScrollReveal;

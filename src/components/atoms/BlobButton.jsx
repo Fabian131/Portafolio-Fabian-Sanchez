@@ -26,4 +26,6 @@ const BlobButton = memo(({ children, onClick, darkTheme }) => {
   );
 });
 
+BlobButton.displayName = 'BlobButton';
+
 export default BlobButton;

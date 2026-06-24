@@ -52,4 +52,6 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
   );
 });
 
+GlassCard.displayName = 'GlassCard';
+
 export default GlassCard;

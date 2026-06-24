@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Wrench, Server, Layout, User } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
-import DraggableMarquee from './DraggableMarquee';
+import DraggableMarquee from '../molecules/DraggableMarquee';
 
 const SkillsSection = memo(({ skills }) => {
   return (

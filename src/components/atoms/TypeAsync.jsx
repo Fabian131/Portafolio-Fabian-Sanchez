@@ -70,4 +70,6 @@ const TypeAsync = memo(({ words, className = '' }) => {
   );
 });
 
+TypeAsync.displayName = 'TypeAsync';
+
 export default TypeAsync;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 
 const SkillCard = memo(({ skill, color = 'cyan' }) => {
   const colors = {
@@ -8,7 +8,7 @@ const SkillCard = memo(({ skill, color = 'cyan' }) => {
   };
 
   const colorClasses = colors[color] || colors.cyan;
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div

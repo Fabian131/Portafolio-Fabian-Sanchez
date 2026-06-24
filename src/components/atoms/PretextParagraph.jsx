@@ -98,4 +98,6 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
   );
 });
 
+PretextParagraph.displayName = 'PretextParagraph';
+
 export default PretextParagraph;

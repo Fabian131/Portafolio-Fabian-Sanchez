@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { User, MonitorSmartphone } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
-import GlassCard from '../molecules/GlassCard';
+import GlassCard from '../atoms/GlassCard';
 import PretextParagraph from '../atoms/PretextParagraph';
 
 const AboutSection = memo(({ theme }) => {
