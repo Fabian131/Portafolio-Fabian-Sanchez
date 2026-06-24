@@ -11,6 +11,7 @@ import Footer from './components/organisms/Footer';
 
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
+import { usePerformanceMonitor } from './hooks/usePerformanceMonitor';
 
 export default function App() {
   const [theme, setTheme] = useState('dark');
@@ -131,10 +132,24 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    let timeout;
+    const checkMobile = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setIsMobile(window.innerWidth < 768), 150);
+    };
     window.addEventListener('resize', checkMobile, { passive: true });
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(timeout);
+    };
   }, []);
+
+  const { fps, isLagging } = usePerformanceMonitor();
+
+  const performanceTier = useMemo(() => {
+    const lowMemory = typeof navigator !== 'undefined' && navigator.deviceMemory < 4;
+    return (isMobile || isLagging || lowMemory) ? 'low' : 'high';
+  }, [isMobile, isLagging]);
 
   const socialLinks = useMemo(() => [
     { name: 'GitHub', href: 'https://github.com/Fabian131', iconKey: 'github' },
@@ -147,7 +162,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>
+    <div className={`min-h-dvh font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>
 
       {!isMobile && (
         <div
@@ -156,7 +171,7 @@ export default function App() {
         ></div>
       )}
 
-      <BackgroundOrganism theme={theme} />
+      <BackgroundOrganism theme={theme} performanceTier={performanceTier} />
 
       <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
 
@@ -170,7 +185,7 @@ export default function App() {
 
         <AboutSection theme={theme} />
 
-        <SkillsSection skills={skills} />
+        <SkillsSection skills={skills} performanceTier={performanceTier} />
 
         <ProjectsSection projects={projects} theme={theme} />
 

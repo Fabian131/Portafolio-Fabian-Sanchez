@@ -1,8 +1,9 @@
 import React, { useRef, useCallback, memo } from 'react';
 
-const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = false }) => {
+const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = false, performanceTier = 'high' }) => {
   const cardRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const isLowPerf = performanceTier === 'low';
 
   const handleMouseMove = useCallback((e) => {
     if (!tilt || !cardRef.current || window.innerWidth < 768) return;
@@ -31,15 +32,16 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
 
   return (
     <div className={`relative group ${isNavbar ? 'rounded-full' : 'rounded-3xl'} w-full`}>
-      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] blur-xl opacity-0 ${tilt ? 'group-hover:opacity-40' : ''} transition-opacity duration-700 -z-10`}></div>
+      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] opacity-0 ${(tilt && !isLowPerf) ? 'group-hover:opacity-40 blur-xl' : ''} transition-opacity duration-700 -z-10`}></div>
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform $
           isNavbar ? 'rounded-full' : 'rounded-3xl'}
-          bg-white/60 dark:bg-[#0f111a]/60
-          backdrop-blur-sm supports-[backdrop-filter]:md:backdrop-blur-xl
+          ${isLowPerf
+            ? 'bg-white/85 dark:bg-[#111827]/90'
+            : 'bg-white/60 dark:bg-[#0f111a]/60 backdrop-blur-sm supports-[backdrop-filter]:md:backdrop-blur-xl'}
           border border-white/60 dark:border-white/10
           shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]
           hover:border-white/80 dark:hover:border-blue-500/30

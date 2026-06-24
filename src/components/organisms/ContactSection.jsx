@@ -19,7 +19,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
   }, []);
 
   return (
-    <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
+    <section id="contacto" className="min-h-dvh py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
       <ScrollReveal direction="up">
          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
            <Mail className="text-cyan-500 shrink-0" size={32} />

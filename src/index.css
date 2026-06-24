@@ -4,10 +4,14 @@
 @layer base {
   body {
     @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    touch-action: manipulation;
   }
 }
 
@@ -426,6 +430,7 @@ body.sidebar-locked {
 }
 
 /* Scrollbar personalizado con efectos premium */
+@media (min-width: 768px) {
 ::-webkit-scrollbar {
   width: 12px;
 }
@@ -489,6 +494,7 @@ body.sidebar-locked {
 .dark * {
   scrollbar-color: rgba(139, 92, 246, 0.9) rgba(3, 5, 10, 0.5);
 }
+}
 
 /* Efecto de brillo cuando se hace scroll */
 @keyframes scrollbar-glow {
@@ -512,6 +518,11 @@ body.sidebar-locked {
   .mobile-nav-bar {
     backdrop-filter: blur(8px) saturate(100%);
     -webkit-backdrop-filter: blur(8px) saturate(100%);
+  }
+
+  .sidebar-drawer {
+    backdrop-filter: blur(12px) saturate(100%);
+    -webkit-backdrop-filter: blur(12px) saturate(100%);
   }
 
   .gooey-blob {

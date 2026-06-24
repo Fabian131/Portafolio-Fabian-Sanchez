@@ -5,7 +5,7 @@ import ProjectCard from '../molecules/ProjectCard';
 
 const ProjectsSection = memo(({ projects, theme }) => {
   return (
-    <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+    <section id="proyectos" className="min-h-dvh py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
       <ScrollReveal direction="up">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
           <Briefcase className="text-purple-500 shrink-0" size={32} />

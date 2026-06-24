@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import SkillCard from '../atoms/SkillCard';
 
-const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) => {
+const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', performanceTier = 'high' }) => {
   const trackRef = useRef(null);
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -201,7 +201,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan' }) =>
         }}
       >
         {duplicatedItems.map((skill, i) => (
-          <SkillCard key={`${skill.name}-${i}`} skill={skill} color={color} />
+          <SkillCard key={`${skill.name}-${i}`} skill={skill} color={color} performanceTier={performanceTier} />
         ))}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 
-const SkillCard = memo(({ skill, color = 'cyan' }) => {
+const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => {
   const colors = {
     cyan: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
     purple: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
@@ -9,6 +9,11 @@ const SkillCard = memo(({ skill, color = 'cyan' }) => {
 
   const colorClasses = colors[color] || colors.cyan;
   const [isHovered, setIsHovered] = useState(false);
+  const isLowPerf = performanceTier === 'low';
+
+  const cardBg = isLowPerf
+    ? 'bg-white/85 dark:bg-[#111827]/90'
+    : 'bg-white/60 dark:bg-white/5 backdrop-blur-xl';
 
   return (
     <div
@@ -17,8 +22,8 @@ const SkillCard = memo(({ skill, color = 'cyan' }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="sketch-card px-4 py-3 flex items-center gap-2.5 rounded-2xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 h-full relative overflow-hidden">
-        <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 ${isHovered ? 'animate' : 'opacity-0'}`}>
+      <div className={`sketch-card px-4 py-3 flex items-center gap-2.5 rounded-2xl ${cardBg} border border-gray-200/50 dark:border-white/10 h-full relative overflow-hidden`}>
+        <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 ${isHovered && !isLowPerf ? 'animate' : 'opacity-0'}`}>
           <svg className="absolute inset-0 w-full h-full dark:hidden" preserveAspectRatio="none">
             <rect x="0" y="0" width="100%" height="100%" rx="16" ry="16" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
           </svg>

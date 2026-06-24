@@ -6,7 +6,7 @@ import PretextParagraph from '../atoms/PretextParagraph';
 
 const AboutSection = memo(({ theme }) => {
   return (
-    <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
+    <section id="sobre-mi" className="min-h-dvh py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
       <div className="md:w-5/12 flex justify-center">
         <ScrollReveal direction="left" delay={200}>
           <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center" tabIndex={0}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, memo, useCallback, useState } from 'react';
 import * as THREE from 'three';
 
-const Background3D = memo(({ theme }) => {
+const Background3D = memo(({ theme, performanceTier = 'high' }) => {
   const mountRef = useRef(null);
   const animationFrameRef = useRef(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
@@ -59,6 +59,7 @@ const Background3D = memo(({ theme }) => {
 
     mountElement.appendChild(renderer.domElement);
 
+    const isLowPerf = performanceTier === 'low';
     let particleCount = isMobile ? 950 : 2000;
 
     const geometry = new THREE.BufferGeometry();
@@ -89,7 +90,7 @@ const Background3D = memo(({ theme }) => {
       vertexColors: true,
       transparent: true,
       opacity: isDark ? 0.8 : 0.4,
-      blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
+      blending: (isDark && !isLowPerf) ? THREE.AdditiveBlending : THREE.NormalBlending,
       depthWrite: false
     });
 
@@ -218,7 +219,7 @@ const Background3D = memo(({ theme }) => {
 
       if (mountElement) mountElement.innerHTML = '';
     };
-  }, [theme, isMobile, createParticleTexture]);
+  }, [theme, isMobile, performanceTier, createParticleTexture]);
 
   return <div ref={mountRef} className="fixed inset-0 z-[0] w-full h-screen overflow-hidden pointer-events-none" />;
 });
