@@ -203,7 +203,7 @@ html.dark {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 280px;
+  width: 250px;
   max-width: 80vw;
   z-index: 60;
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 22%, transparent);
@@ -268,17 +268,21 @@ html.dark {
 /* Sidebar Liquid Pill */
 .sidebar-pill {
   position: absolute;
-  left: 6px;
-  right: 6px;
+  left: 8px;
+  right: 8px;
   top: 0;
   z-index: 0;
-  border-radius: 14px;
+  border-radius: 12px;
   pointer-events: none;
   background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               height 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-out;
   will-change: transform, height;
+}
+
+.sidebar-pill.dragging {
+  transition: none;
 }
 
 .sidebar-pill.moving {
@@ -293,7 +297,7 @@ html.dark {
   position: relative;
   z-index: 10;
   display: block;
-  padding: 15px 24px;
+  padding: 12px 18px;
   font-size: 1.05rem;
   font-weight: 500;
   color: var(--c-content, #e1e1e1);
@@ -310,7 +314,7 @@ html.dark {
 .sidebar-link:active {
   background: rgba(14, 165, 233, 0.08);
   color: var(--c-action, #38bdf8);
-  padding-left: 32px;
+  padding-left: 26px;
 }
 
 .sidebar-link-active {
