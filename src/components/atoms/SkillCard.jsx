@@ -22,26 +22,26 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`sketch-card px-4 py-3 flex items-center gap-2.5 rounded-2xl ${cardBg} border border-gray-200/50 dark:border-white/10 h-full relative overflow-hidden`}>
+      <div className={`sketch-card px-3 py-2 flex items-center gap-2 rounded-xl ${cardBg} border border-gray-200/50 dark:border-white/10 h-full relative overflow-hidden`}>
         <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 ${isHovered && !isLowPerf ? 'animate' : 'opacity-0'}`}>
           <svg className="absolute inset-0 w-full h-full dark:hidden" preserveAspectRatio="none">
-            <rect x="0" y="0" width="100%" height="100%" rx="16" ry="16" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
+            <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
           </svg>
           <svg className="absolute inset-0 w-full h-full dark:hidden" preserveAspectRatio="none" style={{ filter: 'blur(6px)' }}>
-            <rect x="0" y="0" width="100%" height="100%" rx="16" ry="16" fill="none" stroke="#38bdf8" strokeWidth="4" strokeDasharray="4 8" pathLength="10" className="sketch-line-blur"/>
+            <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#38bdf8" strokeWidth="4" strokeDasharray="4 8" pathLength="10" className="sketch-line-blur"/>
           </svg>
           <svg className="absolute inset-0 w-full h-full hidden dark:block" preserveAspectRatio="none">
-            <rect x="0" y="0" width="100%" height="100%" rx="16" ry="16" fill="none" stroke="#c9e9ff" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
+            <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#c9e9ff" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
           </svg>
           <svg className="absolute inset-0 w-full h-full hidden dark:block" preserveAspectRatio="none" style={{ filter: 'blur(8px)' }}>
-            <rect x="0" y="0" width="100%" height="100%" rx="16" ry="16" fill="none" stroke="#f8fcff" strokeWidth="4" strokeDasharray="4 8" pathLength="10" className="sketch-line-blur"/>
+            <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#f8fcff" strokeWidth="4" strokeDasharray="4 8" pathLength="10" className="sketch-line-blur"/>
           </svg>
         </div>
 
-        <div className={`p-3 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
-          <div className="scale-[1.25]">{skill.icon}</div>
+        <div className={`p-2 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
+          <div className="scale-[1.15]">{skill.icon}</div>
         </div>
-        <span className={`font-medium text-sm whitespace-nowrap relative z-20 transition-colors duration-300 ${isHovered ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>{skill.name}</span>
+        <span className={`font-medium text-xs whitespace-nowrap relative z-20 transition-colors duration-300 ${isHovered ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>{skill.name}</span>
       </div>
     </div>
   );

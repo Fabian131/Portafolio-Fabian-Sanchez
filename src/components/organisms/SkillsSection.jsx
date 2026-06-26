@@ -5,7 +5,7 @@ import DraggableMarquee from '../molecules/DraggableMarquee';
 
 const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
   return (
-    <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+    <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full overflow-x-hidden">
       <ScrollReveal direction="up">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
           <Wrench className="text-blue-500 shrink-0" size={32} />
@@ -20,12 +20,14 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
           <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-cyan-600 dark:text-cyan-500 mb-6"><Server /> Backend & Core</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={300}>
-          <DraggableMarquee
-            items={skills.backend}
-            direction="left"
-            color="cyan"
-            performanceTier={performanceTier}
-          />
+          <div className="w-screen relative left-1/2 -translate-x-1/2">
+            <DraggableMarquee
+              items={skills.backend}
+              direction="left"
+              color="cyan"
+              performanceTier={performanceTier}
+            />
+          </div>
         </ScrollReveal>
       </div>
 
@@ -34,12 +36,14 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
           <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-purple-600 dark:text-purple-500 mb-6"><Layout /> Frontend & Web</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={500}>
-          <DraggableMarquee
-            items={skills.frontend}
-            direction="right"
-            color="purple"
-            performanceTier={performanceTier}
-          />
+          <div className="w-screen relative left-1/2 -translate-x-1/2">
+            <DraggableMarquee
+              items={skills.frontend}
+              direction="right"
+              color="purple"
+              performanceTier={performanceTier}
+            />
+          </div>
         </ScrollReveal>
       </div>
 
@@ -48,12 +52,14 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
           <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-500 mb-6"><Wrench /> DevOps & Tools</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={700}>
-          <DraggableMarquee
-            items={skills.devops}
-            direction="left"
-            color="emerald"
-            performanceTier={performanceTier}
-          />
+          <div className="w-screen relative left-1/2 -translate-x-1/2">
+            <DraggableMarquee
+              items={skills.devops}
+              direction="left"
+              color="emerald"
+              performanceTier={performanceTier}
+            />
+          </div>
         </ScrollReveal>
       </div>
     </section>
