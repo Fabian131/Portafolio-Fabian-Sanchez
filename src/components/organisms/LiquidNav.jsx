@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
@@ -13,6 +13,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const touchStartX = useRef(null);
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
+  const pendingNavRef = useRef(null);
 
   const links = useMemo(() => [
     { id: 'inicio', label: 'Inicio' },
@@ -58,19 +59,39 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     };
   }, [activeSection, updateIndicator]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (mobileOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
-      document.body.classList.add('sidebar-open', 'sidebar-locked');
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+
+      const preventScroll = (e) => {
+        if (!e.target.closest('.sidebar-drawer')) {
+          e.preventDefault();
+        }
+      };
+      document.addEventListener('touchmove', preventScroll, { passive: false });
+      document.addEventListener('wheel', preventScroll, { passive: false });
+
+      return () => {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.removeEventListener('touchmove', preventScroll);
+        document.removeEventListener('wheel', preventScroll);
+      };
     } else {
-      document.body.classList.remove('sidebar-open', 'sidebar-locked');
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+
+      if (pendingNavRef.current) {
+        const target = pendingNavRef.current;
+        pendingNavRef.current = null;
+        requestAnimationFrame(() => {
+          document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
       setDragOffset(0);
       setIsDragging(false);
     }
-    return () => {
-      document.body.classList.remove('sidebar-open', 'sidebar-locked');
-    };
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -106,9 +127,13 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
   const handleNavClick = useCallback((sectionId) => {
     onNavClick(sectionId);
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-    setMobileOpen(false);
-  }, [onNavClick]);
+    if (mobileOpen) {
+      pendingNavRef.current = sectionId;
+      setMobileOpen(false);
+    } else {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [onNavClick, mobileOpen]);
 
   return (
     <>
@@ -141,26 +166,21 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
               </ul>
             </nav>
 
-            <div className="md:hidden w-full max-w-[95vw]">
-              <div className="mobile-nav-bar">
-                <button onClick={toggleTheme} className="mobile-nav-theme" aria-label="Toggle Theme">
-                  {isDark ? <Sun size={18} className="stroke-[2.5]" /> : <Moon size={18} className="stroke-[2.5]" />}
-                </button>
-                <span className="mobile-nav-title">{links.find(l => l.id === activeSection)?.label || 'Inicio'}</span>
-                <button
-                  onClick={() => setMobileOpen(!mobileOpen)}
-                  className="mobile-nav-hamburger"
-                  aria-label="Menu"
-                  aria-expanded={mobileOpen}
-                >
-                  <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
-                  <span className={`hamburger-line ${mobileOpen ? 'opacity-0' : ''}`}></span>
-                  <span className={`hamburger-line ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
-                </button>
-              </div>
-            </div>
           </>
         </ScrollReveal>
+      </div>
+
+      <div className="md:hidden fixed top-6 right-4 z-50">
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="mobile-nav-hamburger"
+          aria-label="Menu"
+          aria-expanded={mobileOpen}
+        >
+          <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
+          <span className={`hamburger-line ${mobileOpen ? 'opacity-0' : ''}`}></span>
+          <span className={`hamburger-line ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
+        </button>
       </div>
 
       {createPortal(

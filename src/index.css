@@ -157,6 +157,11 @@ html.dark {
   padding: 12px;
   min-width: 44px;
   min-height: 44px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  box-shadow: 0px 4px 14px 0px rgba(0,0,0,0.2);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -325,10 +330,6 @@ html.dark {
 /* Body scroll lock */
 body.sidebar-open {
   overflow: hidden;
-}
-
-body.sidebar-locked {
-  padding-right: var(--scrollbar-width, 0px);
 }
 
 /* Liquid Navigation Styles */
@@ -515,6 +516,11 @@ body.sidebar-locked {
 }
 
 @media (max-width: 767px) {
+  .mobile-nav-hamburger {
+    backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(100%);
+  }
+
   .mobile-nav-bar {
     backdrop-filter: blur(8px) saturate(100%);
     -webkit-backdrop-filter: blur(8px) saturate(100%);
