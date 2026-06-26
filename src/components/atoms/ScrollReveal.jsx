@@ -3,7 +3,7 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
-  const [targetRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
+  const [targetRef, isInView] = useIntersectionObserver({ threshold: 0.1, once: true });
   const prefersReducedMotion = useReducedMotion();
 
   const getTranslate = useCallback(() => {

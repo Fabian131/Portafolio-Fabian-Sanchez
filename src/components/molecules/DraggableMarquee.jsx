@@ -12,7 +12,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
   const [oneSetWidth, setOneSetWidth] = useState(0);
   const isReady = useRef(false);
   const lastFrameTime = useRef(0);
-  const isVisible = useRef(true);
+  const [isVisible, setIsVisible] = useState(true);
 
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const duplicateCount = isMobile ? 3 : 6;
@@ -36,7 +36,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isVisible.current = entry.isIntersecting;
+        setIsVisible(entry.isIntersecting);
         if (!entry.isIntersecting) {
           cancelAnimationFrame(animationRef.current);
         }
@@ -67,7 +67,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
   }, [direction, duplicateCount]);
 
   useEffect(() => {
-    if (isDragging || oneSetWidth === 0 || !isVisible.current) {
+    if (isDragging || oneSetWidth === 0 || !isVisible) {
       cancelAnimationFrame(animationRef.current);
       return;
     }
@@ -77,7 +77,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
     const frameInterval = 1000 / targetFPS;
 
     const animate = (timestamp) => {
-      if (!isVisible.current) {
+      if (!isVisible) {
         cancelAnimationFrame(animationRef.current);
         return;
       }
@@ -113,7 +113,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
 
     animationRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationRef.current);
-  }, [isDragging, oneSetWidth, direction]);
+  }, [isDragging, oneSetWidth, direction, isVisible]);
 
   const normalizePosition = useCallback((pos) => {
     let normalized = pos;
