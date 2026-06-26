@@ -5,7 +5,7 @@ import DraggableMarquee from '../molecules/DraggableMarquee';
 
 const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
   return (
-    <section id="skills" className="min-h-dvh py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
+    <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
       <ScrollReveal direction="up">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex justify-center items-center gap-3">
           <Wrench className="text-blue-500 shrink-0" size={32} />

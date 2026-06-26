@@ -5,6 +5,8 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
   const mountRef = useRef(null);
   const animationFrameRef = useRef(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const perfRef = useRef(performanceTier);
+  perfRef.current = performanceTier;
 
   useEffect(() => {
     const handleResize = () => {
@@ -59,7 +61,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
     mountElement.appendChild(renderer.domElement);
 
-    const isLowPerf = performanceTier === 'low';
+    const isLowPerf = perfRef.current === 'low';
     let particleCount = isMobile ? 950 : 2000;
 
     const geometry = new THREE.BufferGeometry();
@@ -219,7 +221,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
       if (mountElement) mountElement.innerHTML = '';
     };
-  }, [theme, isMobile, performanceTier, createParticleTexture]);
+  }, [theme, isMobile, createParticleTexture]);
 
   return <div ref={mountRef} className="fixed inset-0 z-[0] w-full h-screen overflow-hidden pointer-events-none" />;
 });
