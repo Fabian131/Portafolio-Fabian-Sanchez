@@ -4,12 +4,10 @@
 @layer base {
   body {
     @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
-    overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
 
   html {
-    scroll-behavior: smooth;
     overflow-x: hidden;
     touch-action: manipulation;
   }
@@ -312,14 +310,15 @@ html.dark {
 
 .sidebar-link:hover,
 .sidebar-link:active {
-  background: rgba(14, 165, 233, 0.08);
-  color: var(--c-action, #38bdf8);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--c-content, #e1e1e1);
   padding-left: 26px;
 }
 
 .sidebar-link-active {
-  color: var(--c-action, #38bdf8);
+  color: var(--c-content, #e1e1e1);
   font-weight: 700;
+  font-size: 1.1rem;
   border-left-color: var(--c-action, #38bdf8);
 }
 
@@ -452,7 +451,7 @@ body.sidebar-open {
 
 .liquid-nav-container li:not(.active) a:hover,
 .liquid-nav-container li:not(.active) button:hover {
-  color: var(--c-action);
+  color: var(--c-content);
   scale: 1.15;
   cursor: pointer;
 }
