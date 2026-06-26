@@ -14,6 +14,10 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
   const pendingNavRef = useRef(null);
+  const sidebarPillRef = useRef(null);
+  const [sidebarPillStyle, setSidebarPillStyle] = useState({ top: 0, height: 0 });
+  const [sidebarMoving, setSidebarMoving] = useState(false);
+  const sidebarMovingTimeoutRef = useRef(null);
 
   const links = useMemo(() => [
     { id: 'inicio', label: 'Inicio' },
@@ -38,15 +42,32 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     });
   }, []);
 
+  const updateSidebarIndicator = useCallback((activeId) => {
+    if (!sidebarPillRef.current) return;
+    const activeEl = sidebarPillRef.current.querySelector(`a[data-id="${activeId}"]`);
+    if (!activeEl) return;
+
+    setSidebarMoving(true);
+    clearTimeout(sidebarMovingTimeoutRef.current);
+    sidebarMovingTimeoutRef.current = setTimeout(() => setSidebarMoving(false), 200);
+
+    setSidebarPillStyle({
+      top: activeEl.offsetTop,
+      height: activeEl.offsetHeight
+    });
+  }, []);
+
   useEffect(() => {
     updateIndicator(activeSection || 'inicio');
-  }, [activeSection, updateIndicator]);
+    updateSidebarIndicator(activeSection || 'inicio');
+  }, [activeSection, updateIndicator, updateSidebarIndicator]);
 
   useEffect(() => {
     const handleResize = () => {
       clearTimeout(resizeTimeoutRef.current);
       resizeTimeoutRef.current = setTimeout(() => {
         updateIndicator(activeSection || 'inicio');
+        updateSidebarIndicator(activeSection || 'inicio');
         if (window.innerWidth >= 768) setMobileOpen(false);
       }, 150);
     };
@@ -56,8 +77,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeoutRef.current);
       clearTimeout(movingTimeoutRef.current);
+      clearTimeout(sidebarMovingTimeoutRef.current);
     };
-  }, [activeSection, updateIndicator]);
+  }, [activeSection, updateIndicator, updateSidebarIndicator]);
 
   useLayoutEffect(() => {
     if (mobileOpen) {
@@ -103,6 +125,14 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [mobileOpen]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      requestAnimationFrame(() => {
+        updateSidebarIndicator(activeSection || 'inicio');
+      });
+    }
+  }, [mobileOpen, activeSection, updateSidebarIndicator]);
 
   const handleTouchStart = useCallback((e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -207,16 +237,26 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
               </button>
             </div>
 
-            {links.map(link => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                onClick={(e) => { e.preventDefault(); handleNavClick(link.id); }}
-                className={`sidebar-link ${activeSection === link.id ? 'sidebar-link-active' : ''}`}
-              >
-                {link.label}
-              </a>
-            ))}
+            <div ref={sidebarPillRef} className="sidebar-pill-container">
+              <div
+                className={`sidebar-pill ${sidebarMoving ? 'moving' : ''}`}
+                style={{
+                  transform: `translateY(${sidebarPillStyle.top}px)`,
+                  height: `${sidebarPillStyle.height}px`
+                }}
+              />
+              {links.map(link => (
+                <a
+                  key={link.id}
+                  data-id={link.id}
+                  href={`#${link.id}`}
+                  onClick={(e) => { e.preventDefault(); handleNavClick(link.id); }}
+                  className={`sidebar-link ${activeSection === link.id ? 'sidebar-link-active' : ''}`}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
 
             <div className="sidebar-theme-row">
               <span className="sidebar-theme-label">
