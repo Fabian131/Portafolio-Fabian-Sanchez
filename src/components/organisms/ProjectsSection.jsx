@@ -15,7 +15,7 @@ const ProjectsSection = memo(({ projects, theme }) => {
         </h2>
       </ScrollReveal>
 
-      <div className="grid md:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {projects.map((project, index) => (
           <ScrollReveal key={project.title} direction="up" delay={200 + (index * 200)}>
             <ProjectCard project={project} theme={theme} />

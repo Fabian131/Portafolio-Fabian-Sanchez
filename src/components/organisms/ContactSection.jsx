@@ -19,7 +19,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
   }, []);
 
   return (
-    <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl mx-auto flex flex-col justify-center w-full">
+    <section id="contacto" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-4xl lg:max-w-6xl mx-auto flex flex-col justify-center w-full">
       <ScrollReveal direction="up">
          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
            <Mail className="text-cyan-500 shrink-0" size={32} />
@@ -29,7 +29,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
          </h2>
       </ScrollReveal>
 
-      <div className="grid md:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <ScrollReveal direction="left" delay={200} className="space-y-8">
 
           <PretextParagraph
@@ -54,7 +54,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
         </ScrollReveal>
 
         <ScrollReveal direction="right" delay={400}>
-          <GlassCard tilt={true} className="p-8">
+          <GlassCard tilt={true} className="p-6 lg:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>

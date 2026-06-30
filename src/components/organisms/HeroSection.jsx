@@ -19,21 +19,21 @@ const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">
       <div className="text-center max-w-5xl mx-auto space-y-6 relative z-10">
         <ScrollReveal direction="up" delay={100} className="mb-8">
-           <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
+           <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
             <div className="w-full h-full rounded-full overflow-hidden">
                 <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             </div>
            </div>
         </ScrollReveal>
 
-        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tighter leading-tight">
           <ScrollReveal direction="up" delay={300}>
             <span className="block bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-2">
 Fabián Sánchez
             </span>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={500}>
-            <span className="block text-xl sm:text-2xl md:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
+            <span className="block text-xl sm:text-2xl md:text-3xl lg:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
               <span className="font-light text-gray-500 dark:text-gray-400 mr-3">Full Stack</span>
               <TypeAsync words={['Developer', 'Software Engineer', 'Architect', 'Problem Solver']} />
             </span>
@@ -63,7 +63,7 @@ Fabián Sánchez
             <div className="flex gap-6 mt-4">
               {socialLinks.map((link) => (
                 <MagneticButton key={link.name}>
-                  <GlassCard tilt={true} isNavbar={true} className="w-16 h-16 p-0 flex items-center justify-center">
+                  <GlassCard tilt={true} isNavbar={true} className="w-14 h-14 sm:w-16 sm:h-16 p-0 flex items-center justify-center">
                     <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="w-full h-full flex items-center justify-center text-gray-700 dark:text-gray-300 group-hover:text-cyan-500 transition-colors">
                       {iconMap[link.iconKey]}
                     </a>

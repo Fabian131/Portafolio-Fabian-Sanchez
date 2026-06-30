@@ -10,6 +10,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const [isMoving, setIsMoving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const touchStartX = useRef(null);
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
@@ -73,7 +74,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       resizeTimeoutRef.current = setTimeout(() => {
         updateIndicator(activeSection || 'inicio');
         updateSidebarIndicator(activeSection || 'inicio');
-        if (window.innerWidth >= 768) setMobileOpen(false);
+        const mobile = window.innerWidth < 768;
+        setIsMobile(mobile);
+        if (!mobile) setMobileOpen(false);
       }, 150);
     };
     window.addEventListener('resize', handleResize, { passive: true });
@@ -346,20 +349,22 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
         </ScrollReveal>
       </div>
 
-      <div className="md:hidden fixed top-6 right-4 z-50">
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="mobile-nav-hamburger"
-          aria-label="Menu"
-          aria-expanded={mobileOpen}
-        >
-          <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
-          <span className={`hamburger-line ${mobileOpen ? 'opacity-0' : ''}`}></span>
-          <span className={`hamburger-line ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
-        </button>
-      </div>
+      {isMobile && (
+        <div className="fixed top-6 right-4 z-50">
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="mobile-nav-hamburger"
+            aria-label="Menu"
+            aria-expanded={mobileOpen}
+          >
+            <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
+            <span className={`hamburger-line ${mobileOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`hamburger-line ${mobileOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
+          </button>
+        </div>
+      )}
 
-      {createPortal(
+      {isMobile && createPortal(
         <>
           <div
             className={`sidebar-overlay ${mobileOpen ? 'sidebar-overlay-open' : 'sidebar-overlay-closed'}`}

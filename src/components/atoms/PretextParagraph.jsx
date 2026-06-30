@@ -19,8 +19,8 @@ const PretextParagraph = memo(({ text, isDark, className = '' }) => {
 
     // Función para obtener config actual basada en viewport
     const getConfig = () => {
-      const fontSize = window.innerWidth < 768 ? 16 : 18;
-      const lineHeight = window.innerWidth < 768 ? 26 : 28;
+      const fontSize = 16;
+      const lineHeight = 26;
       // La fuente debe coincidir exactamente con el CSS nativo
       const font = `${fontSize}px system-ui, -apple-system, sans-serif`;
       return { fontSize, lineHeight, font };

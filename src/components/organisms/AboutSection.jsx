@@ -6,10 +6,10 @@ import PretextParagraph from '../atoms/PretextParagraph';
 
 const AboutSection = memo(({ theme }) => {
   return (
-    <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16 w-full">
-      <div className="md:w-5/12 flex justify-center">
+    <section id="sobre-mi" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full">
+      <div className="lg:w-5/12 flex justify-center">
         <ScrollReveal direction="left" delay={200}>
-          <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center" tabIndex={0}>
+          <GlassCard tilt={true} className="p-2 w-60 h-60 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center" tabIndex={0}>
               <model-viewer
                  alt="laptop 3D"
                  src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb"
@@ -36,9 +36,9 @@ const AboutSection = memo(({ theme }) => {
         </ScrollReveal>
       </div>
 
-      <div className="md:w-7/12 space-y-6">
+      <div className="lg:w-7/12 space-y-6">
         <ScrollReveal direction="right" delay={200}>
-           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight flex items-center md:justify-start justify-center gap-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center lg:justify-start justify-center gap-3">
             <User className="text-cyan-500 shrink-0" size={32} />
             <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
               Sobre Mí

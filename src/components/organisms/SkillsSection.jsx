@@ -17,7 +17,7 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
 
       <div className="mb-16">
         <ScrollReveal direction="up" delay={200}>
-          <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-cyan-600 dark:text-cyan-500 mb-6"><Server /> Backend & Core</h3>
+           <h3 className="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2 text-cyan-600 dark:text-cyan-500 mb-6"><Server /> Backend & Core</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={300}>
           <div className="w-screen relative left-1/2 -translate-x-1/2">
@@ -33,7 +33,7 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
 
       <div className="mb-16">
         <ScrollReveal direction="up" delay={400}>
-          <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-purple-600 dark:text-purple-500 mb-6"><Layout /> Frontend & Web</h3>
+           <h3 className="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2 text-purple-600 dark:text-purple-500 mb-6"><Layout /> Frontend & Web</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={500}>
           <div className="w-screen relative left-1/2 -translate-x-1/2">
@@ -49,7 +49,7 @@ const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
 
       <div className="mb-16">
         <ScrollReveal direction="up" delay={600}>
-          <h3 className="text-2xl font-bold flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-500 mb-6"><Wrench /> DevOps & Tools</h3>
+           <h3 className="text-xl sm:text-2xl font-bold flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-500 mb-6"><Wrench /> DevOps & Tools</h3>
         </ScrollReveal>
         <ScrollReveal direction="up" delay={700}>
           <div className="w-screen relative left-1/2 -translate-x-1/2">
