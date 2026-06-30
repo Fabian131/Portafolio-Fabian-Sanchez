@@ -2,7 +2,6 @@ import React, { memo, useState, useCallback } from 'react';
 import { ExternalLink, Play } from 'lucide-react';
 import { YoutubeIcon } from '../atoms/Icons';
 import GlassCard from '../atoms/GlassCard';
-import PretextParagraph from '../atoms/PretextParagraph';
 
 const getYouTubeId = (url) => {
   if (!url || url === 'YOUTUBE_URL_AQUI') return null;
@@ -10,7 +9,7 @@ const getYouTubeId = (url) => {
   return match ? match[1] : null;
 };
 
-const ProjectCard = memo(({ project, theme }) => {
+const ProjectCard = memo(({ project }) => {
   const { title, description, tags, link, imageUrl, videoUrl } = project;
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -79,11 +78,9 @@ const ProjectCard = memo(({ project, theme }) => {
           </span>
         </h3>
 
-        <PretextParagraph
-          className="mb-6 flex-1"
-          isDark={theme === 'dark'}
-          text={description}
-        />
+        <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-6 flex-1 leading-relaxed line-clamp-3">
+          {description}
+        </p>
 
         <div className="flex flex-wrap gap-2 text-xs font-medium mt-auto">
           {tags.map((tag) => (

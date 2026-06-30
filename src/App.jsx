@@ -12,6 +12,7 @@ import Footer from './components/organisms/Footer';
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
 import { usePerformanceMonitor } from './hooks/usePerformanceMonitor';
+import { MOBILE_MAX } from './utils/breakpoints';
 
 export default function App() {
   const [theme, setTheme] = useState('dark');
@@ -129,13 +130,13 @@ export default function App() {
 
   const toggleTheme = useCallback(() => setTheme(theme === 'dark' ? 'light' : 'dark'), [theme]);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_MAX);
 
   useEffect(() => {
     let timeout;
     const checkMobile = () => {
       clearTimeout(timeout);
-      timeout = setTimeout(() => setIsMobile(window.innerWidth < 768), 150);
+      timeout = setTimeout(() => setIsMobile(window.innerWidth <= MOBILE_MAX), 150);
     };
     window.addEventListener('resize', checkMobile, { passive: true });
     return () => {
@@ -183,11 +184,11 @@ export default function App() {
           onCVDownload={handleCVDownload}
         />
 
-        <AboutSection theme={theme} />
+        <AboutSection />
 
         <SkillsSection skills={skills} performanceTier={performanceTier} />
 
-        <ProjectsSection projects={projects} theme={theme} />
+        <ProjectsSection projects={projects} />
 
         <ContactSection socialLinks={socialLinks} theme={theme} />
 

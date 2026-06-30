@@ -3,7 +3,7 @@ import { Briefcase } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
 import ProjectCard from '../molecules/ProjectCard';
 
-const ProjectsSection = memo(({ projects, theme }) => {
+const ProjectsSection = memo(({ projects }) => {
   return (
     <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full">
       <ScrollReveal direction="up">
@@ -18,7 +18,7 @@ const ProjectsSection = memo(({ projects, theme }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {projects.map((project, index) => (
           <ScrollReveal key={project.title} direction="up" delay={200 + (index * 200)}>
-            <ProjectCard project={project} theme={theme} />
+            <ProjectCard project={project} />
           </ScrollReveal>
         ))}
       </div>

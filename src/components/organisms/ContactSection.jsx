@@ -3,9 +3,9 @@ import { Mail, Send } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
-import PretextParagraph from '../atoms/PretextParagraph';
 import BlobButton from '../atoms/BlobButton';
 import MagneticButton from '../atoms/MagneticButton';
+import { PROSE_CLASS } from '../../utils/typography';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
   const iconMap = useMemo(() => ({
@@ -32,10 +32,9 @@ const ContactSection = memo(({ socialLinks, theme }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <ScrollReveal direction="left" delay={200} className="space-y-8">
 
-          <PretextParagraph
-            isDark={theme === 'dark'}
-            text='Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.'
-          />
+          <p className={PROSE_CLASS}>
+            Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.
+          </p>
 
           <div className="flex flex-col gap-4 sm:gap-6">
             {socialLinks.map((link) => (

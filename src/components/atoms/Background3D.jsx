@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, memo, useCallback, useState } from 'react';
 import * as THREE from 'three';
+import { MOBILE_MAX } from '../../utils/breakpoints';
 
 const Background3D = memo(({ theme, performanceTier = 'high' }) => {
   const mountRef = useRef(null);
   const animationFrameRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_MAX);
   const perfRef = useRef(performanceTier);
   perfRef.current = performanceTier;
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth <= MOBILE_MAX;
       setIsMobile(prev => prev !== mobile ? mobile : prev);
     };
     window.addEventListener('resize', handleResize, { passive: true });

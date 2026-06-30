@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, memo } from 'react';
+import { MOBILE_MAX } from '../../utils/breakpoints';
 
 const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = false, performanceTier = 'high' }) => {
   const cardRef = useRef(null);
@@ -6,7 +7,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
   const isLowPerf = performanceTier === 'low';
 
   const handleMouseMove = useCallback((e) => {
-    if (!tilt || !cardRef.current || window.innerWidth < 768) return;
+    if (!tilt || !cardRef.current || window.innerWidth <= MOBILE_MAX) return;
 
     cancelAnimationFrame(animationFrameRef.current);
     animationFrameRef.current = requestAnimationFrame(() => {

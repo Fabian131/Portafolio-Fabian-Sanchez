@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useRef, memo, useCallback,
 import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
+import { MOBILE_MAX } from '../../utils/breakpoints';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const navRef = useRef(null);
@@ -10,7 +11,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const [isMoving, setIsMoving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_MAX);
   const touchStartX = useRef(null);
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
@@ -74,7 +75,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       resizeTimeoutRef.current = setTimeout(() => {
         updateIndicator(activeSection || 'inicio');
         updateSidebarIndicator(activeSection || 'inicio');
-        const mobile = window.innerWidth < 768;
+        const mobile = window.innerWidth <= MOBILE_MAX;
         setIsMobile(mobile);
         if (!mobile) setMobileOpen(false);
       }, 150);

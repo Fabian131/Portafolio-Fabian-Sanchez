@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import SkillCard from '../atoms/SkillCard';
+import { MOBILE_MAX } from '../../utils/breakpoints';
 
 const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', performanceTier = 'high' }) => {
   const trackRef = useRef(null);
@@ -14,7 +15,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
   const lastFrameTime = useRef(0);
   const [isVisible, setIsVisible] = useState(true);
 
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_MAX);
   const duplicateCount = isMobile ? 3 : 6;
 
   const duplicatedItems = useMemo(() => {
@@ -23,7 +24,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth <= MOBILE_MAX;
       setIsMobile(prev => prev !== mobile ? mobile : prev);
     };
     window.addEventListener('resize', handleResize, { passive: true });
