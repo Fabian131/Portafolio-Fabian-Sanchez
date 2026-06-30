@@ -464,7 +464,6 @@ body.sidebar-open {
 }
 
 /* Scrollbar personalizado con efectos premium */
-@media (min-width: 768px) {
 ::-webkit-scrollbar {
   width: 12px;
 }
@@ -527,7 +526,6 @@ body.sidebar-open {
 
 .dark * {
   scrollbar-color: rgba(139, 92, 246, 0.9) rgba(3, 5, 10, 0.5);
-}
 }
 
 /* Efecto de brillo cuando se hace scroll */
