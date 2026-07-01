@@ -2,6 +2,13 @@ import React, { memo } from 'react';
 import { Briefcase } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
 import ProjectCard from '../molecules/ProjectCard';
+import { BREAKPOINTS } from '../../utils/breakpoints';
+
+const CARD_WIDTHS = {
+  sm: 'calc((100% - 1.5rem) / 2)',
+  lg: 'calc((100% - 3rem) / 3)',
+  xl: 'calc((100% - 4.5rem) / 4)',
+};
 
 const ProjectsSection = memo(({ projects }) => {
   return (
@@ -15,9 +22,14 @@ const ProjectsSection = memo(({ projects }) => {
         </h2>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
         {projects.map((project, index) => (
-          <ScrollReveal key={project.title} direction="up" delay={200 + (index * 200)}>
+          <ScrollReveal
+            key={project.title}
+            direction="up"
+            delay={200 + (index * 200)}
+            className="w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+          >
             <ProjectCard project={project} />
           </ScrollReveal>
         ))}
