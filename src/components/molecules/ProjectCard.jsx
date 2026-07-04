@@ -1,6 +1,5 @@
 import React, { memo, useState, useCallback } from 'react';
-import { ExternalLink, Play } from 'lucide-react';
-import { YoutubeIcon } from '../atoms/Icons';
+import { Play } from 'lucide-react';
 import GlassCard from '../atoms/GlassCard';
 
 const getYouTubeId = (url) => {
@@ -10,18 +9,18 @@ const getYouTubeId = (url) => {
 };
 
 const ProjectCard = memo(({ project }) => {
-  const { title, description, tags, link, imageUrl, videoUrl } = project;
+  const { title, description, tags, imageUrl, videoUrl } = project;
   const [isPlaying, setIsPlaying] = useState(false);
 
   const videoId = getYouTubeId(videoUrl);
   const hasVideo = videoId !== null;
-  const hasLink = link && link !== '#';
 
   const handlePlay = useCallback(() => setIsPlaying(true), []);
 
   return (
-    <GlassCard tilt={true} className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 cursor-pointer h-full border-t border-t-cyan-500/30">
-      <div className="w-full aspect-video rounded-xl overflow-hidden relative group-hover:shadow-[0_0_30px_rgba(14,165,233,0.3)] transition-shadow duration-500">
+    <GlassCard tilt={true} className="flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
+      {/* Image / Video — edge-to-edge, no padding */}
+      <div className="w-full aspect-video overflow-hidden relative shrink-0">
         {hasVideo && isPlaying ? (
           <iframe
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
@@ -47,43 +46,30 @@ const ProjectCard = memo(({ project }) => {
                 <Play size={20} className="sm:w-5 sm:h-5 text-zinc-900 dark:text-white ml-0.5" fill="currentColor" />
               </div>
             </button>
-            <div className="absolute inset-0 bg-gradient-to-t from-white/90 dark:from-[#0f111a]/90 to-transparent opacity-70 transition-opacity group-hover:opacity-40 pointer-events-none"></div>
-            <h3 className="text-base sm:text-lg font-semibold absolute bottom-2 sm:bottom-3 left-3 right-3 drop-shadow-lg text-zinc-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 group-hover:-translate-y-1 transition-all duration-300 pointer-events-none">{title}</h3>
           </>
         ) : (
-          <>
-            <div
-              className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
-              style={{ backgroundImage: `url('${imageUrl || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'}')` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/90 dark:from-[#0f111a]/90 to-transparent opacity-90 transition-opacity group-hover:opacity-60"></div>
-            <h3 className="text-base sm:text-lg font-semibold absolute bottom-2 sm:bottom-3 left-3 right-3 drop-shadow-lg text-zinc-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-300 group-hover:-translate-y-1 transition-all duration-300">{title}</h3>
-          </>
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
+            style={{ backgroundImage: `url('${imageUrl || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'}')` }}
+          />
         )}
       </div>
-      <div className="flex-1 flex flex-col">
-        {(hasVideo || hasLink) && (
-          <div className="flex items-center gap-2 mb-2">
-            {hasVideo && (
-              <a href={videoUrl} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-400 transition-colors" aria-label="Ver en YouTube">
-                <YoutubeIcon size={16} />
-              </a>
-            )}
-            {hasLink && (
-              <a href={link} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-cyan-500 transition-colors" aria-label="Ver proyecto">
-                <ExternalLink size={16} />
-              </a>
-            )}
-          </div>
-        )}
 
-        <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-3 sm:mb-4 flex-1 leading-relaxed line-clamp-3">
+      {/* Content area — with padding */}
+      <div className="flex-1 flex flex-col p-4 sm:p-5 sm:px-6">
+        <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white mb-3 leading-tight">
+          {title}
+        </h3>
+
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-7 min-h-[160px] mb-4">
           {description}
         </p>
 
-        <div className="flex flex-wrap gap-1.5 text-[10px] sm:text-xs font-medium mt-auto">
+        <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs font-medium mt-auto min-h-[52px] content-start">
           {tags.map((tag) => (
-            <span key={tag.label || tag} className="px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">{typeof tag === 'string' ? tag : tag.label}</span>
+            <span key={tag.label || tag} className="px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+              {typeof tag === 'string' ? tag : tag.label}
+            </span>
           ))}
         </div>
       </div>
@@ -94,4 +80,3 @@ const ProjectCard = memo(({ project }) => {
 ProjectCard.displayName = 'ProjectCard';
 
 export default ProjectCard;
-
