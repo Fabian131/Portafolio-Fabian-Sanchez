@@ -60,14 +60,16 @@ Fabián Sánchez
               />
             )}
 
-            <div className="flex gap-6 mt-4">
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
               {socialLinks.map((link) => (
                 <MagneticButton key={link.name}>
-                  <GlassCard tilt={true} isNavbar={true} className="w-14 h-14 sm:w-16 sm:h-16 p-0 flex items-center justify-center">
-                    <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="w-full h-full flex items-center justify-center text-gray-700 dark:text-gray-300 group-hover:text-cyan-500 transition-colors">
-                      {iconMap[link.iconKey]}
-                    </a>
-                  </GlassCard>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="block group">
+                    <div className="p-3 sm:p-4 flex items-center justify-center rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 group-hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.15)] text-gray-700 dark:text-gray-300 group-hover:text-cyan-500">
+                      <div className="group-hover:scale-110 transition-transform duration-300">
+                        {iconMap[link.iconKey]}
+                      </div>
+                    </div>
+                  </a>
                 </MagneticButton>
               ))}
             </div>

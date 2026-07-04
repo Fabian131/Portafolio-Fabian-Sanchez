@@ -21,7 +21,7 @@ const ProjectCard = memo(({ project }) => {
 
   return (
     <GlassCard tilt={true} className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4 cursor-pointer h-full border-t border-t-cyan-500/30">
-      <div className="w-full h-28 sm:h-32 lg:h-36 rounded-xl overflow-hidden relative group-hover:shadow-[0_0_30px_rgba(14,165,233,0.3)] transition-shadow duration-500">
+      <div className="w-full aspect-video rounded-xl overflow-hidden relative group-hover:shadow-[0_0_30px_rgba(14,165,233,0.3)] transition-shadow duration-500">
         {hasVideo && isPlaying ? (
           <iframe
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}

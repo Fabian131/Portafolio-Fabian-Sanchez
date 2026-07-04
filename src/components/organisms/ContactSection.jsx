@@ -36,16 +36,15 @@ const ContactSection = memo(({ socialLinks, theme }) => {
             Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.
           </p>
 
-          <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             {socialLinks.map((link) => (
               <MagneticButton key={link.name}>
-                <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 sm:gap-4 text-base sm:text-lg font-medium text-gray-800 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors group">
-                  <div className="w-auto shrink-0">
-                    <GlassCard tilt={true} isNavbar={true} className="w-14 h-14 sm:w-16 sm:h-16 p-0 flex items-center justify-center">
+                <a href={link.href} target="_blank" rel="noopener noreferrer" className="block group w-max">
+                  <div className="p-3 sm:p-4 flex items-center justify-center rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 group-hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.15)] text-gray-700 dark:text-gray-300 group-hover:text-cyan-500">
+                    <div className="group-hover:scale-110 transition-transform duration-300">
                       {iconMap[link.iconKey]}
-                    </GlassCard>
+                    </div>
                   </div>
-                  <span className="group-hover:translate-x-2 transition-transform">{link.name}</span>
                 </a>
               </MagneticButton>
             ))}

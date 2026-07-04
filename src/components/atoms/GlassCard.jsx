@@ -38,7 +38,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform $
+        className={`relative overflow-hidden transition-all duration-300 ease-out will-change-transform ${
           isNavbar ? 'rounded-full' : 'rounded-3xl'}
           ${isLowPerf
             ? 'bg-white/85 dark:bg-[#111827]/90'
