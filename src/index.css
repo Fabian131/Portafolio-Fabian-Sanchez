@@ -570,3 +570,10 @@ body.sidebar-open {
     filter: none !important;
   }
 }
+
+/* Projects grid: dynamic columns based on project count */
+@media (min-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(var(--project-cols, 3), 1fr);
+  }
+}

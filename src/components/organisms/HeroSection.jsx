@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
+
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
@@ -75,9 +75,7 @@ Fabián Sánchez
         </ScrollReveal>
       </div>
 
-      <div className="absolute bottom-10 animate-bounce text-gray-400" aria-hidden="true">
-        <ChevronDown size={32} />
-      </div>
+
     </section>
   );
 });
