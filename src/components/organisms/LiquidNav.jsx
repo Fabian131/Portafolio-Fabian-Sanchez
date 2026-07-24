@@ -68,9 +68,11 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   }, []);
 
   useEffect(() => {
-    updateIndicator(activeSection || 'inicio');
-    updateSidebarIndicator(activeSection || 'inicio');
-  }, [activeSection, updateIndicator, updateSidebarIndicator]);
+    requestAnimationFrame(() => {
+      updateIndicator(activeSection || 'inicio');
+      updateSidebarIndicator(activeSection || 'inicio');
+    });
+  }, [lang, activeSection, updateIndicator, updateSidebarIndicator]);
 
   useEffect(() => {
     const handleResize = () => {
