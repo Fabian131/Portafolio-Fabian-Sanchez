@@ -12,10 +12,12 @@ import Footer from './components/organisms/Footer';
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
 import { usePerformanceMonitor } from './hooks/usePerformanceMonitor';
+import { useTranslation } from './hooks/useTranslation';
 import { MOBILE_MAX } from './utils/breakpoints';
 
 export default function App() {
   const [theme, setTheme] = useState('dark');
+  const { lang } = useTranslation();
   const [activeSection, setActiveSection] = useState('inicio');
   const cursorGlowRef = useRef(null);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
@@ -159,8 +161,8 @@ export default function App() {
   ], []);
 
   const handleCVDownload = useCallback(() => {  
-    window.open('/cv.pdf', '_blank');
-  }, []);
+    window.open(`/cv/Fabian_Sanchez_Salinas_CV_${lang.toUpperCase()}.pdf`, '_blank');
+  }, [lang]);
 
   return (
     <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#f8fafc] dark:bg-[#03050a] transition-colors duration-700 ease-in-out selection:bg-cyan-500/30 relative`}>
