@@ -2,9 +2,12 @@ import React, { useState, useEffect, useLayoutEffect, useRef, memo, useCallback,
 import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
+import LanguageSwitcher from '../atoms/LanguageSwitcher';
 import { MOBILE_MAX } from '../../utils/breakpoints';
+import { t, useTranslation } from '../../hooks/useTranslation';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
+  const { lang } = useTranslation();
   const navRef = useRef(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,12 +29,12 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const pillDragLinkIndexRef = useRef(0);
 
   const links = useMemo(() => [
-    { id: 'inicio', label: 'Inicio' },
-    { id: 'sobre-mi', label: 'Sobre Mí' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'proyectos', label: 'Proyectos' },
-    { id: 'contacto', label: 'Contacto' }
-  ], []);
+    { id: 'inicio', label: t('nav.home') },
+    { id: 'sobre-mi', label: t('nav.about') },
+    { id: 'skills', label: t('nav.skills') },
+    { id: 'proyectos', label: t('nav.projects') },
+    { id: 'contacto', label: t('nav.contact') }
+  ], [lang]);
 
   const updateIndicator = useCallback((activeId) => {
     if (!navRef.current) return;
@@ -338,8 +341,12 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
                   </li>
                 ))}
 
+                <li className="flex items-center">
+                  <LanguageSwitcher />
+                </li>
+
                 <li className="theme-toggle-li">
-                  <button onClick={toggleTheme} className="liquid-nav-link theme-btn flex justify-center items-center h-full px-2" aria-label="Toggle Theme">
+                  <button onClick={toggleTheme} className="liquid-nav-link theme-btn flex justify-center items-center h-full px-2" aria-label={t('ui.themeToggle')}>
                     {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
                   </button>
                 </li>
@@ -355,7 +362,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="mobile-nav-hamburger"
-            aria-label="Menu"
+            aria-label={t('ui.menu')}
             aria-expanded={mobileOpen}
           >
             <span className={`hamburger-line ${mobileOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
@@ -381,10 +388,10 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             role="dialog"
             aria-modal="true"
             aria-hidden={!mobileOpen}
-            aria-label="Navigation menu"
+            aria-label={t('ui.navigationMenu')}
           >
             <div className="sidebar-header">
-              <button onClick={() => setMobileOpen(false)} className="sidebar-close-btn" aria-label="Close menu">
+              <button onClick={() => setMobileOpen(false)} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
                 <X size={24} className="stroke-[2.5]" />
               </button>
             </div>
@@ -419,11 +426,16 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
             <div className="sidebar-theme-row">
               <span className="sidebar-theme-label">
-                {isDark ? 'Modo oscuro' : 'Modo claro'}
+                {isDark ? t('ui.darkMode') : t('ui.lightMode')}
               </span>
-              <button onClick={toggleTheme} className="sidebar-theme-btn" aria-label="Toggle Theme">
+              <button onClick={toggleTheme} className="sidebar-theme-btn" aria-label={t('ui.themeToggle')}>
                 {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
               </button>
+            </div>
+
+            <div className="sidebar-theme-row">
+              <span className="sidebar-theme-label">{t('ui.langToggle')}</span>
+              <LanguageSwitcher />
             </div>
           </aside>
         </>,

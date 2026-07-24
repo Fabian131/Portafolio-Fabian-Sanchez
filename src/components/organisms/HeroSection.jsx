@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-
+import { ChevronDown } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
@@ -7,8 +7,10 @@ import GooeyButton from '../atoms/GooeyButton';
 import BlobButton from '../atoms/BlobButton';
 import GlassCard from '../atoms/GlassCard';
 import MagneticButton from '../atoms/MagneticButton';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
+  const { t, lang } = useTranslation();
   const iconMap = useMemo(() => ({
     github: <Github size={36} />,
     linkedin: <Linkedin size={36} />,
@@ -21,7 +23,7 @@ const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
         <ScrollReveal direction="up" delay={100} className="mb-8">
            <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
             <div className="w-full h-full rounded-full overflow-hidden">
-                <img src="/img/photo.jpg" alt="Fabián Sánchez" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/img/photo.jpg" alt={t('hero.photoAlt')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             </div>
            </div>
         </ScrollReveal>
@@ -34,15 +36,15 @@ Fabián Sánchez
           </ScrollReveal>
           <ScrollReveal direction="up" delay={500}>
             <span className="block text-xl sm:text-2xl md:text-3xl lg:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
-              <span className="font-light text-gray-500 dark:text-gray-400 mr-3">Full Stack</span>
-              <TypeAsync words={['Developer', 'Software Engineer', 'Architect', 'Problem Solver']} />
+              <span className="font-light text-gray-500 dark:text-gray-400 mr-3">{t('hero.fullStack')}</span>
+              <TypeAsync words={[t('hero.role1'), t('hero.role2'), t('hero.role3'), t('hero.role4')]} />
             </span>
           </ScrollReveal>
         </h1>
 
         <ScrollReveal direction="up" delay={700}>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-            Estudiante de Ingeniería en Sistemas en la UNA. Construyendo aplicaciones robustas, escalables y arquitecturas de alto rendimiento con código limpio.
+            {t('hero.description')}
           </p>
         </ScrollReveal>
 
@@ -51,11 +53,11 @@ Fabián Sánchez
 
             {isMobile ? (
               <BlobButton darkTheme={theme === 'dark'} onClick={onCVDownload}>
-                Descargar CV
+                {t('hero.downloadCV')}
               </BlobButton>
             ) : (
               <GooeyButton
-                text="Descargar CV"
+                text={t('hero.downloadCV')}
                 onClick={onCVDownload}
               />
             )}
@@ -77,7 +79,9 @@ Fabián Sánchez
         </ScrollReveal>
       </div>
 
-
+      <div className="absolute bottom-10 animate-bounce text-gray-400" aria-hidden="true">
+        <ChevronDown size={32} />
+      </div>
     </section>
   );
 });

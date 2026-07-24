@@ -6,8 +6,10 @@ import GlassCard from '../atoms/GlassCard';
 import BlobButton from '../atoms/BlobButton';
 import MagneticButton from '../atoms/MagneticButton';
 import { PROSE_CLASS } from '../../utils/typography';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
+  const { t } = useTranslation();
   const iconMap = useMemo(() => ({
     github: <Github size={36} />,
     linkedin: <Linkedin size={36} />,
@@ -24,7 +26,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-10 md:mb-16 tracking-tight flex items-center justify-center gap-3">
            <Mail className="text-cyan-500 shrink-0" size={32} />
            <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-             Hablemos de Código
+             {t('contact.title')}
            </span>
          </h2>
       </ScrollReveal>
@@ -33,7 +35,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
         <ScrollReveal direction="left" delay={200} className="space-y-8">
 
           <p className={PROSE_CLASS}>
-            Busco oportunidades en entornos tecnológicos desafiantes para aplicar mis habilidades, crecer profesionalmente y contribuir con soluciones innovadoras.
+            {t('contact.description')}
           </p>
 
           <div className="flex flex-wrap gap-4 sm:gap-6">
@@ -55,19 +57,19 @@ const ContactSection = memo(({ socialLinks, theme }) => {
           <GlassCard tilt={true} className="p-6 lg:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
-                <input type="text" id="name" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder="Tu nombre" required />
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contact.name')}</label>
+                <input type="text" id="name" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder={t('contact.namePlaceholder')} required />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                <input type="email" id="email" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder="tu@email.com" required />
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contact.email')}</label>
+                <input type="email" id="email" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all text-base text-gray-900 dark:text-white" placeholder={t('contact.emailPlaceholder')} required />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mensaje</label>
-                <textarea id="message" rows="4" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-y text-base text-gray-900 dark:text-white min-h-[44px]" placeholder="¿En qué te puedo ayudar?" required></textarea>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('contact.message')}</label>
+                <textarea id="message" rows="4" className="w-full px-4 py-3.5 rounded-xl bg-white/60 dark:bg-[#03050a]/50 border border-gray-300 dark:border-white/10 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all resize-y text-base text-gray-900 dark:text-white min-h-[44px]" placeholder={t('contact.messagePlaceholder')} required></textarea>
               </div>
               <BlobButton darkTheme={theme === 'dark'} onClick={handleSubmit}>
-                Enviar Mensaje <Send size={18} />
+                {t('contact.send')} <Send size={18} />
               </BlobButton>
             </form>
           </GlassCard>

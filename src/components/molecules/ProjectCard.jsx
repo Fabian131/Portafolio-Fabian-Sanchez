@@ -1,6 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import { Play } from 'lucide-react';
 import GlassCard from '../atoms/GlassCard';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const getYouTubeId = (url) => {
   if (!url || url === 'YOUTUBE_URL_AQUI') return null;
@@ -9,8 +10,12 @@ const getYouTubeId = (url) => {
 };
 
 const ProjectCard = memo(({ project }) => {
-  const { title, description, tags, imageUrl, videoUrl } = project;
+  const { t } = useTranslation();
+  const { projectKey, title, description, tags, imageUrl, videoUrl } = project;
   const [isPlaying, setIsPlaying] = useState(false);
+  const pKey = projectKey || '';
+  const transTitle = t(`projects.${pKey}.title`) || title;
+  const transDesc = t(`projects.${pKey}.description`) || description;
 
   const videoId = getYouTubeId(videoUrl);
   const hasVideo = videoId !== null;
@@ -27,20 +32,20 @@ const ProjectCard = memo(({ project }) => {
             className="absolute inset-0 w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            title={title}
+            title={transTitle}
           />
         ) : hasVideo ? (
           <>
             <img
               src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
-              alt={title}
+              alt={transTitle}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
               loading="lazy"
             />
             <button
               onClick={handlePlay}
               className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors z-10 cursor-pointer"
-              aria-label="Reproducir video"
+              aria-label={t('projects.playVideo')}
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                 <Play size={20} className="sm:w-5 sm:h-5 text-zinc-900 dark:text-white ml-0.5" fill="currentColor" />
@@ -58,11 +63,11 @@ const ProjectCard = memo(({ project }) => {
       {/* Content area — with padding */}
       <div className="flex-1 flex flex-col p-4 sm:p-5 sm:px-6">
         <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white mb-3 leading-tight">
-          {title}
+          {transTitle}
         </h3>
 
         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-7 min-h-[160px] mb-4">
-          {description}
+          {transDesc}
         </p>
 
         <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs font-medium mt-auto min-h-[52px] content-start">

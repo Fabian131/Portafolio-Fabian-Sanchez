@@ -3,8 +3,11 @@ import { User, MonitorSmartphone } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
 import { PROSE_CLASS } from '../../utils/typography';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const AboutSection = memo(() => {
+  const { t } = useTranslation();
+
   return (
     <section
       id="sobre-mi"
@@ -18,7 +21,7 @@ const AboutSection = memo(() => {
             tabIndex={0}
           >
             <model-viewer
-              alt="laptop 3D"
+              alt={t('about.laptopAlt')}
               src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb"
               shadow-intensity="1"
               camera-controls="true"
@@ -36,7 +39,7 @@ const AboutSection = memo(() => {
 
             <div className="absolute bottom-6 left-6 right-6 bg-white/80 dark:bg-black/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-xl p-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 transition-all duration-500 pointer-events-none">
               <p className="text-gray-800 dark:text-white text-sm font-medium flex items-center gap-2">
-                <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> Ingeniería en Sistemas, UNA
+                <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> {t('about.caption')}
               </p>
             </div>
           </GlassCard>
@@ -48,26 +51,26 @@ const AboutSection = memo(() => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center lg:justify-start justify-center gap-3">
             <User className="text-cyan-500 shrink-0" size={32} />
             <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-              Sobre Mí
+              {t('about.title')}
             </span>
           </h2>
         </ScrollReveal>
 
         <ScrollReveal direction="right" delay={300}>
           <p className={PROSE_CLASS}>
-            Estudiante de último año de Ingeniería en Sistemas de Información en la Universidad Nacional (UNA) en búsqueda de una empresa para realizar mi Práctica Profesional Supervisada (PPS). Me especializo en el desarrollo backend, con un enfoque principal en el diseño, construcción y optimización de APIs RESTful.
+            {t('about.p1')}
           </p>
         </ScrollReveal>
 
         <ScrollReveal direction="right" delay={400}>
           <p className={PROSE_CLASS}>
-            Mi trabajo se define por el rigor técnico y la calidad del código. Desarrollo software aplicando estrictamente los principios SOLID, la regla DRY (Do not Repeat Yourself) y patrones de diseño, garantizando arquitecturas limpias, escalables y mantenibles a largo plazo. Redacto la documentación técnica de mis proyectos y repositorios íntegramente en inglés.
+            {t('about.p2')}
           </p>
         </ScrollReveal>
 
         <ScrollReveal direction="right" delay={500}>
           <p className={PROSE_CLASS}>
-            Especialista en Java (Spring Boot) y PHP (Laravel). Experiencia en bases de datos PostgreSQL, SQL Server y MySQL. Manejo de Docker, CI/CD, servidores Ubuntu y HTTPS. Desarrollo móvil con Kotlin (MVVM) y React Native. Scrum Master certificado con enfoque en QA y revisión rigurosa de código. Aporto disciplina de ingeniería y capacidad para resolver problemas complejos en entornos empresariales exigentes.
+            {t('about.p3')}
           </p>
         </ScrollReveal>
       </div>

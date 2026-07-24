@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, memo } from "react";
 
 function GooeyButton({
-  text = "Go Ahead",
+  text,
   onClick,
   lightest = "#f897d5",
   light = "#f567c2",

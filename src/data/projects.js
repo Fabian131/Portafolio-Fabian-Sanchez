@@ -1,5 +1,6 @@
 ﻿export const projects = [
   {
+    projectKey: 'erp',
     title: 'ERP Modular',
     subtitle: 'Sistema Gestor Empresarial',
     imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop',
@@ -13,6 +14,7 @@
     accentColor: 'cyan',
   },
   {
+    projectKey: 'sales',
     title: 'Plataforma de Ventas',
     subtitle: 'E-Commerce Core',
     imageUrl: 'https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=2070&auto=format&fit=crop',
@@ -26,6 +28,7 @@
     accentColor: 'purple',
   },
   {
+    projectKey: 'agrovet',
     title: 'AgroVeterinaria Rio Frio',
     subtitle: 'Sistema Veterinario Integral',
     imageUrl: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=2070&auto=format&fit=crop',
