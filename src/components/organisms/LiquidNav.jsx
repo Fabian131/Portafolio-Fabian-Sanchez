@@ -341,10 +341,6 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
                   </li>
                 ))}
 
-                <li className="flex items-center">
-                  <LanguageSwitcher />
-                </li>
-
                 <li className="theme-toggle-li">
                   <button onClick={toggleTheme} className="liquid-nav-link theme-btn flex justify-center items-center h-full px-2" aria-label={t('ui.themeToggle')}>
                     {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
@@ -356,6 +352,12 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
           </>
         </ScrollReveal>
       </div>
+
+      {!isMobile && (
+        <div className="fixed top-[38px] right-14 z-50">
+          <LanguageSwitcher />
+        </div>
+      )}
 
       {isMobile && (
         <div className="fixed top-6 right-4 z-50">
@@ -435,7 +437,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
             <div className="sidebar-theme-row">
               <span className="sidebar-theme-label">{t('ui.langToggle')}</span>
-              <LanguageSwitcher />
+              <LanguageSwitcher direction="up" />
             </div>
           </aside>
         </>,

@@ -4,7 +4,9 @@ import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { AVAILABLE, LANGS } from '../../data/translations';
 
-const LanguageSwitcher = memo(() => {
+const DROPDOWN_H = AVAILABLE.length * 44 + 16;
+
+const LanguageSwitcher = memo(({ direction = 'down' }) => {
   const { lang, changeLang, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
@@ -22,10 +24,15 @@ const LanguageSwitcher = memo(() => {
     e.stopPropagation();
     if (!isOpen && btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
-      setDropdownPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+      const right = window.innerWidth - rect.right;
+      if (direction === 'up') {
+        setDropdownPos({ top: rect.top - DROPDOWN_H - 4, right });
+      } else {
+        setDropdownPos({ top: rect.bottom + 4, right });
+      }
     }
     setIsOpen(!isOpen);
-  }, [isOpen]);
+  }, [isOpen, direction]);
 
   const handleSelect = useCallback(
     (code) => {
@@ -43,7 +50,7 @@ const LanguageSwitcher = memo(() => {
         <button
           ref={btnRef}
           onClick={handleToggle}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-sm"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm bg-white/10 dark:bg-[#0f111a]/60 backdrop-blur-md border border-white/10 dark:border-white/5 hover:bg-white/20 dark:hover:bg-white/10 transition-colors"
           aria-label={t('ui.langToggle')}
         >
           <Globe size={14} />
