@@ -23,7 +23,7 @@ const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
         <ScrollReveal direction="up" delay={100} className="mb-8">
            <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">
             <div className="w-full h-full rounded-full overflow-hidden">
-                <img src="/img/photo.jpg" alt={t('hero.photoAlt')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/img/photo.jpg" alt={t('hero.photoAlt')} width="176" height="176" fetchPriority="high" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
             </div>
            </div>
         </ScrollReveal>

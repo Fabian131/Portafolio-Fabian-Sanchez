@@ -36,49 +36,53 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     { id: 'contacto', label: t('nav.contact') }
   ], [lang]);
 
-  const updateIndicator = useCallback((activeId) => {
-    if (!navRef.current) return;
-    const activeEl = navRef.current.querySelector(`li[data-id="${activeId}"]`);
-    if (!activeEl) return;
+  const scheduleIndicatorUpdate = useCallback((activeId) => {
+    requestAnimationFrame(() => {
+      if (!navRef.current) return;
+      const activeEl = navRef.current.querySelector(`li[data-id="${activeId}"]`);
+      if (!activeEl) return;
 
-    setIsMoving(true);
-    clearTimeout(movingTimeoutRef.current);
-    movingTimeoutRef.current = setTimeout(() => setIsMoving(false), 200);
+      setIsMoving(true);
+      clearTimeout(movingTimeoutRef.current);
+      movingTimeoutRef.current = setTimeout(() => setIsMoving(false), 200);
 
-    setIndicatorStyle({
-      left: activeEl.offsetLeft,
-      width: activeEl.offsetWidth
+      setIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth
+      });
     });
   }, []);
 
   const updateSidebarIndicator = useCallback((activeId) => {
-    if (!sidebarPillRef.current) return;
-    if (pillDraggingRef.current) return;
-    const activeEl = sidebarPillRef.current.querySelector(`a[data-id="${activeId}"]`);
-    if (!activeEl) return;
+    requestAnimationFrame(() => {
+      if (!sidebarPillRef.current) return;
+      if (pillDraggingRef.current) return;
+      const activeEl = sidebarPillRef.current.querySelector(`a[data-id="${activeId}"]`);
+      if (!activeEl) return;
 
-    setSidebarMoving(true);
-    clearTimeout(sidebarMovingTimeoutRef.current);
-    sidebarMovingTimeoutRef.current = setTimeout(() => setSidebarMoving(false), 200);
+      setSidebarMoving(true);
+      clearTimeout(sidebarMovingTimeoutRef.current);
+      sidebarMovingTimeoutRef.current = setTimeout(() => setSidebarMoving(false), 200);
 
-    setSidebarPillStyle({
-      top: activeEl.offsetTop,
-      height: activeEl.offsetHeight
+      setSidebarPillStyle({
+        top: activeEl.offsetTop,
+        height: activeEl.offsetHeight
+      });
     });
   }, []);
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      updateIndicator(activeSection || 'inicio');
+      scheduleIndicatorUpdate(activeSection || 'inicio');
       updateSidebarIndicator(activeSection || 'inicio');
     });
-  }, [lang, activeSection, updateIndicator, updateSidebarIndicator]);
+  }, [lang, activeSection, scheduleIndicatorUpdate, updateSidebarIndicator]);
 
   useEffect(() => {
     const handleResize = () => {
       clearTimeout(resizeTimeoutRef.current);
       resizeTimeoutRef.current = setTimeout(() => {
-        updateIndicator(activeSection || 'inicio');
+        scheduleIndicatorUpdate(activeSection || 'inicio');
         updateSidebarIndicator(activeSection || 'inicio');
         const mobile = window.innerWidth <= MOBILE_MAX;
         setIsMobile(mobile);
@@ -93,7 +97,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       clearTimeout(movingTimeoutRef.current);
       clearTimeout(sidebarMovingTimeoutRef.current);
     };
-  }, [activeSection, updateIndicator, updateSidebarIndicator]);
+  }, [activeSection, scheduleIndicatorUpdate, updateSidebarIndicator]);
 
   useLayoutEffect(() => {
     if (mobileOpen) {
