@@ -129,6 +129,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
       let lastTime = 0;
       const targetFPS = 60;
       const frameInterval = 1000 / targetFPS;
+      let firstFrame = true;
 
       const animate = (currentTime) => {
         animationFrameRef.current = requestAnimationFrame(animate);
@@ -158,6 +159,10 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
         camera.lookAt(scene.position);
         renderer.render(scene, camera);
+        if (firstFrame) {
+          firstFrame = false;
+          document.documentElement.classList.add('bg-loaded');
+        }
       };
       animate(0);
 
@@ -187,6 +192,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
     let lastTime = 0;
     const targetFPS = 30;
     const frameInterval = 1000 / targetFPS;
+    let firstFrame = true;
 
     const animate = (currentTime) => {
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -207,6 +213,10 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
       camera.lookAt(scene.position);
       renderer.render(scene, camera);
+      if (firstFrame) {
+        firstFrame = false;
+        document.documentElement.classList.add('bg-loaded');
+      }
     };
     animate(0);
 
