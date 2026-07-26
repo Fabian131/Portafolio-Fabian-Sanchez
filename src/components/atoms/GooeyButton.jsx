@@ -43,11 +43,6 @@ function GooeyButton({
       }}
     >
       <style>{`
-        @font-face {
-          font-family: "Avant";
-          src: url("https://assets.codepen.io/383755/avant-garde.woff2") format("woff2");
-        }
-
         .gooey-container {
           --elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
           --x: 0px;

@@ -44,16 +44,6 @@ export default function App() {
     }
   }, [theme]);
 
-  useEffect(() => {
-    if (!document.querySelector('script[id="model-viewer-script"]')) {
-      const script = document.createElement('script');
-      script.id = 'model-viewer-script';
-      script.type = 'module';
-      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
-      document.head.appendChild(script);
-    }
-  }, []);
-
   const setActive = useCallback((section) => {
     activeSectionRef.current = section;
     setActiveSection(section);

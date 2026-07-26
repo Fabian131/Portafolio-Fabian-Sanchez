@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { User, MonitorSmartphone } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
@@ -7,9 +7,32 @@ import { useTranslation } from '../../hooks/useTranslation';
 
 const AboutSection = memo(() => {
   const { t } = useTranslation();
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          if (!document.querySelector('script[id="model-viewer-script"]')) {
+            const script = document.createElement('script');
+            script.id = 'model-viewer-script';
+            script.type = 'module';
+            script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+            document.head.appendChild(script);
+          }
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="sobre-mi"
       className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full"
     >

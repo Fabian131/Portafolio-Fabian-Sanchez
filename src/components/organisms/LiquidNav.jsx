@@ -27,6 +27,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const pillDragStartYRef = useRef(0);
   const pillDragStartTopRef = useRef(0);
   const pillDragLinkIndexRef = useRef(0);
+  const pillDragCacheRef = useRef({ containerTop: 0, pillH: 0, minTop: 0, maxTop: 0 });
 
   const links = useMemo(() => [
     { id: 'inicio', label: t('nav.home') },
@@ -213,6 +214,18 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       pillDragStartTopRef.current = sidebarPillStyle.top;
       pillDragLinkIndexRef.current = links.findIndex(l => l.id === activeSection);
       pillEl.classList.add('dragging');
+
+      const containerRect = sidebarPillRef.current.getBoundingClientRect();
+      const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
+      const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
+      const lastLinkEl = lastEl[lastEl.length - 1];
+      const pillH = pillEl.offsetHeight;
+      pillDragCacheRef.current = {
+        containerTop: containerRect.top,
+        pillH,
+        minTop: firstEl ? firstEl.offsetTop : 0,
+        maxTop: lastLinkEl ? lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH : 0
+      };
     }
   }, [sidebarPillStyle.top, activeSection, links]);
 
@@ -220,20 +233,11 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     if (!pillDraggingRef.current || !sidebarPillRef.current) return;
     e.preventDefault();
     const touch = e.touches[0];
-    const containerRect = sidebarPillRef.current.getBoundingClientRect();
-    const relativeY = touch.clientY - containerRect.top;
-
-    const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
-    const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
-    const lastLinkEl = lastEl[lastEl.length - 1];
-    if (!firstEl || !lastLinkEl) return;
-
-    const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-    const pillH = pillEl ? pillEl.offsetHeight : sidebarPillStyle.height;
-    const minTop = firstEl.offsetTop;
-    const maxTop = lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH;
+    const { containerTop, pillH, minTop, maxTop } = pillDragCacheRef.current;
+    const relativeY = touch.clientY - containerTop;
 
     const newTop = Math.max(minTop, Math.min(maxTop, relativeY - pillH / 2));
+    const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
     if (pillEl) pillEl.style.transform = `translateY(${newTop}px)`;
 
     const result = getPillLinkFromY(touch.clientY);
@@ -241,7 +245,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       pillDragLinkIndexRef.current = result.index;
       onNavClick(result.link.id);
     }
-  }, [getPillLinkFromY, onNavClick, sidebarPillStyle.height]);
+  }, [getPillLinkFromY, onNavClick]);
 
   const handlePillTouchEnd = useCallback(() => {
     if (!pillDraggingRef.current) return;
@@ -269,26 +273,29 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       pillDragStartTopRef.current = sidebarPillStyle.top;
       pillDragLinkIndexRef.current = links.findIndex(l => l.id === activeSection);
       pillEl.classList.add('dragging');
+
+      const containerRect = sidebarPillRef.current.getBoundingClientRect();
+      const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
+      const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
+      const lastLinkEl = lastEl[lastEl.length - 1];
+      const pillH = pillEl.offsetHeight;
+      pillDragCacheRef.current = {
+        containerTop: containerRect.top,
+        pillH,
+        minTop: firstEl ? firstEl.offsetTop : 0,
+        maxTop: lastLinkEl ? lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH : 0
+      };
     }
   }, [sidebarPillStyle.top, activeSection, links]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!pillDraggingRef.current || !sidebarPillRef.current) return;
-      const containerRect = sidebarPillRef.current.getBoundingClientRect();
-      const relativeY = e.clientY - containerRect.top;
-
-      const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
-      const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
-      const lastLinkEl = lastEl[lastEl.length - 1];
-      if (!firstEl || !lastLinkEl) return;
-
-      const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-      const pillH = pillEl ? pillEl.offsetHeight : sidebarPillStyle.height;
-      const minTop = firstEl.offsetTop;
-      const maxTop = lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH;
+      const { containerTop, pillH, minTop, maxTop } = pillDragCacheRef.current;
+      const relativeY = e.clientY - containerTop;
 
       const newTop = Math.max(minTop, Math.min(maxTop, relativeY - pillH / 2));
+      const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
       if (pillEl) pillEl.style.transform = `translateY(${newTop}px)`;
 
       const result = getPillLinkFromY(e.clientY);
@@ -318,7 +325,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [getPillLinkFromY, onNavClick, sidebarPillStyle.height, updateSidebarIndicator, activeSection, handleNavClick]);
+  }, [getPillLinkFromY, onNavClick, updateSidebarIndicator, activeSection, handleNavClick]);
 
   return (
     <>

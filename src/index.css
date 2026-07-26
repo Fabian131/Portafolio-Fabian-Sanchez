@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-family: "Avant";
+  src: url("https://assets.codepen.io/383755/avant-garde.woff2") format("woff2");
+  font-display: swap;
+}
+
 @layer base {
   body {
     @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
