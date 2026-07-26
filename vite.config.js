@@ -8,6 +8,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  css: {
+    lightningcss: {
+      targets: {
+        firefox: (103 << 16),
+        chrome: (76 << 16),
+        safari: (15 << 16),
+        edge: (79 << 16),
+      },
+    },
+  },
   build: {
     target: 'es2022',
     rollupOptions: {

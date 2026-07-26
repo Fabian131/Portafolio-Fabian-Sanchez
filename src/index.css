@@ -120,8 +120,8 @@ html.dark {
 
 html.bg-loaded .mobile-nav-bar {
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
 }
 
 .mobile-nav-theme {
@@ -168,8 +168,8 @@ html.bg-loaded .mobile-nav-bar {
 
 html.bg-loaded .mobile-nav-hamburger {
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
-  backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
 }
 
 .hamburger-line {
@@ -188,8 +188,8 @@ html.bg-loaded .mobile-nav-hamburger {
   inset: 0;
   z-index: 55;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -224,8 +224,8 @@ html.bg-loaded .mobile-nav-hamburger {
 
 html.bg-loaded .sidebar-drawer {
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 22%, transparent);
-  backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
 }
 
 .sidebar-drawer.dragging {
@@ -414,8 +414,8 @@ body.sidebar-open {
 
 html.bg-loaded .liquid-nav-container {
   background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  backdrop-filter: blur(20px) saturate(1.5);
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
 }
 
 .liquid-nav-pill {
@@ -572,18 +572,18 @@ html.bg-loaded .liquid-nav-pill {
 
 @media (max-width: 767px) {
   html.bg-loaded .mobile-nav-hamburger {
-    backdrop-filter: blur(8px) saturate(100%);
-    -webkit-backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(1.01);
+    backdrop-filter: blur(8px) saturate(1.01);
   }
 
   html.bg-loaded .mobile-nav-bar {
-    backdrop-filter: blur(8px) saturate(100%);
-    -webkit-backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(1.01);
+    backdrop-filter: blur(8px) saturate(1.01);
   }
 
   html.bg-loaded .sidebar-drawer {
-    backdrop-filter: blur(12px) saturate(100%);
-    -webkit-backdrop-filter: blur(12px) saturate(100%);
+    -webkit-backdrop-filter: blur(12px) saturate(1.01);
+    backdrop-filter: blur(12px) saturate(1.01);
   }
 
   .gooey-blob {
