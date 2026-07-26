@@ -45,25 +45,13 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
-    const aboutSection = document.getElementById('sobre-mi');
-    if (!aboutSection) return;
-    if (document.querySelector('script[id="model-viewer-script"]')) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const script = document.createElement('script');
-          script.id = 'model-viewer-script';
-          script.type = 'module';
-          script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
-          document.head.appendChild(script);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '300px' }
-    );
-    observer.observe(aboutSection);
-    return () => observer.disconnect();
+    if (!document.querySelector('script[id="model-viewer-script"]')) {
+      const script = document.createElement('script');
+      script.id = 'model-viewer-script';
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
   }, []);
 
   const setActive = useCallback((section) => {
