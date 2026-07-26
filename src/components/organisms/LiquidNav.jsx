@@ -328,6 +328,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             <nav className="liquid-nav max-w-[95vw] overflow-x-auto hide-scrollbar desktop-nav-only">
               <ul ref={navRef} className="liquid-nav-container">
                 <div
+                  role="presentation"
                   className={`liquid-nav-pill ${isMoving ? 'moving' : ''}`}
                   style={{
                     transform: `translateX(${indicatorStyle.left}px)`,
@@ -393,6 +394,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             aria-modal="true"
             aria-hidden={!mobileOpen}
             aria-label={t('ui.navigationMenu')}
+            inert={!mobileOpen || undefined}
           >
             <div className="sidebar-header">
               <button onClick={() => setMobileOpen(false)} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
