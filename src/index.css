@@ -113,6 +113,7 @@ html.dark {
   padding: 8px 18px;
   border-radius: 99em;
   min-height: 48px;
+  background: rgba(15, 17, 26, 0.7);
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
@@ -156,6 +157,7 @@ html.dark {
   min-width: 44px;
   min-height: 44px;
   border-radius: 50%;
+  background: rgba(15, 17, 26, 0.7);
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
@@ -204,6 +206,7 @@ html.dark {
   width: 250px;
   max-width: 80vw;
   z-index: 60;
+  background: rgba(15, 17, 26, 0.85);
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 22%, transparent);
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
@@ -272,6 +275,7 @@ html.dark {
   z-index: 0;
   border-radius: 12px;
   pointer-events: none;
+  background: rgba(15, 17, 26, 0.5);
   background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               height 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -389,9 +393,10 @@ body.sidebar-open {
   border-radius: 99em;
   min-height: 56px;
   list-style: none;
+  background: rgba(15, 17, 26, 0.75);
   background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  backdrop-filter: blur(20px) saturate(var(--saturation));
-  -webkit-backdrop-filter: blur(20px) saturate(var(--saturation));
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent);
   transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1);
   overflow: hidden;
@@ -406,6 +411,7 @@ body.sidebar-open {
   z-index: 0;
   border-radius: 99em;
   pointer-events: none;
+  background: rgba(15, 17, 26, 0.5);
   background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
