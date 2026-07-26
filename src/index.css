@@ -7,6 +7,28 @@
   font-display: swap;
 }
 
+@keyframes hero-photo-in {
+  from {
+    opacity: 0;
+    transform: translateY(64px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-photo-reveal {
+  animation: hero-photo-in 0.75s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo-reveal {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 @layer base {
   body {
     @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
