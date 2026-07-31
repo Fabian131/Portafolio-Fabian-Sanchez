@@ -69,7 +69,7 @@ const AboutSection = memo(() => {
         </ScrollReveal>
       </div>
 
-      <div className="lg:w-7/12 space-y-6 min-w-0">
+      <div className="lg:w-7/12 space-y-6 min-w-0 text-center lg:text-left">
         <ScrollReveal direction="right" delay={200}>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center lg:justify-start justify-center gap-3">
             <User className="text-cyan-500 shrink-0" size={32} />

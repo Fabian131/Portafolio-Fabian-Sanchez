@@ -11,6 +11,13 @@
     <meta property="og:description" content="Portafolio de proyectos de desarrollo web y software." />
     <meta property="og:type" content="website" />
     <title>Fabián Sánchez - Full Stack Developer</title>
+    <script>
+      (function() {
+        var t = localStorage.getItem('theme');
+        if (t === 'light') return;
+        document.documentElement.classList.add('dark');
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -289,6 +289,21 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   }, [sidebarPillStyle.top, activeSection, links]);
 
   useEffect(() => {
+    const container = sidebarPillRef.current;
+    if (!container || !isMobile) return;
+
+    container.addEventListener('touchstart', handlePillTouchStart, { passive: false });
+    container.addEventListener('touchmove', handlePillTouchMove, { passive: false });
+    container.addEventListener('touchend', handlePillTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handlePillTouchStart);
+      container.removeEventListener('touchmove', handlePillTouchMove);
+      container.removeEventListener('touchend', handlePillTouchEnd);
+    };
+  }, [handlePillTouchStart, handlePillTouchMove, handlePillTouchEnd, isMobile]);
+
+  useEffect(() => {
     const handleMouseMove = (e) => {
       if (!pillDraggingRef.current || !sidebarPillRef.current) return;
       const { containerTop, pillH, minTop, maxTop } = pillDragCacheRef.current;
@@ -373,7 +388,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
         <div className="fixed top-6 right-4 z-50">
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="mobile-nav-hamburger"
+            className={`mobile-nav-hamburger ${mobileOpen ? 'opacity-0 pointer-events-none' : ''}`}
             aria-label={t('ui.menu')}
             aria-expanded={mobileOpen}
           >
@@ -412,9 +427,6 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             <div
                 ref={sidebarPillRef}
                 className="sidebar-pill-container"
-                onTouchStart={handlePillTouchStart}
-                onTouchMove={handlePillTouchMove}
-                onTouchEnd={handlePillTouchEnd}
                 onMouseDown={handlePillMouseDown}
               >
               <div

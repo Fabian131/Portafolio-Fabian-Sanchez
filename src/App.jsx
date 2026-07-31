@@ -16,7 +16,7 @@ import { useTranslation } from './hooks/useTranslation';
 import { MOBILE_MAX } from './utils/breakpoints';
 
 export default function App() {
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const { lang } = useTranslation();
   const [activeSection, setActiveSection] = useState('inicio');
   const cursorGlowRef = useRef(null);
@@ -37,6 +37,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    localStorage.setItem('theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
