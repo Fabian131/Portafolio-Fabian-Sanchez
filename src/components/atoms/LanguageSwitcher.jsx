@@ -50,7 +50,7 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
         <button
           ref={btnRef}
           onClick={handleToggle}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm bg-white/10 dark:bg-[#0f111a]/60 backdrop-blur-md border border-white/10 dark:border-white/5 hover:bg-white/20 dark:hover:bg-white/10 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
           aria-label={t('ui.langToggle')}
         >
           <Globe size={14} />
@@ -66,18 +66,18 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
             style={{ top: `${dropdownPos.top}px`, right: `${dropdownPos.right}px` }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-44 bg-white/10 dark:bg-[#0f111a]/80 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl overflow-hidden">
+            <div className="w-44 bg-white/90 dark:bg-[#0f111a]/80 backdrop-blur-xl rounded-xl border border-black/10 dark:border-white/10 shadow-xl overflow-hidden">
               {AVAILABLE.map(({ code, native }) => (
                 <button
                   key={code}
                   onClick={() => handleSelect(code)}
-                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left hover:bg-white/10 ${
-                    lang === code ? 'text-cyan-500 font-medium' : 'text-gray-700 dark:text-gray-300'
+                  className={`w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left hover:bg-black/5 dark:hover:bg-white/10 ${
+                    lang === code ? 'text-cyan-700 dark:text-cyan-400 font-medium' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
                   <span>{native}</span>
                   <span className="text-xs opacity-50 ml-auto">{code.toUpperCase()}</span>
-                  {lang === code && <Check size={14} className="text-cyan-500 shrink-0" />}
+                  {lang === code && <Check size={14} className="text-cyan-700 dark:text-cyan-400 shrink-0" />}
                 </button>
               ))}
             </div>

@@ -237,6 +237,7 @@ html.bg-loaded .mobile-nav-hamburger {
   top: 0;
   right: 0;
   bottom: 0;
+  height: 100dvh;
   width: 250px;
   max-width: 80vw;
   z-index: 60;
@@ -246,11 +247,13 @@ html.bg-loaded .mobile-nav-hamburger {
   display: flex;
   flex-direction: column;
   padding: 24px 0;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform;
   overflow-y: auto;
 }
 
+<<<<<<< Updated upstream
 html.bg-loaded .sidebar-drawer {
   background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 22%, transparent);
   border-left: 1px solid color-mix(in srgb, var(--c-light) 14%, transparent);
@@ -258,6 +261,20 @@ html.bg-loaded .sidebar-drawer {
   backdrop-filter: blur(28px) saturate(180%);
 }
 
+=======
+<<<<<<< Updated upstream
+=======
+html.bg-loaded .sidebar-drawer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 22%),
+    color-mix(in srgb, var(--c-glass, #bbbbbc) 24%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--c-light) 18%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  backdrop-filter: blur(28px) saturate(200%);
+}
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 .sidebar-drawer.dragging {
   transition: none;
 }
@@ -314,21 +331,49 @@ html.bg-loaded .sidebar-drawer {
   z-index: 0;
   border-radius: 12px;
   pointer-events: none;
+<<<<<<< Updated upstream
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+=======
+<<<<<<< Updated upstream
+  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
+=======
+  background:
+    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(0, 0, 0, 0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.08);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               height 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-out;
   will-change: transform, height;
 }
 
+<<<<<<< Updated upstream
 html.bg-loaded .sidebar-pill {
   background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
   border: 1px solid color-mix(in srgb, var(--c-light) 16%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-light) 20%, transparent);
 }
 
+=======
+<<<<<<< Updated upstream
+=======
+html.bg-loaded .sidebar-pill {
+  background:
+    radial-gradient(120% 140% at 25% 0%, color-mix(in srgb, var(--c-light) 18%, transparent) 0%, transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-glass) 42%, transparent) 0%, color-mix(in srgb, var(--c-glass) 28%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--c-light) 16%, transparent);
+  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--c-light) 22%, transparent),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.08);
+}
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 .sidebar-pill.dragging {
   transition: none;
 }
@@ -366,21 +411,27 @@ html.bg-loaded .sidebar-pill {
 }
 
 .sidebar-link-active {
-  color: var(--c-content, #e1e1e1);
+  color: var(--c-action, #38bdf8);
   font-weight: 700;
   font-size: 1.1rem;
   border-left-color: var(--c-action, #38bdf8);
 }
 
-/* Sidebar Theme Toggle */
-.sidebar-theme-row {
+/* Sidebar Footer (theme + language, stacked rows) */
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-footer-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  min-height: 60px;
+  gap: 8px;
+  padding: 10px 20px;
+  min-height: 56px;
 }
 
 .sidebar-theme-label {
@@ -408,6 +459,58 @@ html.bg-loaded .sidebar-pill {
 
 .sidebar-theme-btn:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+
+/* Sidebar: light mode overrides */
+html:not(.dark) .sidebar-drawer {
+  background-color: rgba(248, 250, 252, 0.85);
+  border-left-color: rgba(15, 17, 26, 0.08);
+  box-shadow: -8px 0 40px rgba(15, 17, 26, 0.15);
+}
+
+html:not(.dark).bg-loaded .sidebar-drawer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 22%),
+    color-mix(in srgb, #ffffff 48%, transparent);
+  border-left-color: rgba(15, 17, 26, 0.1);
+}
+
+html:not(.dark) .sidebar-pill {
+  background:
+    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, rgba(15, 17, 26, 0.06) 0%, rgba(15, 17, 26, 0.09) 100%);
+  border-color: rgba(15, 17, 26, 0.12);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6),
+              inset 0 -1px 1px rgba(15, 17, 26, 0.06);
+}
+
+html:not(.dark).bg-loaded .sidebar-pill {
+  background:
+    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.55) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(15, 17, 26, 0.07) 0%, rgba(15, 17, 26, 0.1) 100%);
+  border-color: rgba(15, 17, 26, 0.14);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5),
+              inset 0 -1px 1px rgba(15, 17, 26, 0.07);
+}
+
+html:not(.dark) .sidebar-link:hover,
+html:not(.dark) .sidebar-link:active {
+  background: rgba(15, 17, 26, 0.05);
+}
+
+html:not(.dark) .sidebar-close-btn,
+html:not(.dark) .sidebar-theme-btn {
+  background: rgba(15, 17, 26, 0.05);
+  border-color: rgba(15, 17, 26, 0.1);
+}
+
+html:not(.dark) .sidebar-close-btn:hover,
+html:not(.dark) .sidebar-theme-btn:hover {
+  background: rgba(15, 17, 26, 0.1);
+}
+
+html:not(.dark) .sidebar-footer {
+  border-top-color: rgba(15, 17, 26, 0.08);
 }
 
 /* Body scroll lock */
@@ -615,9 +718,21 @@ html.bg-loaded .liquid-nav-pill {
     backdrop-filter: blur(8px) saturate(1.01);
   }
 
+<<<<<<< Updated upstream
   html.bg-loaded .sidebar-drawer {
     -webkit-backdrop-filter: blur(12px) saturate(1.01);
     backdrop-filter: blur(12px) saturate(1.01);
+=======
+<<<<<<< Updated upstream
+  .sidebar-drawer {
+    backdrop-filter: blur(12px) saturate(100%);
+    -webkit-backdrop-filter: blur(12px) saturate(100%);
+=======
+  html.bg-loaded .sidebar-drawer {
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   }
 
   .gooey-blob {

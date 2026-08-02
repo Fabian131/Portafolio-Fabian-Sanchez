@@ -449,18 +449,19 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
               ))}
             </div>
 
-            <div className="sidebar-theme-row">
-              <span className="sidebar-theme-label">
-                {isDark ? t('ui.darkMode') : t('ui.lightMode')}
-              </span>
-              <button onClick={toggleTheme} className="sidebar-theme-btn" aria-label={t('ui.themeToggle')}>
-                {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
-              </button>
-            </div>
-
-            <div className="sidebar-theme-row">
-              <span className="sidebar-theme-label">{t('ui.langToggle')}</span>
-              <LanguageSwitcher direction="up" />
+            <div className="sidebar-footer">
+              <div className="sidebar-footer-row">
+                <span className="sidebar-theme-label">
+                  {isDark ? t('ui.darkMode') : t('ui.lightMode')}
+                </span>
+                <button onClick={toggleTheme} className="sidebar-theme-btn" aria-label={t('ui.themeToggle')}>
+                  {isDark ? <Sun size={20} className="stroke-[2.5]" /> : <Moon size={20} className="stroke-[2.5]" />}
+                </button>
+              </div>
+              <div className="sidebar-footer-row">
+                <span className="sidebar-theme-label">{t('ui.langToggle')}</span>
+                <LanguageSwitcher direction="up" />
+              </div>
             </div>
           </aside>
         </>,

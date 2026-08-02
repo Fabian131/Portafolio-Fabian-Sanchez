@@ -34,7 +34,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <ScrollReveal direction="left" delay={200} className="space-y-8">
 
-          <p className={PROSE_CLASS}>
+          <p className={`${PROSE_CLASS} text-center`}>
             {t('contact.description')}
           </p>
 
