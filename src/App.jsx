@@ -35,7 +35,7 @@ export default function App() {
       isManualRef.current = false;
     }, 1000);
   }, []);
-
+  // This effect updates the theme in localStorage and applies the appropriate class to the document element when the theme changes.
   useEffect(() => {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
