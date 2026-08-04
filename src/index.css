@@ -253,17 +253,6 @@ html.bg-loaded .mobile-nav-hamburger {
   overflow-y: auto;
 }
 
-<<<<<<< Updated upstream
-html.bg-loaded .sidebar-drawer {
-  background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 22%, transparent);
-  border-left: 1px solid color-mix(in srgb, var(--c-light) 14%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  backdrop-filter: blur(28px) saturate(180%);
-}
-
-=======
-<<<<<<< Updated upstream
-=======
 html.bg-loaded .sidebar-drawer {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 22%),
@@ -273,8 +262,6 @@ html.bg-loaded .sidebar-drawer {
   backdrop-filter: blur(28px) saturate(200%);
 }
 
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 .sidebar-drawer.dragging {
   transition: none;
 }
@@ -331,38 +318,18 @@ html.bg-loaded .sidebar-drawer {
   z-index: 0;
   border-radius: 12px;
   pointer-events: none;
-<<<<<<< Updated upstream
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-=======
-<<<<<<< Updated upstream
-  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
-=======
   background:
-    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(0, 0, 0, 0.04) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 45%, rgba(0, 0, 0, 0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.28),
               inset 0 -1px 1px rgba(0, 0, 0, 0.08);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               height 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-out;
   will-change: transform, height;
 }
 
-<<<<<<< Updated upstream
-html.bg-loaded .sidebar-pill {
-  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c-light) 16%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-light) 20%, transparent);
-}
-
-=======
-<<<<<<< Updated upstream
-=======
 html.bg-loaded .sidebar-pill {
   background:
     radial-gradient(120% 140% at 25% 0%, color-mix(in srgb, var(--c-light) 18%, transparent) 0%, transparent 55%),
@@ -372,8 +339,6 @@ html.bg-loaded .sidebar-pill {
               inset 0 -1px 1px rgba(0, 0, 0, 0.08);
 }
 
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 .sidebar-pill.dragging {
   transition: none;
 }
@@ -496,6 +461,11 @@ html:not(.dark).bg-loaded .sidebar-pill {
 html:not(.dark) .sidebar-link:hover,
 html:not(.dark) .sidebar-link:active {
   background: rgba(15, 17, 26, 0.05);
+}
+
+html:not(.dark) .sidebar-link-active {
+  color: #0284c7;
+  border-left-color: #0284c7;
 }
 
 html:not(.dark) .sidebar-close-btn,
@@ -718,21 +688,9 @@ html.bg-loaded .liquid-nav-pill {
     backdrop-filter: blur(8px) saturate(1.01);
   }
 
-<<<<<<< Updated upstream
-  html.bg-loaded .sidebar-drawer {
-    -webkit-backdrop-filter: blur(12px) saturate(1.01);
-    backdrop-filter: blur(12px) saturate(1.01);
-=======
-<<<<<<< Updated upstream
-  .sidebar-drawer {
-    backdrop-filter: blur(12px) saturate(100%);
-    -webkit-backdrop-filter: blur(12px) saturate(100%);
-=======
   html.bg-loaded .sidebar-drawer {
     -webkit-backdrop-filter: blur(12px) saturate(1.4);
     backdrop-filter: blur(12px) saturate(1.4);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   }
 
   .gooey-blob {
