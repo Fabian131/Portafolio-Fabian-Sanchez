@@ -3,17 +3,11 @@ import { Mail, Send } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
-import MagneticButton from '../atoms/MagneticButton';
+import GlassDock from '../molecules/GlassDock';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
   const { t } = useTranslation();
-
-  const iconMap = useMemo(() => ({
-    github:   <Github size={26} />,
-    linkedin: <Linkedin size={26} />,
-    email:    <GmailIcon size={26} />,
-  }), []);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -38,32 +32,12 @@ const ContactSection = memo(({ socialLinks, theme }) => {
         </p>
       </ScrollReveal>
 
-      {/* ── Social Links Bar ── */}
-      <ScrollReveal direction="up" delay={150} className="w-fit mx-auto mb-10">
-        <GlassCard tilt={false} className="py-4 px-8 flex flex-col items-center justify-center gap-4 rounded-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400">
-            {t('contact.findMe') || 'Find me on'}
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            {socialLinks.map((link) => (
-              <MagneticButton key={link.name}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group"
-                  aria-label={link.name}
-                >
-                  <div className="p-3 flex items-center justify-center rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 group-hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.15)] text-gray-700 dark:text-gray-300 group-hover:text-cyan-500">
-                    <span className="group-hover:scale-110 transition-transform duration-300">
-                      {iconMap[link.iconKey]}
-                    </span>
-                  </div>
-                </a>
-              </MagneticButton>
-            ))}
-          </div>
-        </GlassCard>
+      {/* ── Social Links Bar (Glass Dock) ── */}
+      <ScrollReveal direction="up" delay={150} className="w-fit mx-auto mb-10 text-center">
+        <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400 mb-2">
+          {t('contact.findMe') || 'Find me on'}
+        </p>
+        <GlassDock items={socialLinks} />
       </ScrollReveal>
 
       {/* ── Centered Form Container ── */}
