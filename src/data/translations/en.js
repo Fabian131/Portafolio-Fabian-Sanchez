@@ -70,6 +70,18 @@ export default {
       messagePlaceholder: 'How can I help you?',
       send: 'Send Message',
       findMe: 'Find me on',
+      toast: {
+        invalidFieldsTitle: 'Invalid fields',
+        invalidFieldsDesc: 'Please check the fields highlighted in red.',
+        configErrorTitle: 'Configuration error',
+        configErrorDesc: 'Server credentials are missing.',
+        successTitle: 'Message sent!',
+        successDesc: 'I will get back to you as soon as possible.',
+        sendErrorTitle: 'An error occurred',
+        sendErrorDesc: 'Could not send the message.',
+        unexpectedErrorTitle: 'An error occurred',
+        unexpectedErrorDesc: 'Unexpected error while sending.',
+      },
     },
     footer: {
       copyright: '© {{year}} Fabián Sánchez. National University of Costa Rica.',

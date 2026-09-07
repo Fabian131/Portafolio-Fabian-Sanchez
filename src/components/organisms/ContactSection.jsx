@@ -5,41 +5,93 @@ import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
 import GlassDock from '../molecules/GlassDock';
+import { ToastContainer } from '../molecules/GlassToast';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+  const [toasts, setToasts] = useState([]);
+  const idCounter = useRef(0);
+
+  const addToast = useCallback((variant, title, description) => {
+    const id = `toast-${++idCounter.current}`;
+    setToasts((prev) => {
+      const next = [...prev, { id, variant, title, description }];
+      if (next.length > 3) return next.slice(next.length - 3);
+      return next;
+    });
+  }, []);
+
+  const dismissToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     if (!formRef.current) return;
 
+    if (!formRef.current.checkValidity()) {
+      formRef.current.classList.add('was-validated');
+      addToast(
+        'error',
+        t('contact.toast.invalidFieldsTitle') || 'Campos inválidos',
+        t('contact.toast.invalidFieldsDesc') || 'Por favor, revisa los campos en rojo.'
+      );
+      return;
+    }
+
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
     // Make sure you define these variables in your .env file
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
     const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-    emailjs.sendForm(serviceId, templateId, formRef.current, publicKey)
-      .then((result) => {
-          console.log(result.text);
-          setSubmitStatus('success');
-          formRef.current.reset();
-      }, (error) => {
-          console.error(error.text);
-          setSubmitStatus('error');
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-        // Hide status message after 5 seconds
-        setTimeout(() => setSubmitStatus(null), 5000);
-      });
-  }, []);
+    if (!serviceId || !templateId || !publicKey) {
+      console.error("Faltan credenciales de EmailJS en el archivo .env");
+      addToast(
+        'error',
+        t('contact.toast.configErrorTitle') || 'Error de configuración',
+        t('contact.toast.configErrorDesc') || 'Faltan credenciales del servidor.'
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      emailjs.sendForm(serviceId, templateId, formRef.current, publicKey)
+        .then((result) => {
+            console.log(result.text);
+            addToast(
+              'success',
+              t('contact.toast.successTitle') || '¡Mensaje enviado!',
+              t('contact.toast.successDesc') || 'Te responderé lo antes posible.'
+            );
+            formRef.current.reset();
+            formRef.current.classList.remove('was-validated');
+        }, (error) => {
+            console.error(error.text);
+            addToast(
+              'error',
+              t('contact.toast.sendErrorTitle') || 'Hubo un error',
+              t('contact.toast.sendErrorDesc') || 'No se pudo enviar el mensaje.'
+            );
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    } catch (err) {
+      console.error(err);
+      addToast(
+        'error',
+        t('contact.toast.unexpectedErrorTitle') || 'Hubo un error',
+        t('contact.toast.unexpectedErrorDesc') || 'Error inesperado al enviar.'
+      );
+      setIsSubmitting(false);
+    }
+  }, [addToast, t]);
 
   return (
     <section
@@ -141,29 +193,17 @@ const ContactSection = memo(({ socialLinks, theme }) => {
             </div>
 
             {/* Footer row */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-              <div className="w-full sm:w-auto text-sm h-6">
-                {submitStatus === 'success' && (
-                  <p className="text-green-500 dark:text-green-400 flex items-center gap-2">
-                    <CheckCircle size={16} /> ¡Mensaje enviado con éxito!
-                  </p>
-                )}
-                {submitStatus === 'error' && (
-                  <p className="text-red-500 dark:text-red-400 flex items-center gap-2">
-                    <AlertCircle size={16} /> Hubo un error al enviar el mensaje.
-                  </p>
-                )}
-              </div>
+            <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-2">
               <button type="submit" className="c-submit w-full sm:w-auto justify-center" disabled={isSubmitting}>
                 {isSubmitting ? 'Enviando...' : (t('contact.send') || 'Send message')}
                 {isSubmitting ? <Loader2 size={14} className="ml-1 animate-spin" /> : <Send size={14} className="ml-1" />}
               </button>
             </div>
-
           </form>
         </GlassCard>
       </ScrollReveal>
 
+      <ToastContainer toasts={toasts} dismissToast={dismissToast} />
     </section>
   );
 });
