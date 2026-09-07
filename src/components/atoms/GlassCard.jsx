@@ -33,7 +33,7 @@ const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = fal
 
   return (
     <div className={`relative group ${isNavbar ? 'rounded-full' : 'rounded-3xl'} w-full h-full`}>
-      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] opacity-0 ${(tilt && !isLowPerf) ? 'group-hover:opacity-40 blur-xl' : ''} transition-opacity duration-700 -z-10`}></div>
+      <div className={`absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-[inherit] opacity-0 ${!isLowPerf ? 'group-hover:opacity-40 blur-xl' : ''} transition-opacity duration-700 -z-10`}></div>
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}

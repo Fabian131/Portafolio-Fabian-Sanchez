@@ -23,7 +23,7 @@ const ProjectCard = memo(({ project }) => {
   const handlePlay = useCallback(() => setIsPlaying(true), []);
 
   return (
-    <GlassCard tilt={true} className="flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
+    <GlassCard tilt={false} className="flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
       {/* Image / Video — edge-to-edge, no padding */}
       <div className="w-full aspect-video overflow-hidden relative shrink-0">
         {hasVideo && isPlaying ? (
@@ -39,7 +39,7 @@ const ProjectCard = memo(({ project }) => {
             <img
               src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
               alt={transTitle}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+              className="absolute inset-0 w-full h-full object-cover transition-all duration-700"
               loading="lazy"
             />
             <button
@@ -54,7 +54,7 @@ const ProjectCard = memo(({ project }) => {
           </>
         ) : (
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
+            className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70 transition-all duration-700"
             style={{ backgroundImage: `url('${imageUrl || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'}')` }}
           />
         )}

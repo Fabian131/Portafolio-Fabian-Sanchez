@@ -17,7 +17,7 @@ const BlobButton = memo(({ children, onClick, darkTheme }) => {
   return (
     <div className={`blob-container ${darkTheme ? 'blob-dark' : 'blob-light'}`}>
       <div className="blob-inner" ref={btnRef} onMouseMove={handleMouseMove} onClick={onClick}>
-        <button type="button" className="flex items-center gap-2">
+        <button type="submit" className="flex items-center gap-2">
           {children}
         </button>
         <div className="blob"></div>
