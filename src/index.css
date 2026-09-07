@@ -709,3 +709,104 @@ html.bg-loaded .liquid-nav-pill {
     justify-content: space-between;
   }
 }
+
+/* ─── Contact Form — glass inputs ─── */
+.c-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.c-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(107, 114, 128, 0.9);
+}
+
+html.dark .c-label {
+  color: rgba(156, 163, 175, 0.7);
+}
+
+.c-input {
+  width: 100%;
+  padding: 0.65rem 0.875rem;
+  border-radius: 0.625rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  color: var(--c-content);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+html.dark .c-input {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.c-input:focus {
+  border-color: rgba(14, 165, 233, 0.55);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+html.dark .c-input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.c-input::placeholder {
+  color: rgba(107, 114, 128, 0.5);
+}
+
+html.dark .c-input::placeholder {
+  color: rgba(156, 163, 175, 0.35);
+}
+
+textarea.c-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Submit button — compact, pill-shaped */
+.c-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+html.dark .c-submit {
+  background: rgba(14, 165, 233, 0.09);
+  border-color: rgba(14, 165, 233, 0.2);
+  color: #38bdf8;
+}
+
+.c-submit:hover {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 16px rgba(14, 165, 233, 0.2);
+}
+
+html.dark .c-submit:hover {
+  background: rgba(14, 165, 233, 0.16);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+.c-submit:active {
+  transform: scale(0.97);
+}

@@ -65,8 +65,11 @@ export default {
       message: 'Mensaje',
       namePlaceholder: 'Tu nombre',
       emailPlaceholder: 'tu@email.com',
+      subject: 'Asunto',
+      subjectPlaceholder: 'Idea de proyecto, colaboración...',
       messagePlaceholder: '¿En qué te puedo ayudar?',
       send: 'Enviar Mensaje',
+      findMe: 'Encuéntrame en',
     },
     footer: {
       copyright: '© {{year}} Fabián Sánchez. Universidad Nacional de Costa Rica.',
