@@ -5,17 +5,11 @@ import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
 import GooeyButton from '../atoms/GooeyButton';
 import BlobButton from '../atoms/BlobButton';
-import GlassCard from '../atoms/GlassCard';
-import MagneticButton from '../atoms/MagneticButton';
+import GlassDock from '../molecules/GlassDock';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
   const { t, lang } = useTranslation();
-  const iconMap = useMemo(() => ({
-    github: <Github size={36} />,
-    linkedin: <Linkedin size={36} />,
-    email: <GmailIcon size={36} />,
-  }), []);
 
   return (
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">
@@ -62,18 +56,8 @@ Fabián Sánchez
               />
             )}
 
-            <div className="flex flex-wrap justify-center gap-4 mt-6">
-              {socialLinks.map((link) => (
-                <MagneticButton key={link.name}>
-                  <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="block group">
-                    <div className="p-3 sm:p-4 flex items-center justify-center rounded-xl bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 group-hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(14,165,233,0.15)] text-gray-700 dark:text-gray-300 group-hover:text-cyan-500">
-                      <div className="group-hover:scale-110 transition-transform duration-300">
-                        {iconMap[link.iconKey]}
-                      </div>
-                    </div>
-                  </a>
-                </MagneticButton>
-              ))}
+            <div className="flex flex-wrap justify-center mt-6 w-full max-w-sm mx-auto">
+              <GlassDock items={socialLinks} />
             </div>
           </div>
         </ScrollReveal>

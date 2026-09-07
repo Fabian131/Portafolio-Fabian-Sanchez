@@ -46,7 +46,14 @@ const ContactSection = memo(({ socialLinks, theme }) => {
         {/* Subtle ambient colorful glow behind the form */}
         <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 dark:from-cyan-500/10 dark:via-blue-500/10 dark:to-purple-500/10 blur-2xl rounded-[3rem] opacity-70 -z-10 pointer-events-none" />
 
-        <GlassCard tilt={false} className="p-6 lg:p-10 border-t-2 border-t-cyan-500/20">
+        <GlassCard tilt={false} className="p-6 lg:p-10 border-t-2 border-t-cyan-500/20 group/inner">
+          {/* Subtle inner spotlight tracking the mouse */}
+          <div 
+            className="absolute inset-0 pointer-events-none opacity-0 group-hover/inner:opacity-100 transition-opacity duration-500 -z-10 rounded-[inherit]"
+            style={{
+              background: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(14, 165, 233, 0.08), transparent 50%)'
+            }}
+          />
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
             
             {/* Name + Email — side by side on sm+ */}
