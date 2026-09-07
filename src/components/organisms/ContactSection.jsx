@@ -1,5 +1,6 @@
-import React, { memo, useMemo, useCallback } from 'react';
-import { Mail, Send } from 'lucide-react';
+import React, { memo, useRef, useState, useCallback } from 'react';
+import { Mail, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import GlassCard from '../atoms/GlassCard';
@@ -8,10 +9,36 @@ import { useTranslation } from '../../hooks/useTranslation';
 
 const ContactSection = memo(({ socialLinks, theme }) => {
   const { t } = useTranslation();
+  const formRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    // TODO: wire to a form-submission service (e.g. Formspree / EmailJS)
+    if (!formRef.current) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    // Make sure you define these variables in your .env file
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    emailjs.sendForm(serviceId, templateId, formRef.current, publicKey)
+      .then((result) => {
+          console.log(result.text);
+          setSubmitStatus('success');
+          formRef.current.reset();
+      }, (error) => {
+          console.error(error.text);
+          setSubmitStatus('error');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        // Hide status message after 5 seconds
+        setTimeout(() => setSubmitStatus(null), 5000);
+      });
   }, []);
 
   return (
@@ -54,7 +81,7 @@ const ContactSection = memo(({ socialLinks, theme }) => {
               background: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(14, 165, 233, 0.08), transparent 50%)'
             }}
           />
-          <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+          <form ref={formRef} className="space-y-6" onSubmit={handleSubmit} noValidate>
             
             {/* Name + Email — side by side on sm+ */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -62,22 +89,26 @@ const ContactSection = memo(({ socialLinks, theme }) => {
                 <label htmlFor="c-name" className="c-label">{t('contact.name') || 'Name'}</label>
                 <input
                   type="text"
+                  name="user_name"
                   id="c-name"
                   className="c-input"
                   placeholder={t('contact.namePlaceholder') || 'Fabián…'}
                   required
                   autoComplete="name"
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="c-field">
                 <label htmlFor="c-email" className="c-label">{t('contact.email') || 'Email'}</label>
                 <input
                   type="email"
+                  name="user_email"
                   id="c-email"
                   className="c-input"
                   placeholder={t('contact.emailPlaceholder') || 'you@example.com'}
                   required
                   autoComplete="email"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -87,9 +118,11 @@ const ContactSection = memo(({ socialLinks, theme }) => {
               <label htmlFor="c-subject" className="c-label">{t('contact.subject') || 'Subject'}</label>
               <input
                 type="text"
+                name="subject"
                 id="c-subject"
                 className="c-input"
                 placeholder={t('contact.subjectPlaceholder') || 'Project idea, collaboration…'}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -97,19 +130,33 @@ const ContactSection = memo(({ socialLinks, theme }) => {
             <div className="c-field">
               <label htmlFor="c-message" className="c-label">{t('contact.message') || 'Message'}</label>
               <textarea
+                name="message"
                 id="c-message"
                 rows={5}
                 className="c-input"
                 placeholder={t('contact.messagePlaceholder') || 'Tell me about your project…'}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
             {/* Footer row */}
-            <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-2">
-              <button type="submit" className="c-submit w-full sm:w-auto justify-center">
-                {t('contact.send') || 'Send message'}
-                <Send size={14} className="ml-1" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <div className="w-full sm:w-auto text-sm h-6">
+                {submitStatus === 'success' && (
+                  <p className="text-green-500 dark:text-green-400 flex items-center gap-2">
+                    <CheckCircle size={16} /> ¡Mensaje enviado con éxito!
+                  </p>
+                )}
+                {submitStatus === 'error' && (
+                  <p className="text-red-500 dark:text-red-400 flex items-center gap-2">
+                    <AlertCircle size={16} /> Hubo un error al enviar el mensaje.
+                  </p>
+                )}
+              </div>
+              <button type="submit" className="c-submit w-full sm:w-auto justify-center" disabled={isSubmitting}>
+                {isSubmitting ? 'Enviando...' : (t('contact.send') || 'Send message')}
+                {isSubmitting ? <Loader2 size={14} className="ml-1 animate-spin" /> : <Send size={14} className="ml-1" />}
               </button>
             </div>
 
