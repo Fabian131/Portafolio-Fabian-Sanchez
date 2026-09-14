@@ -520,6 +520,7 @@ body.sidebar-open {
     inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent), 
     inset -1px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 40%), transparent);
   transition: background-color 400ms cubic-bezier(1, 0.0, 0.4, 1), box-shadow 400ms;
+  overflow: hidden;
   isolation: isolate;
 }
 
@@ -554,7 +555,7 @@ html.bg-loaded .liquid-nav-container {
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               width 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-out;
-  will-change: transform, width;
+  will-change: transform, width, scale;
 }
 
 html.bg-loaded .liquid-nav-pill {
