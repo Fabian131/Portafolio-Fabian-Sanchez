@@ -30,10 +30,12 @@ export default function App() {
     isManualRef.current = true;
     clearTimeout(manualScrollTimeoutRef.current);
     setActive(sectionId);
+    // Must be > 1000ms (scroll animation duration) to prevent the scroll
+    // listener from racing and overwriting activeSection mid-animation
     manualScrollTimeoutRef.current = setTimeout(() => {
       setIsManualScrolling(false);
       isManualRef.current = false;
-    }, 1000);
+    }, 1200);
   }, []);
 
   useEffect(() => {

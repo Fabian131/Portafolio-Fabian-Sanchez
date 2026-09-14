@@ -19,6 +19,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
   const pendingNavRef = useRef(null);
+  const scrollAnimationRef = useRef(null);
   const sidebarPillRef = useRef(null);
   const [sidebarPillStyle, setSidebarPillStyle] = useState({ top: 0, height: 0 });
   const [sidebarMoving, setSidebarMoving] = useState(false);
@@ -96,6 +97,52 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     };
   }, [activeSection, updateIndicator, updateSidebarIndicator]);
 
+  const customScrollTo = useCallback((targetId) => {
+    // Cancel any in-progress animation immediately
+    if (scrollAnimationRef.current) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+
+    const getTargetY = () => Math.round(targetEl.getBoundingClientRect().top + window.scrollY);
+
+    const duration = 1000;
+    let start = null;
+    // Capture start position NOW, before the rAF loop, so it's fresh
+    let startPosition = window.scrollY;
+    const targetPosition = getTargetY();
+    const distance = targetPosition - startPosition;
+
+    // If already there, nothing to do
+    if (Math.abs(distance) < 2) return;
+
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min(timestamp - start, duration);
+      const easeProgress = progress / duration;
+
+      // easeInOutCubic
+      const ease = easeProgress < 0.5
+        ? 4 * easeProgress * easeProgress * easeProgress
+        : 1 - Math.pow(-2 * easeProgress + 2, 3) / 2;
+
+      window.scrollTo({ top: startPosition + distance * ease, behavior: 'instant' });
+
+      if (progress < duration) {
+        scrollAnimationRef.current = requestAnimationFrame(step);
+      } else {
+        scrollAnimationRef.current = null;
+        // Final snap to exact position in case of rounding
+        window.scrollTo({ top: targetPosition, behavior: 'instant' });
+      }
+    };
+
+    scrollAnimationRef.current = requestAnimationFrame(step);
+  }, []);
+
   useLayoutEffect(() => {
     if (mobileOpen) {
       document.documentElement.style.overflow = 'hidden';
@@ -123,13 +170,13 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
         const target = pendingNavRef.current;
         pendingNavRef.current = null;
         requestAnimationFrame(() => {
-          document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+          customScrollTo(target);
         });
       }
       setDragOffset(0);
       setIsDragging(false);
     }
-  }, [mobileOpen]);
+  }, [mobileOpen, customScrollTo]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -176,9 +223,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       pendingNavRef.current = sectionId;
       setMobileOpen(false);
     } else {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+      customScrollTo(sectionId);
     }
-  }, [onNavClick, mobileOpen]);
+  }, [onNavClick, mobileOpen, customScrollTo]);
 
   const getPillLinkFromY = useCallback((clientY) => {
     if (!sidebarPillRef.current) return null;
@@ -360,7 +407,17 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
 
                 {links.map(link => (
                   <li key={link.id} data-id={link.id} className={activeSection === link.id ? 'active' : ''}>
-                    <a href={`#${link.id}`} onClick={(e) => { e.preventDefault(); handleNavClick(link.id); }} className="liquid-nav-link text-base">
+                    <a 
+                      href={`#${link.id}`} 
+                      draggable={false}
+                      onDragStart={(e) => e.preventDefault()}
+                      onClick={(e) => e.preventDefault()} 
+                      onPointerDown={(e) => {
+                        e.preventDefault(); 
+                        handleNavClick(link.id);
+                      }}
+                      className="liquid-nav-link text-base"
+                    >
                       {link.label}
                     </a>
                   </li>
