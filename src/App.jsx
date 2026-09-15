@@ -159,8 +159,20 @@ export default function App() {
 
   const [loadBg, setLoadBg] = useState(false);
   useEffect(() => {
-    // Start loading background immediately after first paint (no artificial delay)
-    setLoadBg(true);
+    // Si es móvil (pantallas pequeñas), retrasamos la carga del 3D hasta que
+    // la página esté completamente lista para no penalizar el rendimiento en Lighthouse.
+    if (window.innerWidth <= 768) {
+      const initBg = () => setTimeout(() => setLoadBg(true), 1000);
+      if (document.readyState === 'complete') {
+        initBg();
+      } else {
+        window.addEventListener('load', initBg);
+        return () => window.removeEventListener('load', initBg);
+      }
+    } else {
+      // En escritorio, cargamos de inmediato para la mejor experiencia visual
+      setLoadBg(true);
+    }
   }, []);
 
   return (
