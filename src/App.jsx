@@ -159,9 +159,8 @@ export default function App() {
 
   const [loadBg, setLoadBg] = useState(false);
   useEffect(() => {
-    // Defer Background3D initialization so text (LCP) renders first
-    const timer = setTimeout(() => setLoadBg(true), 100);
-    return () => clearTimeout(timer);
+    // Start loading background immediately after first paint (no artificial delay)
+    setLoadBg(true);
   }, []);
 
   return (

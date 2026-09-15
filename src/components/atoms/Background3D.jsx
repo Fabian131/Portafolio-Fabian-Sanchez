@@ -83,6 +83,8 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
     renderer.domElement.style.left = '0';
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
+    renderer.domElement.style.opacity = '0';
+    renderer.domElement.style.transition = 'opacity 1.25s ease-in-out';
 
     mountElement.appendChild(renderer.domElement);
 
@@ -275,6 +277,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
         if (firstFrame) {
           firstFrame = false;
           document.documentElement.classList.add('bg-loaded');
+          renderer.domElement.style.opacity = '1';
         }
       };
       animate(0);
@@ -376,6 +379,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
       if (firstFrame) {
         firstFrame = false;
         document.documentElement.classList.add('bg-loaded');
+        renderer.domElement.style.opacity = '1';
       }
     };
     animate(0);
