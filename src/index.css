@@ -31,7 +31,7 @@
 
 @layer base {
   body {
-    @apply bg-[#f8fafc] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-700 ease-in-out;
+    @apply bg-[#c8d6eb] dark:bg-[#03050a] text-gray-900 dark:text-white transition-colors duration-[1300ms] ease-in-out;
     -webkit-overflow-scrolling: touch;
   }
 
