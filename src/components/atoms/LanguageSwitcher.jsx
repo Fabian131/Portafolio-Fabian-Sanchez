@@ -50,7 +50,7 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
         <button
           ref={btnRef}
           onClick={handleToggle}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors duration-[2000ms]"
           aria-label={t('ui.langToggle')}
         >
           <Globe size={14} />
