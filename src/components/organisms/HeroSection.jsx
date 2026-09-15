@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
@@ -9,7 +9,7 @@ import GlassDock from '../molecules/GlassDock';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">

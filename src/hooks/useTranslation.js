@@ -1,4 +1,4 @@
-import { useState, useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { DICTS, FALLBACK_LANG } from '../data/translations';
 
 const STORAGE_KEY = 'lang';

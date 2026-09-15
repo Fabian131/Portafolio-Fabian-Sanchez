@@ -20,23 +20,25 @@ export default function App() {
   const { lang } = useTranslation();
   const [activeSection, setActiveSection] = useState('inicio');
   const cursorGlowRef = useRef(null);
-  const [isManualScrolling, setIsManualScrolling] = useState(false);
   const manualScrollTimeoutRef = useRef(null);
   const isManualRef = useRef(false);
   const activeSectionRef = useRef('inicio');
 
+  const setActive = useCallback((section) => {
+    activeSectionRef.current = section;
+    setActiveSection(section);
+  }, []);
+
   const handleNavClick = useCallback((sectionId) => {
-    setIsManualScrolling(true);
     isManualRef.current = true;
     clearTimeout(manualScrollTimeoutRef.current);
     setActive(sectionId);
     // Must be > 1000ms (scroll animation duration) to prevent the scroll
     // listener from racing and overwriting activeSection mid-animation
     manualScrollTimeoutRef.current = setTimeout(() => {
-      setIsManualScrolling(false);
       isManualRef.current = false;
     }, 1200);
-  }, []);
+  }, [setActive]);
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
@@ -47,10 +49,6 @@ export default function App() {
     }
   }, [theme]);
 
-  const setActive = useCallback((section) => {
-    activeSectionRef.current = section;
-    setActiveSection(section);
-  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -103,7 +101,7 @@ export default function App() {
       window.removeEventListener('scroll', handleScroll);
       ticking = false;
     };
-  }, []);
+  }, [setActive]);
 
   useEffect(() => {
     let ticking = false;
@@ -140,7 +138,7 @@ export default function App() {
     };
   }, []);
 
-  const { fps, isLagging } = usePerformanceMonitor();
+  const { isLagging } = usePerformanceMonitor();
 
   const performanceTier = useMemo(() => {
     const lowMemory = typeof navigator !== 'undefined' && navigator.deviceMemory < 4;
@@ -157,7 +155,7 @@ export default function App() {
     window.open(`/cv/Fabian_Sanchez_Salinas_CV_${lang.toUpperCase()}.pdf`, '_blank');
   }, [lang]);
 
-  const [loadBg, setLoadBg] = useState(false);
+  const [loadBg, setLoadBg] = useState(() => typeof window !== 'undefined' && window.innerWidth > 768);
   useEffect(() => {
     // Si es móvil (pantallas pequeñas), retrasamos la carga del 3D hasta que
     // la página esté completamente lista para no penalizar el rendimiento en Lighthouse.
@@ -177,9 +175,6 @@ export default function App() {
       
       // O inicia de forma segura después de 3.5 segundos si no hay interacción
       setTimeout(initBg, 3500);
-    } else {
-      // En escritorio, cargamos de inmediato para la mejor experiencia visual
-      setLoadBg(true);
     }
   }, []);
 

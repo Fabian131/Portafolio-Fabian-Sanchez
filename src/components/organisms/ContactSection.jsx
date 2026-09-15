@@ -8,7 +8,7 @@ import GlassDock from '../molecules/GlassDock';
 import { ToastContainer } from '../molecules/GlassToast';
 import { useTranslation } from '../../hooks/useTranslation';
 
-const ContactSection = memo(({ socialLinks, theme }) => {
+const ContactSection = memo(({ socialLinks }) => {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

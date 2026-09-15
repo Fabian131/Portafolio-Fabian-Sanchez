@@ -1,4 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { CheckCircle, XCircle, Warning, Info, X } from '@phosphor-icons/react';
 

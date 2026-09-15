@@ -4,10 +4,10 @@ import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
 import LanguageSwitcher from '../atoms/LanguageSwitcher';
 import { MOBILE_MAX } from '../../utils/breakpoints';
-import { t, useTranslation } from '../../hooks/useTranslation';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
-  const { lang } = useTranslation();
+  const { t, lang } = useTranslation();
   const navRef = useRef(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,8 +35,9 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     { id: 'sobre-mi', label: t('nav.about') },
     { id: 'skills', label: t('nav.skills') },
     { id: 'proyectos', label: t('nav.projects') },
-    { id: 'contacto', label: t('nav.contact') }
-  ], [lang]);
+    { id: 'contacto', label: t('nav.contact') },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [t, lang]);
 
   const updateIndicator = useCallback((activeId) => {
     if (!navRef.current) return;

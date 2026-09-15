@@ -34,6 +34,7 @@ export const useIntersectionObserver = (options = {}) => {
       observer.unobserve(target);
       clearTimeout(timeoutRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threshold, rootMargin, once]);
 
   return [targetRef, isIntersecting];

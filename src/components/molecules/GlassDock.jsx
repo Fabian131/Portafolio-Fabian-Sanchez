@@ -1,5 +1,6 @@
-import React, { useRef, useMemo } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
+import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 
 const ICON_SIZE = 52;

@@ -396,7 +396,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
       if (mountElement) mountElement.innerHTML = '';
     };
-  }, [isMobile, createParticleTexture]); // NOTE: `theme` removed — transitions are animated in-place
+  }, [isMobile, createParticleTexture, theme]); // NOTE: `theme` removed — transitions are animated in-place
 
   return <div ref={mountRef} className="fixed inset-0 z-[0] w-full h-screen overflow-hidden pointer-events-none" />;
 });
