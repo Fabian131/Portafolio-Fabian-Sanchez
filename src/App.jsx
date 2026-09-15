@@ -158,7 +158,7 @@ export default function App() {
   }, [lang]);
 
   return (
-    <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#c8d6eb] dark:bg-[#03050a] transition-colors duration-[1300ms] ease-in-out selection:bg-cyan-500/30 relative`}>
+    <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#DADADC] dark:bg-[#03050a] transition-colors duration-[2000ms] ease-in-out selection:bg-cyan-500/30 relative`}>
 
       {!isMobile && (
         <div

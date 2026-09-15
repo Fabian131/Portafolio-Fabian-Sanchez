@@ -476,7 +476,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             inert={!mobileOpen || undefined}
           >
             <div className="sidebar-header">
-              <button onClick={() => setMobileOpen(false)} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
+              <button onClick={(e) => { e.currentTarget.blur(); setMobileOpen(false); }} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
                 <X size={24} className="stroke-[2.5]" />
               </button>
             </div>

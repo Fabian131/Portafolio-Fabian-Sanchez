@@ -12,12 +12,12 @@ const THEMES = {
     fogDensity: 0.03,
   },
   light: {
-    bg: new THREE.Color('#c8d6eb'),
-    color1: new THREE.Color(0x0ea5e9),
-    color2: new THREE.Color(0x7c3aed),
+    bg: new THREE.Color('#DADADC'), // Apple-style light gray
+    color1: new THREE.Color(0x0284c7), // sky-600
+    color2: new THREE.Color(0x7e22ce), // purple-700
     particleSize: 0.45,
-    opacity: 0.65,
-    fogDensity: 0.025,
+    opacity: 0.85,
+    fogDensity: 0.02,
   },
 };
 
@@ -141,8 +141,18 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
     const currentFogColor = initialTheme.bg.clone();
     let currentBlending = material.blending;
 
-    // Lerp speed — 0.022 gives ~1.3 second transition (30% slower than before)
-    const LERP_SPEED = 0.022;
+    // Start state for lerping
+    let startOpacity = currentOpacity;
+    let startSize = currentSize;
+    const startColor1 = currentColor1.clone();
+    const startColor2 = currentColor2.clone();
+    const startFogColor = currentFogColor.clone();
+
+    let activeThemeTarget = themeRef.current;
+    let transitionProgress = 1.0; // 1.0 means no transition is active
+
+    // Transition speed (0 to 1 per frame) — 0.015 is ~1.1s at 60fps
+    const TRANSITION_SPEED = 0.015;
     // Reusable temp color to avoid GC pressure
     const tmpColor = new THREE.Color();
 
@@ -167,11 +177,11 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
       };
       window.addEventListener('resize', onResize, { passive: true });
 
-      const clock = new THREE.Clock();
       let lastTime = 0;
       const targetFPS = 60;
       const frameInterval = 1000 / targetFPS;
       let firstFrame = true;
+      const startTime = performance.now();
 
       const animate = (currentTime) => {
         animationFrameRef.current = requestAnimationFrame(animate);
@@ -180,43 +190,60 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
         if (deltaTime < frameInterval) return;
 
         lastTime = currentTime - (deltaTime % frameInterval);
-        const time = clock.getElapsedTime() * 0.2;
+        const time = (currentTime - startTime) * 0.0002;
 
         // --- Animate theme transition ---
-        const activeTheme = themeRef.current;
-        const target = THEMES[activeTheme === 'dark' ? 'dark' : 'light'];
-
-        currentColor1.lerp(target.color1, LERP_SPEED);
-        currentColor2.lerp(target.color2, LERP_SPEED);
-        currentOpacity += (target.opacity - currentOpacity) * LERP_SPEED;
-        currentSize += (target.particleSize - currentSize) * LERP_SPEED;
-
-        // Update particle colors
-        const colorsArr = particles.geometry.attributes.color.array;
-        for (let i = 0; i < particleCount; i++) {
-          const i3 = i * 3;
-          tmpColor.copy(currentColor1).lerp(currentColor2, mixFactors[i]);
-          colorsArr[i3] = tmpColor.r;
-          colorsArr[i3 + 1] = tmpColor.g;
-          colorsArr[i3 + 2] = tmpColor.b;
-        }
-        particles.geometry.attributes.color.needsUpdate = true;
-
-        material.opacity = currentOpacity;
-        material.size = currentSize;
-
-        // Switch blending mode
-        const targetBlending = (activeTheme === 'dark' && !isLowPerf) ? THREE.AdditiveBlending : THREE.NormalBlending;
-        if (currentBlending !== targetBlending) {
-          currentBlending = targetBlending;
-          material.blending = targetBlending;
-          material.needsUpdate = true;
+        if (activeThemeTarget !== themeRef.current) {
+          activeThemeTarget = themeRef.current;
+          transitionProgress = 0.0;
+          
+          startOpacity = currentOpacity;
+          startSize = currentSize;
+          startColor1.copy(currentColor1);
+          startColor2.copy(currentColor2);
+          startFogColor.copy(currentFogColor);
         }
 
-        // Animate fog color
-        if (fog) {
-          currentFogColor.lerp(target.bg, LERP_SPEED);
-          fog.color.copy(currentFogColor);
+        if (transitionProgress < 1.0) {
+          transitionProgress += TRANSITION_SPEED;
+          if (transitionProgress > 1.0) transitionProgress = 1.0;
+
+          // Smooth step easing
+          const ease = transitionProgress * transitionProgress * (3 - 2 * transitionProgress);
+          const target = THEMES[activeThemeTarget === 'dark' ? 'dark' : 'light'];
+
+          currentColor1.copy(startColor1).lerp(target.color1, ease);
+          currentColor2.copy(startColor2).lerp(target.color2, ease);
+          currentOpacity = THREE.MathUtils.lerp(startOpacity, target.opacity, ease);
+          currentSize = THREE.MathUtils.lerp(startSize, target.particleSize, ease);
+
+          // Update particle colors only when transitioning to save performance
+          const colorsArr = particles.geometry.attributes.color.array;
+          for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            tmpColor.copy(currentColor1).lerp(currentColor2, mixFactors[i]);
+            colorsArr[i3] = tmpColor.r;
+            colorsArr[i3 + 1] = tmpColor.g;
+            colorsArr[i3 + 2] = tmpColor.b;
+          }
+          particles.geometry.attributes.color.needsUpdate = true;
+
+          material.opacity = currentOpacity;
+          material.size = currentSize;
+
+          // Switch blending mode in the middle of transition
+          const targetBlending = (activeThemeTarget === 'dark' && !isLowPerf) ? THREE.AdditiveBlending : THREE.NormalBlending;
+          if (currentBlending !== targetBlending && transitionProgress > 0.5) {
+            currentBlending = targetBlending;
+            material.blending = targetBlending;
+            material.needsUpdate = true;
+          }
+
+          // Animate fog color
+          if (fog) {
+            currentFogColor.copy(startFogColor).lerp(target.bg, ease);
+            fog.color.copy(currentFogColor);
+          }
         }
 
         // --- Standard animation ---
@@ -269,11 +296,11 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
     };
     window.addEventListener('resize', onResize, { passive: true });
 
-    const clock = new THREE.Clock();
     let lastTime = 0;
     const targetFPS = 30;
     const frameInterval = 1000 / targetFPS;
     let firstFrame = true;
+    const startTime = performance.now();
 
     const animate = (currentTime) => {
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -282,35 +309,50 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
       if (deltaTime < frameInterval) return;
 
       lastTime = currentTime - (deltaTime % frameInterval);
-      const time = clock.getElapsedTime() * 0.2;
+      const time = (currentTime - startTime) * 0.0002;
 
       // --- Animate theme transition (mobile) ---
-      const activeTheme = themeRef.current;
-      const target = THEMES[activeTheme === 'dark' ? 'dark' : 'light'];
-
-      currentColor1.lerp(target.color1, LERP_SPEED);
-      currentColor2.lerp(target.color2, LERP_SPEED);
-      currentOpacity += (target.opacity - currentOpacity) * LERP_SPEED;
-      currentSize += (target.particleSize - currentSize) * LERP_SPEED;
-
-      const colorsArr = particles.geometry.attributes.color.array;
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        tmpColor.copy(currentColor1).lerp(currentColor2, mixFactors[i]);
-        colorsArr[i3] = tmpColor.r;
-        colorsArr[i3 + 1] = tmpColor.g;
-        colorsArr[i3 + 2] = tmpColor.b;
+      if (activeThemeTarget !== themeRef.current) {
+        activeThemeTarget = themeRef.current;
+        transitionProgress = 0.0;
+        
+        startOpacity = currentOpacity;
+        startSize = currentSize;
+        startColor1.copy(currentColor1);
+        startColor2.copy(currentColor2);
       }
-      particles.geometry.attributes.color.needsUpdate = true;
 
-      material.opacity = currentOpacity;
-      material.size = currentSize;
+      if (transitionProgress < 1.0) {
+        transitionProgress += TRANSITION_SPEED;
+        if (transitionProgress > 1.0) transitionProgress = 1.0;
 
-      const targetBlending = (activeTheme === 'dark') ? THREE.AdditiveBlending : THREE.NormalBlending;
-      if (currentBlending !== targetBlending) {
-        currentBlending = targetBlending;
-        material.blending = targetBlending;
-        material.needsUpdate = true;
+        const ease = transitionProgress * transitionProgress * (3 - 2 * transitionProgress);
+        const target = THEMES[activeThemeTarget === 'dark' ? 'dark' : 'light'];
+
+        currentColor1.copy(startColor1).lerp(target.color1, ease);
+        currentColor2.copy(startColor2).lerp(target.color2, ease);
+        currentOpacity = THREE.MathUtils.lerp(startOpacity, target.opacity, ease);
+        currentSize = THREE.MathUtils.lerp(startSize, target.particleSize, ease);
+
+        const colorsArr = particles.geometry.attributes.color.array;
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3;
+          tmpColor.copy(currentColor1).lerp(currentColor2, mixFactors[i]);
+          colorsArr[i3] = tmpColor.r;
+          colorsArr[i3 + 1] = tmpColor.g;
+          colorsArr[i3 + 2] = tmpColor.b;
+        }
+        particles.geometry.attributes.color.needsUpdate = true;
+
+        material.opacity = currentOpacity;
+        material.size = currentSize;
+
+        const targetBlending = (activeThemeTarget === 'dark') ? THREE.AdditiveBlending : THREE.NormalBlending;
+        if (currentBlending !== targetBlending && transitionProgress > 0.5) {
+          currentBlending = targetBlending;
+          material.blending = targetBlending;
+          material.needsUpdate = true;
+        }
       }
 
       // --- Standard mobile animation ---
