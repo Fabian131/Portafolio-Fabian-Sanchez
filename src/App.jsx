@@ -157,6 +157,13 @@ export default function App() {
     window.open(`/cv/Fabian_Sanchez_Salinas_CV_${lang.toUpperCase()}.pdf`, '_blank');
   }, [lang]);
 
+  const [loadBg, setLoadBg] = useState(false);
+  useEffect(() => {
+    // Defer Background3D initialization so text (LCP) renders first
+    const timer = setTimeout(() => setLoadBg(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className={`min-h-screen font-sans text-gray-900 dark:text-white bg-[#DADADC] dark:bg-[#03050a] transition-colors duration-[2000ms] ease-in-out selection:bg-cyan-500/30 relative`}>
 
@@ -167,7 +174,7 @@ export default function App() {
         ></div>
       )}
 
-      <BackgroundOrganism theme={theme} performanceTier={performanceTier} />
+      {loadBg && <BackgroundOrganism theme={theme} performanceTier={performanceTier} />}
 
       <LiquidNav activeSection={activeSection} toggleTheme={toggleTheme} isDark={theme === 'dark'} onNavClick={handleNavClick} />
 

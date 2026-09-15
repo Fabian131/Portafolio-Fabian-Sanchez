@@ -170,10 +170,17 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
       };
       window.addEventListener('mousemove', onMouseMove, { passive: true });
 
+      let maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const resizeObserver = new ResizeObserver(() => {
+        maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      });
+      resizeObserver.observe(document.body);
+
       const onResize = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       };
       window.addEventListener('resize', onResize, { passive: true });
 
@@ -248,7 +255,6 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
 
         // --- Standard animation ---
         scrollY += (targetScrollY - scrollY) * 0.05;
-        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
         const progress = scrollY / maxScroll;
 
         const positionsArr = particles.geometry.attributes.position.array;
@@ -278,6 +284,7 @@ const Background3D = memo(({ theme, performanceTier = 'high' }) => {
         window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('resize', onResize);
+        resizeObserver.disconnect();
 
         if (geometry) geometry.dispose();
         if (material) material.dispose();
