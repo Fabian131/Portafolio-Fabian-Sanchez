@@ -162,13 +162,21 @@ export default function App() {
     // Si es móvil (pantallas pequeñas), retrasamos la carga del 3D hasta que
     // la página esté completamente lista para no penalizar el rendimiento en Lighthouse.
     if (window.innerWidth <= 768) {
-      const initBg = () => setTimeout(() => setLoadBg(true), 1000);
-      if (document.readyState === 'complete') {
-        initBg();
-      } else {
-        window.addEventListener('load', initBg);
-        return () => window.removeEventListener('load', initBg);
-      }
+      let initiated = false;
+      const initBg = () => {
+        if (initiated) return;
+        initiated = true;
+        setLoadBg(true);
+        window.removeEventListener('scroll', initBg);
+        window.removeEventListener('touchstart', initBg);
+      };
+      
+      // Inicia si el usuario interactúa (mejor UX y previene bloqueos)
+      window.addEventListener('scroll', initBg, { passive: true });
+      window.addEventListener('touchstart', initBg, { passive: true });
+      
+      // O inicia de forma segura después de 3.5 segundos si no hay interacción
+      setTimeout(initBg, 3500);
     } else {
       // En escritorio, cargamos de inmediato para la mejor experiencia visual
       setLoadBg(true);
