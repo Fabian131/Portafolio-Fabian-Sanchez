@@ -19,7 +19,8 @@
 }
 
 .hero-photo-reveal {
-  animation: hero-photo-in 0.75s ease both;
+  /* Eliminado temporalmente o definitivamente para arreglar el NO_LCP de Lighthouse */
+  /* animation: hero-photo-in 0.75s ease both; */
 }
 
 @media (prefers-reduced-motion: reduce) {
