@@ -8,7 +8,7 @@ const ITEM_H = 44;
 const PADDING = 8;
 const DROPDOWN_H = AVAILABLE.length * ITEM_H + PADDING * 2;
 
-const LanguageSwitcher = memo(({ direction = 'down' }) => {
+const LanguageSwitcher = memo(({ direction = 'down', parentOpen = true }) => {
   const { lang, changeLang, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
@@ -27,22 +27,40 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
 
   const activeIndex = AVAILABLE.findIndex(({ code }) => code === lang);
 
-  // ── Close on outside click & mount animation state ────────────────────────
+  // ── Auto-close if parent container (e.g. mobile sidebar) closes ───────────
+  useEffect(() => {
+    if (!parentOpen) {
+      setIsOpen(false);
+      setIsRendered(false);
+    }
+  }, [parentOpen]);
+
+  // ── Close on outside click/touch & mount animation state ───────────────────
   useEffect(() => {
     let unmountTimer;
     if (isOpen) {
       setIsRendered(true);
-      const close = () => {
+      const handleOutsideInteraction = (e) => {
         if (draggingRef.current) return;
+        const btn = btnRef.current;
+        const dropdown = dropdownRef.current;
+        if (btn && btn.contains(e.target)) return;
+        if (dropdown && dropdown.contains(e.target)) return;
         setIsOpen(false);
       };
-      // Short delay to avoid capturing the click that opened it
+
+      // Short delay so we don't catch the opening event
       const id = setTimeout(() => {
-        document.addEventListener('click', close);
-      }, 0);
+        document.addEventListener('pointerdown', handleOutsideInteraction, true);
+        document.addEventListener('touchstart', handleOutsideInteraction, true);
+        document.addEventListener('click', handleOutsideInteraction, true);
+      }, 20);
+
       return () => {
         clearTimeout(id);
-        document.removeEventListener('click', close);
+        document.removeEventListener('pointerdown', handleOutsideInteraction, true);
+        document.removeEventListener('touchstart', handleOutsideInteraction, true);
+        document.removeEventListener('click', handleOutsideInteraction, true);
       };
     } else if (isRendered) {
       // Allow exit animation to play before unmounting the portal

@@ -522,7 +522,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
               </div>
               <div className="sidebar-footer-row">
                 <span className="sidebar-theme-label">{t('ui.langToggle')}</span>
-                <LanguageSwitcher direction="up" />
+                <LanguageSwitcher direction="up" parentOpen={mobileOpen} key={mobileOpen ? 'open' : 'closed'} />
               </div>
             </div>
           </aside>
