@@ -64,9 +64,9 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
           y,
         }}
         whileTap={{ scale: 0.85 }}
-        className="flex items-center justify-center relative rounded-[14px] backdrop-blur-xl border border-transparent group-hover:border-cyan-500/30 transition-colors hover:shadow-[0_0_15px_rgba(14,165,233,0.15)]"
+        className="flex items-center justify-center relative rounded-[25%] backdrop-blur-xl border-[1.5px] border-transparent group-hover:border-cyan-500/50 transition-[box-shadow,border-color] duration-300 hover:shadow-[0_0_20px_rgba(14,165,233,0.35)]"
       >
-        <span className="absolute -top-[37.5%] -left-[37.5%] w-[175%] h-[175%] pointer-events-none flex items-center justify-center">
+        <span className="absolute -top-[36.5%] -left-[36.5%] w-[173%] h-[173%] pointer-events-none flex items-center justify-center">
           {iconMap[item.iconKey]}
         </span>
       </motion.div>
