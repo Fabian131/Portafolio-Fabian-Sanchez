@@ -12,9 +12,9 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
   
   // Choose icon based on iconKey
   const iconMap = {
-    github: <Github size={28} />,
-    linkedin: <Linkedin size={28} />,
-    email: <GmailIcon size={28} />,
+    github: <Github size="100%" />,
+    linkedin: <Linkedin size="100%" />,
+    email: <GmailIcon size="100%" />,
   };
 
   const distance = useTransform(mouseX, (mx) => {
@@ -64,9 +64,9 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
           y,
         }}
         whileTap={{ scale: 0.85 }}
-        className="flex items-center justify-center rounded-[14px] bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 group-hover:border-cyan-500/30 transition-colors hover:shadow-[0_0_15px_rgba(14,165,233,0.15)] text-gray-700 dark:text-gray-300 group-hover:text-cyan-500"
+        className="flex items-center justify-center relative rounded-[14px] backdrop-blur-xl border border-transparent group-hover:border-cyan-500/30 transition-colors hover:shadow-[0_0_15px_rgba(14,165,233,0.15)]"
       >
-        <span className="flex items-center justify-center pointer-events-none">
+        <span className="absolute -top-[37.5%] -left-[37.5%] w-[175%] h-[175%] pointer-events-none flex items-center justify-center">
           {iconMap[item.iconKey]}
         </span>
       </motion.div>
