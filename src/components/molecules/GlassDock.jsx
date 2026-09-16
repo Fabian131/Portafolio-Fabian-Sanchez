@@ -44,14 +44,7 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
     >
       {/* Tooltip */}
       <motion.div
-        className="pointer-events-none absolute -top-10 rounded-lg px-3 py-1.5 text-xs font-medium text-white/90 opacity-0 group-hover:opacity-100 dark:text-white"
-        style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          transition: 'opacity 0.15s',
-        }}
+        className="glass-dock-tooltip pointer-events-none absolute -top-10 rounded-lg px-3 py-1.5 text-xs font-medium opacity-0 group-hover:opacity-100"
       >
         {item.name}
       </motion.div>
@@ -64,7 +57,8 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
           y,
         }}
         whileTap={{ scale: 0.85 }}
-        className="flex items-center justify-center relative rounded-[25%] backdrop-blur-xl border-[1.5px] border-transparent group-hover:border-cyan-500/50 transition-[box-shadow,border-color] duration-300 hover:shadow-[0_0_20px_rgba(14,165,233,0.35)]"
+        className="dock-icon-wrapper flex items-center justify-center relative rounded-[25%] border-[1.5px] border-transparent group-hover:border-cyan-500/50 transition-[box-shadow,border-color] duration-300 hover:shadow-[0_0_20px_rgba(14,165,233,0.35)]"
+        data-icon={item.iconKey}
       >
         <span className="absolute -top-[36.5%] -left-[36.5%] w-[173%] h-[173%] pointer-events-none flex items-center justify-center">
           {iconMap[item.iconKey]}
@@ -86,16 +80,8 @@ const GlassDock = ({ items }) => {
         transition={{ type: 'spring', stiffness: 180, damping: 20 }}
         onMouseMove={(e) => mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(-200)}
-        className="relative isolate mx-auto flex items-end gap-3 rounded-[24px] px-5 pb-3 pt-3"
-        style={{
-          background: 'rgba(255, 255, 255, 0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
-        }}
+        className="glass-dock relative isolate mx-auto flex items-end gap-3 rounded-[24px] px-5 pb-3 pt-3"
       >
-        {/* Dark mode background adjustment classes */}
-        <div className="absolute inset-0 z-[-1] rounded-[24px] bg-white/40 dark:bg-[#0f111a]/50 backdrop-blur-md" />
-        
         {items.map((item, i) => (
           <DockItem key={item.name} item={item} mouseX={mouseX} index={i} isMobile={isMobile} />
         ))}
@@ -105,3 +91,4 @@ const GlassDock = ({ items }) => {
 };
 
 export default GlassDock;
+
