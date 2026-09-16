@@ -57,7 +57,7 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
           y,
         }}
         whileTap={{ scale: 0.85 }}
-        className="dock-icon-wrapper flex items-center justify-center relative rounded-[25%] border-[1.5px] border-transparent group-hover:border-cyan-500/50 transition-[box-shadow,border-color] duration-300 hover:shadow-[0_0_20px_rgba(14,165,233,0.35)]"
+        className="dock-icon-wrapper flex items-center justify-center relative rounded-[25%] border-[1.5px] border-transparent group-hover:border-white/30 dark:group-hover:border-white/40 transition-[box-shadow,border-color] duration-300 group-hover:shadow-[0_0_16px_rgba(255,255,255,0.12)] dark:group-hover:shadow-[0_0_20px_rgba(255,255,255,0.18)]"
         data-icon={item.iconKey}
       >
         <span className="absolute -top-[36.5%] -left-[36.5%] w-[173%] h-[173%] pointer-events-none flex items-center justify-center">
