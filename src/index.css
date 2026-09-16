@@ -216,9 +216,10 @@ html.bg-loaded .mobile-nav-hamburger {
   position: fixed;
   inset: 0;
   z-index: 55;
-  background: rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  /* Liquid glass overlay — frosted, not dark fog */
+  background: color-mix(in srgb, var(--c-glass) 8%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  backdrop-filter: blur(16px) saturate(1.8);
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -232,35 +233,40 @@ html.bg-loaded .mobile-nav-hamburger {
   pointer-events: auto;
 }
 
-/* Sidebar Drawer */
+/* Sidebar Drawer — same glass system as navbar */
 .sidebar-drawer {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   height: 100dvh;
-  width: 250px;
-  max-width: 80vw;
+  width: 260px;
+  max-width: 82vw;
   z-index: 60;
-  background-color: rgba(15, 17, 26, 0.92);
-  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.35);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  /* Dark fallback before bg-loaded */
+  background-color: rgba(15, 17, 26, 0.85);
+  border-left: 1px solid transparent;
+  box-shadow:
+    -8px 0 40px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset -1px 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 0 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent);
   display: flex;
   flex-direction: column;
   padding: 24px 0;
   padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), background-color 600ms ease;
   will-change: transform;
   overflow-y: auto;
 }
 
 html.bg-loaded .sidebar-drawer {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 22%),
-    color-mix(in srgb, var(--c-glass, #bbbbbc) 24%, transparent);
-  border-left: 1px solid color-mix(in srgb, var(--c-light) 18%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(200%);
-  backdrop-filter: blur(28px) saturate(200%);
+  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  backdrop-filter: blur(28px) saturate(1.5);
+  box-shadow:
+    -8px 0 40px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 18%), transparent),
+    inset -1px 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 0 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent);
 }
 
 .sidebar-drawer.dragging {
@@ -283,10 +289,16 @@ html.bg-loaded .sidebar-drawer {
   padding: 8px 20px 16px;
 }
 
+/* Close button — same glass as lang-switcher-btn */
 .sidebar-close-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--c-content, #e1e1e1);
+  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent);
+  color: var(--c-content);
   cursor: pointer;
   padding: 10px;
   min-width: 44px;
@@ -295,13 +307,13 @@ html.bg-loaded .sidebar-drawer {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: background-color 200ms ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
 .sidebar-close-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background-color: color-mix(in srgb, var(--c-glass) 38%, transparent);
 }
 
 /* Sidebar Pill Container */
@@ -310,33 +322,31 @@ html.bg-loaded .sidebar-drawer {
   flex-shrink: 0;
 }
 
-/* Sidebar Liquid Pill */
+/* Sidebar Liquid Pill — exact same system as liquid-nav-pill */
 .sidebar-pill {
   position: absolute;
   left: 8px;
   right: 8px;
   top: 0;
   z-index: 0;
-  border-radius: 12px;
+  border-radius: 14px;
   pointer-events: none;
-  background:
-    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 45%, rgba(0, 0, 0, 0.04) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.28),
-              inset 0 -1px 1px rgba(0, 0, 0, 0.08);
+  background-color: rgba(15, 17, 26, 0.35);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-out;
   will-change: transform;
 }
 
 html.bg-loaded .sidebar-pill {
-  background:
-    radial-gradient(120% 140% at 25% 0%, color-mix(in srgb, var(--c-light) 18%, transparent) 0%, transparent 55%),
-    linear-gradient(180deg, color-mix(in srgb, var(--c-glass) 42%, transparent) 0%, color-mix(in srgb, var(--c-glass) 28%, transparent) 100%);
-  border: 1px solid color-mix(in srgb, var(--c-light) 16%, transparent);
-  box-shadow: inset 0 1px 1px color-mix(in srgb, var(--c-light) 22%, transparent),
-              inset 0 -1px 1px rgba(0, 0, 0, 0.08);
+  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
 }
 
 .sidebar-pill.dragging {
@@ -344,49 +354,50 @@ html.bg-loaded .sidebar-pill {
 }
 
 .sidebar-pill.moving {
-  scale: 1.02 0.98;
+  /* Vertical squish: compress in Y (direction of travel), expand in X */
+  scale: 1.04 0.95;
   transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1),
               scale 200ms ease-in;
 }
 
-/* Sidebar Links */
+/* Sidebar Links — opacity + translateX nudge like lang-switcher-items */
 .sidebar-link {
   position: relative;
   z-index: 10;
-  display: block;
-  padding: 12px 18px;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--c-content, #e1e1e1);
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s, padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-left: 3px solid transparent;
-  min-height: 44px;
   display: flex;
   align-items: center;
+  padding: 12px 22px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--c-content);
+  text-decoration: none;
+  opacity: 0.65;
+  transform-origin: left center;
+  transition: transform 200ms cubic-bezier(0.34, 1.4, 0.64, 1), opacity 180ms ease;
+  min-height: 44px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.sidebar-link:hover,
-.sidebar-link:active {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--c-content, #e1e1e1);
-  padding-left: 26px;
+.sidebar-link:not(.sidebar-link-active):hover,
+.sidebar-link:not(.sidebar-link-active):active {
+  opacity: 1;
+  transform: translateX(6px);
 }
 
 .sidebar-link-active {
-  color: var(--c-action, #38bdf8);
+  opacity: 1;
   font-weight: 700;
   font-size: 1.1rem;
-  border-left-color: var(--c-action, #38bdf8);
+  transform: none;
+  cursor: default;
 }
 
-/* Sidebar Footer (theme + language, stacked rows) */
+/* Sidebar Footer */
 .sidebar-footer {
   display: flex;
   flex-direction: column;
   margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 20%), transparent);
 }
 
 .sidebar-footer-row {
@@ -400,14 +411,20 @@ html.bg-loaded .sidebar-pill {
 
 .sidebar-theme-label {
   font-size: 0.9rem;
-  color: var(--c-content, #e1e1e1);
-  opacity: 0.7;
+  color: var(--c-content);
+  opacity: 0.65;
 }
 
+/* Theme button — same as close btn */
 .sidebar-theme-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--c-content, #e1e1e1);
+  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent);
+  color: var(--c-content);
   cursor: pointer;
   padding: 10px;
   min-width: 44px;
@@ -416,71 +433,15 @@ html.bg-loaded .sidebar-pill {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: background-color 200ms ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
 .sidebar-theme-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background-color: color-mix(in srgb, var(--c-glass) 38%, transparent);
 }
 
-/* Sidebar: light mode overrides */
-html:not(.dark) .sidebar-drawer {
-  background-color: rgba(248, 250, 252, 0.85);
-  border-left-color: rgba(15, 17, 26, 0.08);
-  box-shadow: -8px 0 40px rgba(15, 17, 26, 0.15);
-}
-
-html:not(.dark).bg-loaded .sidebar-drawer {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 22%),
-    color-mix(in srgb, #ffffff 48%, transparent);
-  border-left-color: rgba(15, 17, 26, 0.1);
-}
-
-html:not(.dark) .sidebar-pill {
-  background:
-    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(180deg, rgba(15, 17, 26, 0.06) 0%, rgba(15, 17, 26, 0.09) 100%);
-  border-color: rgba(15, 17, 26, 0.12);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6),
-              inset 0 -1px 1px rgba(15, 17, 26, 0.06);
-}
-
-html:not(.dark).bg-loaded .sidebar-pill {
-  background:
-    radial-gradient(120% 140% at 25% 0%, rgba(255, 255, 255, 0.55) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(15, 17, 26, 0.07) 0%, rgba(15, 17, 26, 0.1) 100%);
-  border-color: rgba(15, 17, 26, 0.14);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5),
-              inset 0 -1px 1px rgba(15, 17, 26, 0.07);
-}
-
-html:not(.dark) .sidebar-link:hover,
-html:not(.dark) .sidebar-link:active {
-  background: rgba(15, 17, 26, 0.05);
-}
-
-html:not(.dark) .sidebar-link-active {
-  color: #0284c7;
-  border-left-color: #0284c7;
-}
-
-html:not(.dark) .sidebar-close-btn,
-html:not(.dark) .sidebar-theme-btn {
-  background: rgba(15, 17, 26, 0.05);
-  border-color: rgba(15, 17, 26, 0.1);
-}
-
-html:not(.dark) .sidebar-close-btn:hover,
-html:not(.dark) .sidebar-theme-btn:hover {
-  background: rgba(15, 17, 26, 0.1);
-}
-
-html:not(.dark) .sidebar-footer {
-  border-top-color: rgba(15, 17, 26, 0.08);
-}
 
 /* Body scroll lock */
 body.sidebar-open {
