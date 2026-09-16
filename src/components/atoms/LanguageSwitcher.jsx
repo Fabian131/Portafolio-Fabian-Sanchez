@@ -46,7 +46,7 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
       };
     } else if (isRendered) {
       // Allow exit animation to play before unmounting the portal
-      unmountTimer = setTimeout(() => setIsRendered(false), 300);
+      unmountTimer = setTimeout(() => setIsRendered(false), 200);
     }
     return () => clearTimeout(unmountTimer);
   }, [isOpen, isRendered]);
