@@ -11,6 +11,7 @@ const DROPDOWN_H = AVAILABLE.length * ITEM_H + PADDING * 2;
 const LanguageSwitcher = memo(({ direction = 'down' }) => {
   const { lang, changeLang, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isRendered, setIsRendered] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef(null);
@@ -26,21 +27,29 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
 
   const activeIndex = AVAILABLE.findIndex(({ code }) => code === lang);
 
-  // ── Close on outside click ────────────────────────────────────────────────
+  // ── Close on outside click & mount animation state ────────────────────────
   useEffect(() => {
-    if (!isOpen) return;
-    const close = () => {
-      if (draggingRef.current) return;
-      setIsOpen(false);
-    };
-    const id = setTimeout(() => {
-      document.addEventListener('click', close);
-    }, 0);
-    return () => {
-      clearTimeout(id);
-      document.removeEventListener('click', close);
-    };
-  }, [isOpen]);
+    let unmountTimer;
+    if (isOpen) {
+      setIsRendered(true);
+      const close = () => {
+        if (draggingRef.current) return;
+        setIsOpen(false);
+      };
+      // Short delay to avoid capturing the click that opened it
+      const id = setTimeout(() => {
+        document.addEventListener('click', close);
+      }, 0);
+      return () => {
+        clearTimeout(id);
+        document.removeEventListener('click', close);
+      };
+    } else if (isRendered) {
+      // Allow exit animation to play before unmounting the portal
+      unmountTimer = setTimeout(() => setIsRendered(false), 300);
+    }
+    return () => clearTimeout(unmountTimer);
+  }, [isOpen, isRendered]);
 
   // ── Get language index from clientY ───────────────────────────────────────
   const getLangFromClientY = useCallback((clientY) => {
@@ -235,7 +244,7 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
         </button>
       </div>
 
-      {isOpen &&
+      {isRendered &&
         createPortal(
           <div
             className="fixed z-[100]"
@@ -243,7 +252,11 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
             onClick={(e) => e.stopPropagation()}
             onMouseDown={handleContainerMouseDown}
           >
-            <div ref={dropdownRef} className="lang-switcher-dropdown w-44">
+            <div 
+              ref={dropdownRef} 
+              className={`lang-switcher-dropdown w-44 ${isOpen ? 'entering' : 'exiting'}`}
+              data-direction={direction}
+            >
               {/* Liquid draggable pill */}
               <div
                 ref={pillRef}
