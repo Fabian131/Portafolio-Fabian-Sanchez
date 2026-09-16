@@ -14,43 +14,205 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
   const [isMoving, setIsMoving] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const pillRef = useRef(null);
   const movingTimer = useRef(null);
   const current = LANGS[lang];
 
+  const draggingRef = useRef(false);
+  const didDragRef = useRef(false);
+  const dragCurrentIndexRef = useRef(0);
+  const dragCacheRef = useRef({ containerTop: 0, pillH: 0, minTop: 0, maxTop: 0 });
+
   const activeIndex = AVAILABLE.findIndex(({ code }) => code === lang);
 
+  // ── Close on outside click ────────────────────────────────────────────────
   useEffect(() => {
     if (!isOpen) return;
-    const close = () => setIsOpen(false);
-    document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
+    const close = () => {
+      if (draggingRef.current) return;
+      setIsOpen(false);
+    };
+    const id = setTimeout(() => {
+      document.addEventListener('click', close);
+    }, 0);
+    return () => {
+      clearTimeout(id);
+      document.removeEventListener('click', close);
+    };
   }, [isOpen]);
 
+  // ── Get language index from clientY ───────────────────────────────────────
+  const getLangFromClientY = useCallback((clientY) => {
+    const container = dropdownRef.current;
+    if (!container) return null;
+    const rect = container.getBoundingClientRect();
+    const relY = clientY - rect.top - PADDING;
+    const index = Math.max(0, Math.min(AVAILABLE.length - 1, Math.floor(relY / ITEM_H)));
+    return { index, code: AVAILABLE[index].code };
+  }, []);
+
+  const triggerMoving = useCallback(() => {
+    setIsMoving(true);
+    clearTimeout(movingTimer.current);
+    movingTimer.current = setTimeout(() => setIsMoving(false), 350);
+  }, []);
+
+  // ── Start drag logic (shared) ─────────────────────────────────────────────
+  const initDrag = useCallback((clientY) => {
+    const container = dropdownRef.current;
+    const pill = pillRef.current;
+    if (!container || !pill) return false;
+
+    const pillRect = pill.getBoundingClientRect();
+    if (clientY >= pillRect.top && clientY <= pillRect.bottom) {
+      draggingRef.current = true;
+      didDragRef.current = false;
+      dragCurrentIndexRef.current = activeIndex;
+
+      pill.classList.add('dragging');
+      const containerRect = container.getBoundingClientRect();
+      const pillH = pill.offsetHeight;
+      const initialTop = PADDING + activeIndex * ITEM_H;
+      pill.style.setProperty('--drag-y', `${initialTop}px`);
+      dragCacheRef.current = {
+        containerTop: containerRect.top,
+        pillH,
+        minTop: PADDING,
+        maxTop: PADDING + (AVAILABLE.length - 1) * ITEM_H,
+      };
+      return true;
+    }
+    return false;
+  }, [activeIndex]);
+
+  // ── Move drag logic (shared) ──────────────────────────────────────────────
+  const updateDrag = useCallback((clientY) => {
+    if (!draggingRef.current) return;
+    const pill = pillRef.current;
+    if (!pill) return;
+
+    didDragRef.current = true;
+    const { containerTop, pillH, minTop, maxTop } = dragCacheRef.current;
+    const relativeY = clientY - containerTop;
+    const newTop = Math.max(minTop, Math.min(maxTop, relativeY - pillH / 2));
+    
+    // Visually move pill instantly tracking the finger/mouse via CSS variable
+    // This prevents React from overwriting it during re-renders
+    pill.style.setProperty('--drag-y', `${newTop}px`);
+
+    const result = getLangFromClientY(clientY);
+    if (!result) return;
+    if (result.index !== dragCurrentIndexRef.current) {
+      dragCurrentIndexRef.current = result.index;
+      changeLang(result.code);
+    }
+  }, [getLangFromClientY, changeLang]);
+
+  // ── End drag logic (shared) ───────────────────────────────────────────────
+  const endDrag = useCallback(() => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    
+    const pill = pillRef.current;
+    const container = dropdownRef.current;
+    if (pill) {
+      pill.classList.remove('dragging');
+      pill.style.removeProperty('--drag-y');
+      // No need to manually restore style.transform because React never stopped managing it!
+    }
+    if (container) {
+      container.classList.remove('is-dragging');
+    }
+    triggerMoving();
+    
+    // Close the dropdown when the user releases the drag
+    setIsOpen(false);
+  }, [triggerMoving]);
+
+  // ── Non-passive touch handlers ────────────────────────────────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+    const container = dropdownRef.current;
+    if (!container) return;
+
+    const onTouchStart = (e) => {
+      const touch = e.touches[0];
+      if (initDrag(touch.clientY)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const onTouchMove = (e) => {
+      if (!draggingRef.current) return;
+      e.preventDefault();
+      updateDrag(e.touches[0].clientY);
+    };
+
+    const onTouchEnd = () => endDrag();
+
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+    document.addEventListener('touchcancel', onTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onTouchEnd);
+      document.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [isOpen, initDrag, updateDrag, endDrag]);
+
+  // ── Mouse drag (desktop) ──────────────────────────────────────────────────
+  const handleContainerMouseDown = useCallback((e) => {
+    if (initDrag(e.clientY)) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (pillRef.current) pillRef.current.style.cursor = 'grabbing';
+    }
+  }, [initDrag]);
+
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      if (!draggingRef.current) return;
+      updateDrag(e.clientY);
+    };
+    const onMouseUp = () => {
+      if (!draggingRef.current) return;
+      if (pillRef.current) pillRef.current.style.cursor = 'grab';
+      endDrag();
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [updateDrag, endDrag]);
+
+  // ── Dropdown toggle ───────────────────────────────────────────────────────
   const handleToggle = useCallback((e) => {
     e.stopPropagation();
     if (!isOpen && btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
       const right = window.innerWidth - rect.right;
-      if (direction === 'up') {
-        setDropdownPos({ top: rect.top - DROPDOWN_H - 4, right });
-      } else {
-        setDropdownPos({ top: rect.bottom + 4, right });
-      }
+      setDropdownPos(
+        direction === 'up'
+          ? { top: rect.top - DROPDOWN_H - 4, right }
+          : { top: rect.bottom + 4, right }
+      );
     }
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   }, [isOpen, direction]);
 
-  const handleSelect = useCallback(
-    (code) => {
-      // Trigger moving state for pill animation (like liquid nav)
-      setIsMoving(true);
-      clearTimeout(movingTimer.current);
-      movingTimer.current = setTimeout(() => setIsMoving(false), 300);
-      changeLang(code);
-      setIsOpen(false);
-    },
-    [changeLang]
-  );
+  const handleSelect = useCallback((code) => {
+    if (draggingRef.current) return;
+    triggerMoving();
+    changeLang(code);
+    setIsOpen(false);
+  }, [changeLang, triggerMoving]);
 
   if (AVAILABLE.length <= 1) return null;
 
@@ -79,14 +241,18 @@ const LanguageSwitcher = memo(({ direction = 'down' }) => {
             className="fixed z-[100]"
             style={{ top: `${dropdownPos.top}px`, right: `${dropdownPos.right}px` }}
             onClick={(e) => e.stopPropagation()}
+            onMouseDown={handleContainerMouseDown}
           >
-            <div className="lang-switcher-dropdown w-44 overflow-hidden">
-              {/* Liquid pill indicator */}
+            <div ref={dropdownRef} className="lang-switcher-dropdown w-44">
+              {/* Liquid draggable pill */}
               <div
+                ref={pillRef}
                 className={`lang-switcher-pill${isMoving ? ' moving' : ''}`}
                 style={{
                   transform: `translateY(${PADDING + activeIndex * ITEM_H}px)`,
                   height: `${ITEM_H}px`,
+                  // We no longer need to dynamically change cursor here; 
+                  // we can just use CSS or rely on the container grabbing
                 }}
               />
 

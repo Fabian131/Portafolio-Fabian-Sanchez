@@ -150,7 +150,11 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       document.body.style.overflow = 'hidden';
 
       const preventScroll = (e) => {
-        if (!e.target.closest('.sidebar-drawer')) {
+        // Allow touchmove inside the sidebar AND inside portal dropdowns
+        if (
+          !e.target.closest('.sidebar-drawer') &&
+          !e.target.closest('.lang-switcher-dropdown')
+        ) {
           e.preventDefault();
         }
       };
