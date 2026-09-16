@@ -487,6 +487,88 @@ body.sidebar-open {
   overflow: hidden;
 }
 
+/* ── Language Switcher ── */
+.lang-switcher-btn {
+  color: var(--c-content);
+  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent),
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent);
+  transition: background-color 600ms ease, box-shadow 600ms ease, color 400ms ease;
+  cursor: pointer;
+}
+
+.lang-switcher-btn:hover {
+  background-color: color-mix(in srgb, var(--c-glass) 38%, transparent);
+}
+
+/* Dropdown: same glass as navbar, slightly more opaque for readability */
+.lang-switcher-dropdown {
+  background-color: color-mix(in srgb, var(--c-glass) 26%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  border-radius: 20px;
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    0 20px 60px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 600ms ease;
+}
+
+/* Liquid pill inside dropdown */
+.lang-switcher-pill {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  z-index: 0;
+  border-radius: 99em;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 70%), transparent),
+    0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.lang-switcher-pill.moving {
+  transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Items: natural left-anchored nudge instead of center-scale */
+.lang-switcher-item {
+  color: var(--c-content);
+  opacity: 0.65;
+  transform-origin: left center;
+  transition: transform 200ms cubic-bezier(0.34, 1.4, 0.64, 1), opacity 180ms ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.lang-switcher-item:not(.active):hover {
+  opacity: 1;
+  transform: translateX(5px);
+}
+
+.lang-switcher-item.active {
+  opacity: 1;
+  font-weight: 700;
+  transform: none;
+  cursor: default;
+}
+
+
 /* ── Glass Dock (social links) ── */
 .glass-dock {
   background-color: rgba(15, 17, 26, 0.85);
