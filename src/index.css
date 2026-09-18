@@ -123,11 +123,24 @@ html.dark {
 }
 
 .sketch-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 1.5px 1.5px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 75%), transparent), 
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+html.dark .sketch-card {
+  background-color: color-mix(in srgb, var(--c-glass) 20%, transparent);
 }
 
 .sketch-card:hover {
   transform: scale(1.02);
+  background-color: color-mix(in srgb, var(--c-glass) 28%, transparent);
 }
 
 @keyframes blink {

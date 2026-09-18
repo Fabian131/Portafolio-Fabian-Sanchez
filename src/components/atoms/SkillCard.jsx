@@ -12,8 +12,8 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
   const isLowPerf = performanceTier === 'low';
 
   const cardBg = isLowPerf
-    ? 'bg-white/85 dark:bg-[#111827]/90'
-    : 'bg-white/60 dark:bg-white/5 backdrop-blur-xl';
+    ? 'bg-white/85 dark:bg-[#111827]/90 border border-gray-200/50 dark:border-white/10'
+    : '';
 
   return (
     <div
@@ -22,7 +22,7 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`sketch-card px-3 py-2 flex items-center gap-2 rounded-xl ${cardBg} border border-gray-200/50 dark:border-white/10 h-full relative overflow-hidden`}>
+      <div className={`sketch-card px-3 py-2 flex items-center gap-2 rounded-xl ${cardBg} h-full relative overflow-hidden`}>
         <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 ${isHovered && !isLowPerf ? 'animate' : 'opacity-0'}`}>
           <svg className="absolute inset-0 w-full h-full dark:hidden" preserveAspectRatio="none">
             <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
