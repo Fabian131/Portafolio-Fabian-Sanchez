@@ -23,7 +23,7 @@ const ProjectCard = memo(({ project }) => {
   const handlePlay = useCallback(() => setIsPlaying(true), []);
 
   return (
-    <GlassCard tilt={false} className="flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
+    <GlassCard tilt={false} className="project-card flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
       {/* Image / Video — edge-to-edge, no padding */}
       <div className="w-full aspect-video overflow-hidden relative shrink-0">
         {hasVideo && isPlaying ? (
@@ -47,14 +47,14 @@ const ProjectCard = memo(({ project }) => {
               className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors z-10 cursor-pointer"
               aria-label={t('projects.playVideo')}
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-[6px] backdrop-saturate-150 border border-white/40 dark:border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                 <Play size={20} className="sm:w-5 sm:h-5 text-zinc-900 dark:text-white ml-0.5" fill="currentColor" />
               </div>
             </button>
           </>
         ) : (
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-50 group-hover:opacity-70 transition-all duration-700"
+            className="absolute inset-0 bg-cover bg-center opacity-70 group-hover:opacity-90 transition-all duration-700"
             style={{ backgroundImage: `url('${imageUrl || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop'}')` }}
           />
         )}
@@ -66,7 +66,7 @@ const ProjectCard = memo(({ project }) => {
           {transTitle}
         </h3>
 
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-7 min-h-[160px] mb-4">
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-7 min-h-[160px] mb-4">
           {transDesc}
         </p>
 
