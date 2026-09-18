@@ -451,9 +451,9 @@ body.sidebar-open {
 /* ── Language Switcher ── */
 .lang-switcher-btn {
   color: var(--c-content);
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   border: 1px solid transparent;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
@@ -465,6 +465,14 @@ body.sidebar-open {
 
 .lang-switcher-btn:hover {
   background-color: color-mix(in srgb, var(--c-glass) 38%, transparent);
+}
+
+html.dark .lang-switcher-btn {
+  background-color: color-mix(in srgb, var(--c-glass) 29%, transparent);
+}
+
+html.dark .lang-switcher-btn:hover {
+  background-color: color-mix(in srgb, var(--c-glass) 42%, transparent);
 }
 
 /* Dropdown: same glass as navbar, slightly more opaque for readability */
@@ -495,9 +503,9 @@ body.sidebar-open {
   /* Prevent text selection on mobile long-press */
   user-select: none;
   -webkit-user-select: none;
-  background-color: color-mix(in srgb, var(--c-glass) 26%, transparent);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  backdrop-filter: blur(24px) saturate(1.6);
+  background-color: color-mix(in srgb, var(--c-glass) 18%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   border-radius: 20px;
   border: 1px solid transparent;
   box-shadow:
@@ -508,6 +516,10 @@ body.sidebar-open {
   position: relative;
   overflow: hidden;
   transition: box-shadow 600ms ease;
+}
+
+html.dark .lang-switcher-dropdown {
+  background-color: color-mix(in srgb, var(--c-glass) 31%, transparent);
 }
 
 .lang-switcher-dropdown.entering {
@@ -600,9 +612,9 @@ body.sidebar-open {
 }
 
 html.bg-loaded .glass-dock {
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
     inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent), 
