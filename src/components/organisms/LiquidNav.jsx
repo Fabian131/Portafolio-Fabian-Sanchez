@@ -174,9 +174,12 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       if (pendingNavRef.current) {
         const target = pendingNavRef.current;
         pendingNavRef.current = null;
-        requestAnimationFrame(() => {
+        // Retrasamos el scroll 450ms para permitir que la animación CSS del sidebar (0.6s)
+        // salga de la pantalla casi por completo, evitando un lag crítico en móviles
+        // por el cálculo del backdrop-filter junto al redibujado de JS.
+        setTimeout(() => {
           customScrollTo(target);
-        });
+        }, 450);
       }
       setDragOffset(0);
       setIsDragging(false);
