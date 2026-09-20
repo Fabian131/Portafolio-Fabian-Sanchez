@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
+import { Github, Linkedin, GmailIcon, CVIcon } from '../atoms/Icons';
 
 const ICON_SIZE = 52;
 const MAG_RANGE = 140;
@@ -15,6 +15,7 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
     github: <Github size="100%" />,
     linkedin: <Linkedin size="100%" />,
     email: <GmailIcon size="100%" />,
+    cv: <CVIcon size="100%" />,
   };
 
   const distance = useTransform(mouseX, (mx) => {
@@ -33,8 +34,9 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
   return (
     <motion.a
       href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={item.onClick ? undefined : "_blank"}
+      rel={item.onClick ? undefined : "noopener noreferrer"}
+      onClick={item.onClick ? (e) => { e.preventDefault(); item.onClick(); } : undefined}
       ref={ref}
       className="group relative flex cursor-pointer flex-col items-center"
       initial={{ opacity: 0, y: 20 }}

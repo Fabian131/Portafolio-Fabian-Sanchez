@@ -326,6 +326,86 @@ const YoutubeIcon = ({ size = 24, className = '' }) => (
   </svg>
 );
 
+const CVIcon = ({ size = 24, className = "" }) => (
+<svg width={size} height={size} viewBox="-6.5 -4.1 85 81" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+<g filter="url(#filter0_di_1_cv)" data-figma-bg-blur-radius="20">
+<g clipPath="url(#clip0_1_cv)">
+<rect x="12" y="12.4" width="48" height="48" rx="12" fill="url(#paint0_linear_1_cv)" fillOpacity="0.04" shapeRendering="crispEdges"/>
+<g style={{mixBlendMode: 'plus-lighter'}} opacity="0.5" filter="url(#filter1_f_1_cv)">
+  <rect x="22" y="22.4" width="28" height="28" rx="14" fill="white"/>
+</g>
+<g filter="url(#filter2_d_1_cv)">
+  <rect x="22" y="22.4" width="28" height="28" rx="14" fill="#0D9488"/>
+  <path d="M34.25 31.4 A 6 6 0 1 0 34.25 41.4" fill="none" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
+  <path d="M38.25 30.4 L 42.25 42.4 L 46.25 30.4" fill="none" stroke="white" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
+<g filter="url(#filter3_f_1_cv)">
+<ellipse cx="36.5" cy="59.9" rx="11.5" ry="6.5" fill="#14B8A6"/>
+</g>
+</g>
+<rect x="12" y="12.4" width="48" height="48" rx="12" stroke="url(#paint1_linear_1_cv)" strokeOpacity="0.5" strokeWidth="0.8" shapeRendering="crispEdges"/>
+</g>
+<g filter="url(#filter4_f_1_cv)" style={{mixBlendMode: 'screen'}}>
+<circle cx="29" cy="29.4" r="9" fill="white" fillOpacity="0.18"/>
+</g>
+<defs>
+<filter id="filter0_di_1_cv" x="-8.39999" y="-8" width="92.8" height="88.8" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="8" dy="4"/>
+<feGaussianBlur stdDeviation="8"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_cv"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_cv" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="4"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.078 0 0 0 0 0.721 0 0 0 0 0.651 0 0 0 0.32 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow_1_cv"/>
+</filter>
+<clipPath id="bgblur_1_1_cv_clip_path" transform="translate(8.39999 8)"><rect x="12" y="12.4" width="48" height="48" rx="12"/>
+</clipPath><filter id="filter1_f_1_cv" x="8" y="8.39999" width="56" height="56" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="6" result="effect1_foregroundBlur_1_cv"/>
+</filter>
+<filter id="filter2_d_1_cv" x="18" y="14.4" width="36" height="44" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_cv"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_cv" result="shape"/>
+</filter>
+<filter id="filter3_f_1_cv" x="7" y="35.4" width="59" height="49" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="9" result="effect1_foregroundBlur_1_cv"/>
+</filter>
+<filter id="filter4_f_1_cv" x="0" y="0.399994" width="58" height="58" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+<feFlood floodOpacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_1_cv"/>
+</filter>
+<linearGradient id="paint0_linear_1_cv" x1="12" y1="12.4" x2="60" y2="60.4" gradientUnits="userSpaceOnUse">
+<stop stopColor="#F8FBFF"/>
+<stop offset="1" stopColor="white" stopOpacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_1_cv" x1="13" y1="11.4" x2="58.5" y2="60.4" gradientUnits="userSpaceOnUse">
+<stop stopColor="#D8D8D8" stopOpacity="0.05"/>
+<stop offset="1" stopColor="white" stopOpacity="0.4"/>
+</linearGradient>
+<clipPath id="clip0_1_cv">
+<rect x="12" y="12.4" width="48" height="48" rx="12" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+);
+
 export {
-  Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon, ScrumIcon, GmailIcon, YoutubeIcon
+  Github, Linkedin, JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, JavaScriptIcon, ReactIcon, TailwindIcon, ReactNativeIcon, BootstrapIcon, BashIcon, HtmlIcon, CssIcon, JsonIcon, ScrumIcon, GmailIcon, YoutubeIcon, CVIcon
 };

@@ -4,7 +4,6 @@ import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
 import GooeyButton from '../atoms/GooeyButton';
-import BlobButton from '../atoms/BlobButton';
 import GlassDock from '../molecules/GlassDock';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -45,19 +44,15 @@ Fabián Sánchez
         <ScrollReveal direction="up" delay={900}>
           <div className="pt-10 flex flex-col items-center justify-center gap-8">
 
-            {isMobile ? (
-              <BlobButton darkTheme={theme === 'dark'} onClick={onCVDownload}>
-                {t('hero.downloadCV')}
-              </BlobButton>
-            ) : (
+            {!isMobile && (
               <GooeyButton
                 text={t('hero.downloadCV')}
                 onClick={onCVDownload}
               />
             )}
 
-            <div className="flex flex-wrap justify-center mt-6 w-full max-w-sm mx-auto">
-              <GlassDock items={socialLinks} />
+            <div className={`flex flex-wrap justify-center w-full max-w-sm mx-auto ${isMobile ? 'mt-2' : 'mt-6'}`}>
+              <GlassDock items={isMobile ? [...socialLinks, { name: t('hero.downloadCV'), href: '#', onClick: onCVDownload, iconKey: 'cv' }] : socialLinks} />
             </div>
           </div>
         </ScrollReveal>
