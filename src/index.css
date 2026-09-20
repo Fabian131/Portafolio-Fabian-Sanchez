@@ -315,9 +315,16 @@ html.bg-loaded .mobile-nav-bar {
 }
 
 html.bg-loaded .mobile-nav-hamburger {
-  background-color: color-mix(in srgb, var(--c-glass, #bbbbbc) 18%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  backdrop-filter: blur(16px) saturate(150%);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 75%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent), 
+    inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    0 12px 32px -8px rgba(0, 0, 0, 0.08);
 }
 
 .hamburger-line {
@@ -337,8 +344,8 @@ html.bg-loaded .mobile-nav-hamburger {
   z-index: 55;
   /* Liquid glass overlay — frosted with subtle dim */
   background: color-mix(in srgb, var(--c-dark) 12%, color-mix(in srgb, var(--c-glass) 8%, transparent));
-  -webkit-backdrop-filter: blur(16px) saturate(1.8);
-  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -379,9 +386,9 @@ html.bg-loaded .mobile-nav-hamburger {
 }
 
 html.bg-loaded .sidebar-drawer {
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
-  backdrop-filter: blur(28px) saturate(1.5);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   box-shadow:
     -8px 0 40px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 18%), transparent),
     inset -1px 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
@@ -410,13 +417,14 @@ html.bg-loaded .sidebar-drawer {
 
 /* Close button — same glass as lang-switcher-btn */
 .sidebar-close-btn {
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
-  backdrop-filter: blur(16px) saturate(1.5);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   border: 1px solid transparent;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
-    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent);
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent),
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent);
   color: var(--c-content);
   cursor: pointer;
   padding: 10px;
@@ -536,13 +544,14 @@ html.bg-loaded .sidebar-pill {
 
 /* Theme button — same as close btn */
 .sidebar-theme-btn {
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.5);
-  backdrop-filter: blur(16px) saturate(1.5);
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
   border: 1px solid transparent;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
-    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent);
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent),
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent);
   color: var(--c-content);
   cursor: pointer;
   padding: 10px;
@@ -993,20 +1002,6 @@ html.bg-loaded .liquid-nav-pill {
 }
 
 @media (max-width: 767px) {
-  html.bg-loaded .mobile-nav-hamburger {
-    -webkit-backdrop-filter: blur(8px) saturate(1.01);
-    backdrop-filter: blur(8px) saturate(1.01);
-  }
-
-  html.bg-loaded .mobile-nav-bar {
-    -webkit-backdrop-filter: blur(8px) saturate(1.01);
-    backdrop-filter: blur(8px) saturate(1.01);
-  }
-
-  html.bg-loaded .sidebar-drawer {
-    -webkit-backdrop-filter: blur(12px) saturate(1.4);
-    backdrop-filter: blur(12px) saturate(1.4);
-  }
 
   .gooey-blob {
     display: none !important;
