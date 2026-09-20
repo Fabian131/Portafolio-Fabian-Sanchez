@@ -143,11 +143,11 @@ html.dark .sketch-card {
   background-color: color-mix(in srgb, var(--c-glass) 28%, transparent);
 }
 
-/* ── Glass Card (Projects & Sections) ── */
+/* ── Glass Card (Base primitive with liquid glass reflex) ── */
 .glass-card {
-  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
-  -webkit-backdrop-filter: blur(6px) saturate(1.5);
-  backdrop-filter: blur(6px) saturate(1.5);
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
   border: 1px solid transparent;
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
@@ -159,7 +159,7 @@ html.dark .sketch-card {
 }
 
 html.dark .glass-card {
-  background-color: rgba(15, 17, 26, 0.59);
+  background-color: rgba(15, 17, 26, 0.6);
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
     inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 75%), transparent), 
@@ -168,21 +168,16 @@ html.dark .glass-card {
     0 16px 40px -8px rgba(0, 0, 0, 0.4);
 }
 
-.group:hover .glass-card,
 .glass-card:hover {
-  transform: translateY(-4px);
-  background-color: color-mix(in srgb, var(--c-glass) 22%, transparent);
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
     inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
     inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 65%), transparent), 
     inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent),
-    0 20px 48px -10px rgba(0, 0, 0, 0.12);
+    0 16px 36px -8px rgba(0, 0, 0, 0.12);
 }
 
-html.dark .group:hover .glass-card,
 html.dark .glass-card:hover {
-  background-color: rgba(18, 21, 32, 0.75);
   box-shadow: 
     inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
     inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
@@ -205,31 +200,53 @@ html.dark .glass-card.is-low-perf {
   box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.35);
 }
 
-/* ── Project Cards (Dark elegant obsidian glass with balanced blur) ── */
-#proyectos .glass-card,
+/* ── Project Cards (Dark elegant obsidian glass with crystal reflex) ── */
 .project-card {
   background-color: rgba(255, 255, 255, 0.51);
   -webkit-backdrop-filter: blur(12px) saturate(1.4);
   backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid transparent;
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 75%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent), 
+    inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    0 12px 32px -8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
-html.dark #proyectos .glass-card,
 html.dark .project-card {
   background-color: rgba(15, 17, 26, 0.65);
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 75%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent), 
+    inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    0 16px 40px -8px rgba(0, 0, 0, 0.4);
 }
 
-.group:hover #proyectos .glass-card,
-#proyectos .glass-card:hover,
 .group:hover .project-card,
 .project-card:hover {
+  transform: translateY(-4px);
   background-color: rgba(255, 255, 255, 0.62);
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 65%), transparent), 
+    inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent),
+    0 20px 48px -10px rgba(0, 0, 0, 0.12);
 }
 
-html.dark .group:hover #proyectos .glass-card,
-html.dark #proyectos .glass-card:hover,
 html.dark .group:hover .project-card,
 html.dark .project-card:hover {
+  transform: translateY(-4px);
   background-color: rgba(18, 21, 32, 0.79);
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 65%), transparent), 
+    inset -2px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent),
+    0 20px 48px -10px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes blink {
@@ -1009,6 +1026,7 @@ html.bg-loaded .liquid-nav-pill {
 }
 
 /* ─── Contact Form — glass inputs ─── */
+
 .c-field {
   display: flex;
   flex-direction: column;
