@@ -1,0 +1,162 @@
+/* ═══════════════════════════════════════════
+   Image Lightbox — Liquid Glass Design
+   Matches sidebar overlay + dropdown animation
+   ═══════════════════════════════════════════ */
+
+/* ── Overlay — same frosted glass as sidebar-overlay ── */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* Liquid glass overlay — frosted with subtle dim (matching sidebar) */
+  background: color-mix(in srgb, var(--c-dark) 12%, color-mix(in srgb, var(--c-glass) 8%, transparent));
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  opacity: 0;
+}
+
+.lightbox-overlay--open {
+  opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lightbox-overlay--exiting {
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ── Close button — liquid glass (matches sidebar-close-btn) ── */
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  padding: 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--c-content);
+  background-color: color-mix(in srgb, var(--c-glass) 20%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(1.5);
+  backdrop-filter: blur(8px) saturate(1.5);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 30%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent),
+    0 8px 24px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent);
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+.lightbox-close--open {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    background-color 0.2s ease;
+}
+
+.lightbox-close--exiting {
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lightbox-close:hover {
+  background-color: color-mix(in srgb, var(--c-glass) 35%, transparent);
+}
+
+.lightbox-close:active {
+  transform: scale(0.92);
+  transition:
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.1s ease,
+    background-color 0.2s ease;
+}
+
+/* ── Image content — critically damped popover (matches dropdown) ── */
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: default;
+  /* Liquid glass card styling */
+  background-color: color-mix(in srgb, var(--c-glass) 14%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 30%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 70%), transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent),
+    0 30px 80px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 25%), transparent);
+  /* Default closed state */
+  opacity: 0;
+  transform: scale(0.90);
+  /* We define the exit transition here so it plays when the classes are removed */
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 1, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.lightbox-content--open {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lightbox-content--exiting {
+  opacity: 0;
+  transform: scale(0.90);
+  transition:
+    opacity 0.35s ease-in-out,
+    transform 0.4s ease-in-out;
+}
+
+.lightbox-img {
+  display: block;
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Dark mode adjustments ── */
+html.dark .lightbox-overlay {
+  background: color-mix(in srgb, var(--c-dark) 12%, color-mix(in srgb, var(--c-glass) 8%, transparent));
+}
+
+html.dark .lightbox-close {
+  background-color: color-mix(in srgb, var(--c-glass) 14%, transparent);
+}
+
+html.dark .lightbox-close:hover {
+  background-color: color-mix(in srgb, var(--c-glass) 26%, transparent);
+}
+
+html.dark .lightbox-content {
+  background-color: color-mix(in srgb, var(--c-glass) 8%, transparent);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-overlay,
+  .lightbox-close,
+  .lightbox-content {
+    transition: none;
+  }
+}

@@ -1,75 +1,66 @@
-import React, { memo, useEffect, useRef } from 'react';
-import { User, MonitorSmartphone } from 'lucide-react';
+import React, { memo } from 'react';
+import { User } from 'lucide-react';
 import ScrollReveal from '../atoms/ScrollReveal';
-import GlassCard from '../atoms/GlassCard';
+import DepthCarousel from '../atoms/DepthCarousel';
 import { PROSE_CLASS } from '../../utils/typography';
 import { useTranslation } from '../../hooks/useTranslation';
 
+import img1 from '../../assets/img/1a47c9ba-828d-4ce8-918f-0a1006de19fb.jpeg';
+import img2 from '../../assets/img/21af02dc-ff65-422f-ac65-98d939e25e3a.jpeg';
+import img3 from '../../assets/img/IMG_0158.JPG.jpeg';
+import img4 from '../../assets/img/IMG_0780.jpeg';
+import img5 from '../../assets/img/IMG_0869.jpeg';
+import img6 from '../../assets/img/IMG_0880.jpeg';
+import img7 from '../../assets/img/WhatsApp Image 2025-10-29 at 18.55.54_1f1ca100.jpg';
+
+const carouselItems = [
+  { image: img1, alt: 'Foto personal 1' },
+  { image: img2, alt: 'Foto personal 2' },
+  { image: img3, alt: 'Foto personal 3' },
+  { image: img4, alt: 'Foto personal 4' },
+  { image: img5, alt: 'Foto personal 5' },
+  { image: img6, alt: 'Foto personal 6' },
+  { image: img7, alt: 'Foto personal 7' },
+];
+
 const AboutSection = memo(() => {
   const { t } = useTranslation();
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    if (!sectionRef.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          if (!document.querySelector('script[id="model-viewer-script"]')) {
-            const script = document.createElement('script');
-            script.id = 'model-viewer-script';
-            script.type = 'module';
-            script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
-            document.head.appendChild(script);
-          }
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section
-      ref={sectionRef}
       id="sobre-mi"
-      className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full"
+      className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full"
     >
-      <div className="lg:w-5/12 flex justify-center">
-        <ScrollReveal direction="left" delay={200}>
-          <GlassCard
-            tilt={true}
-            className="p-2 w-60 h-60 sm:w-72 sm:h-72 lg:w-96 lg:h-96 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.15)] relative group flex items-center justify-center"
-            tabIndex={0}
-          >
-            <model-viewer
-              alt={t('about.laptopAlt')}
-              src="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/laptop.glb"
-              shadow-intensity="1"
-              camera-controls="true"
-              touch-action="pan-y"
-              environment-image="https://raw.githubusercontent.com/Smit-Prajapati/prajapatismit/b5f434ae4d45d10fe1664d5606ad28e4d9c739af/images/dancing_hall_2k.hdr"
-              exposure="1.5"
-              disable-zoom="true"
-              disable-tap="true"
-              camera-orbit="-45deg 60deg 9m"
-              autoplay="true"
-              style={{ width: '100%', height: '100%', '--poster-color': 'transparent' }}
-            ></model-viewer>
-
-            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/20 to-purple-600/20 mix-blend-overlay rounded-2xl pointer-events-none"></div>
-
-            <div className="absolute bottom-6 left-6 right-6 bg-white/80 dark:bg-black/60 backdrop-blur-md border border-white/40 dark:border-white/10 rounded-xl p-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 transition-all duration-500 pointer-events-none">
-              <p className="text-gray-800 dark:text-white text-sm font-medium flex items-center gap-2">
-                <MonitorSmartphone size={16} className="text-cyan-600 dark:text-cyan-400" /> {t('about.caption')}
-              </p>
-            </div>
-          </GlassCard>
+      <div className="lg:w-7/12 flex justify-center w-full">
+        <ScrollReveal direction="left" delay={200} className="w-full">
+          <div style={{ height: '530px', position: 'relative', width: '100%', minWidth: '340px' }}>
+            <DepthCarousel
+              items={carouselItems}
+              depth={170}
+              spread={85}
+              tilt={18}
+              tiltDirection="right"
+              perspective={1200}
+              visibleCards={3}
+              falloff={0.13}
+              blur={5.6}
+              autoplay={true}
+              loop
+              cardWidth={271}
+              cardHeight={402}
+              radius={20}
+              tint="#c8cde0"
+              duration={700}
+              ease="power3.out"
+              autoplayDelay={2100}
+              showControls={false}
+              showIndicators
+            />
+          </div>
         </ScrollReveal>
       </div>
 
-      <div className="lg:w-7/12 space-y-6 min-w-0 text-center lg:text-left">
+      <div className="lg:w-5/12 space-y-6 min-w-0 text-center lg:text-left">
         <ScrollReveal direction="right" delay={200}>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center lg:justify-start justify-center gap-3">
             <User className="text-cyan-500 shrink-0" size={32} />
@@ -104,3 +95,4 @@ const AboutSection = memo(() => {
 AboutSection.displayName = 'AboutSection';
 
 export default AboutSection;
+
