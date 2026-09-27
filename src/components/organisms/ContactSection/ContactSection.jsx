@@ -7,7 +7,7 @@ import ContactForm from '../../molecules/ContactForm/ContactForm';
 import { useContactSection } from '../../../hooks/useContactSection';
 
 const ContactSection = memo((props) => {
-  const { t, socialLinks } = useContactSection(props);
+  const { t, dockItems } = useContactSection(props);
 
   return (
     <section
@@ -27,7 +27,7 @@ const ContactSection = memo((props) => {
         <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400 mb-2">
           {t('contact.findMe') || 'Find me on'}
         </p>
-        <GlassDock items={socialLinks} />
+        <GlassDock items={dockItems} scale={1.45} />
       </ScrollReveal>
 
       {/* ── Centered Form Container ── */}

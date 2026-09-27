@@ -206,7 +206,7 @@ export default function App() {
 
         <ProjectsSection projects={projects} />
 
-        <ContactSection socialLinks={socialLinks} theme={theme} />
+        <ContactSection socialLinks={socialLinks} theme={theme} onCVDownload={handleCVDownload} />
 
         <Footer />
       </main>
