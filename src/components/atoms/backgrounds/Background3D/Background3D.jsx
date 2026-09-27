@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, memo, useCallback, useState } from 'react';
 import * as THREE from 'three';
-import { MOBILE_MAX } from '../../utils/breakpoints';
+import { MOBILE_MAX } from '../../../../utils/breakpoints';
 
 const THEMES = {
   dark: {
