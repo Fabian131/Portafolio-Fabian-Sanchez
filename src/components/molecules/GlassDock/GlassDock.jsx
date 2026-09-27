@@ -1,14 +1,10 @@
-import React, { useRef } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Github, Linkedin, GmailIcon, CVIcon } from '../../atoms/ui/Icons/Icons';
+import { useDockItem, useGlassDock } from '../../../hooks/useGlassDock';
 
-const ICON_SIZE = 52;
-const MAG_RANGE = 140;
-const MAG_SCALE = 1.5;
-
-const DockItem = ({ item, mouseX, index, isMobile }) => {
-  const ref = useRef(null);
+const DockItem = ({ item, mouseX, index, scale }) => {
+  const { ref, size, y } = useDockItem({ mouseX, index, scale });
   
   // Choose icon based on iconKey
   const iconMap = {
@@ -17,19 +13,6 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
     email: <GmailIcon size="100%" />,
     cv: <CVIcon size="100%" />,
   };
-
-  const distance = useTransform(mouseX, (mx) => {
-    const el = ref.current;
-    // If mobile, or mouse is outside dock, no magnification
-    if (!el || mx < 0 || isMobile) return 200;
-    const rect = el.getBoundingClientRect();
-    const center = rect.left + rect.width / 2;
-    return Math.abs(mx - center);
-  });
-
-  const rawSize = useTransform(distance, [0, MAG_RANGE], [ICON_SIZE * MAG_SCALE, ICON_SIZE]);
-  const size = useSpring(rawSize, { stiffness: 400, damping: 24, mass: 0.2 });
-  const y = useTransform(size, [ICON_SIZE, ICON_SIZE * MAG_SCALE], [0, -12]);
 
   return (
     <motion.a
@@ -70,9 +53,8 @@ const DockItem = ({ item, mouseX, index, isMobile }) => {
   );
 };
 
-const GlassDock = ({ items }) => {
-  const mouseX = useMotionValue(-200);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+const GlassDock = ({ items, scale = 1 }) => {
+  const { mouseX, handleMouseMove, handleMouseLeave } = useGlassDock();
 
   return (
     <div className="flex w-full justify-center py-2">
@@ -80,12 +62,20 @@ const GlassDock = ({ items }) => {
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 180, damping: 20 }}
-        onMouseMove={(e) => mouseX.set(e.clientX)}
-        onMouseLeave={() => mouseX.set(-200)}
-        className="glass-dock relative isolate mx-auto flex items-end gap-3 rounded-[24px] px-5 pb-3 pt-3"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        // Scaled padding proportionally based on the scale prop
+        style={{
+          paddingLeft: `${1.25 * scale}rem`,
+          paddingRight: `${1.25 * scale}rem`,
+          paddingBottom: `${0.75 * scale}rem`,
+          paddingTop: `${0.75 * scale}rem`,
+          gap: `${0.75 * scale}rem`,
+        }}
+        className="glass-dock relative isolate mx-auto flex items-end rounded-[24px]"
       >
         {items.map((item, i) => (
-          <DockItem key={item.name} item={item} mouseX={mouseX} index={i} isMobile={isMobile} />
+          <DockItem key={item.name} item={item} mouseX={mouseX} index={i} scale={scale} />
         ))}
       </motion.div>
     </div>
@@ -93,4 +83,3 @@ const GlassDock = ({ items }) => {
 };
 
 export default GlassDock;
-
