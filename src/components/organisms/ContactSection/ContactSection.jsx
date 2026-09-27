@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Mail } from 'lucide-react';
 import ScrollReveal from '../../atoms/ScrollReveal';
-import GlassDock from '../../molecules/GlassDock';
+import GlassDock from '../../molecules/GlassDock/GlassDock';
 import SectionHeader from '../../molecules/SectionHeader';
 import ContactForm from '../../molecules/ContactForm/ContactForm';
 import { useTranslation } from '../../../hooks/useTranslation';

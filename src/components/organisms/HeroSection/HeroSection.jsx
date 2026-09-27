@@ -4,7 +4,7 @@ import { Github, Linkedin, GmailIcon } from '../atoms/Icons';
 import ScrollReveal from '../atoms/ScrollReveal';
 import TypeAsync from '../atoms/TypeAsync';
 import GooeyButton from '../atoms/GooeyButton';
-import GlassDock from '../molecules/GlassDock';
+import GlassDock from '../../molecules/GlassDock/GlassDock';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
