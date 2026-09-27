@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { CheckCircle, XCircle, Warning, Info, X } from '@phosphor-icons/react';
+import { createPortal } from 'react-dom';
 
 const GLASS_BLUR = {
   backdropFilter: 'blur(24px) saturate(1.8)',
@@ -147,13 +148,15 @@ export function ToastCard({ toast, onDismiss }) {
 }
 
 export function ToastContainer({ toasts, dismissToast }) {
-  return (
-    <div className="fixed top-20 left-4 right-4 z-50 flex flex-col gap-3 sm:top-24 sm:left-auto sm:right-6 sm:w-[380px]">
+  if (typeof document === 'undefined') return null;
+  return createPortal(
+    <div className="fixed top-20 left-4 right-4 z-[9999] flex flex-col gap-3 sm:top-24 sm:left-auto sm:right-6 sm:w-[380px]">
       <AnimatePresence mode="popLayout" initial={false}>
         {toasts.map((toast) => (
           <ToastCard key={toast.id} toast={toast} onDismiss={dismissToast} />
         ))}
       </AnimatePresence>
-    </div>
+    </div>,
+    document.body
   );
 }
