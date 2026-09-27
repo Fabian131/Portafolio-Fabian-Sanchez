@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
 import LiquidNav from './components/organisms/LiquidNav';
 import BackgroundOrganism from './components/organisms/BackgroundOrganism';
-import HeroSection from './components/organisms/HeroSection';
+import HeroSection from './components/organisms/HeroSection/HeroSection';
 import AboutSection from './components/organisms/AboutSection/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection/ProjectsSection';
