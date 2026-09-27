@@ -10,15 +10,17 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
     t,
     navRef,
     sidebarPillRef,
+    pillElRef,
     indicatorStyle,
     mobileOpen,
-    setMobileOpen,
+    toggleMobileOpen,
     isMoving,
     isDragging,
     dragOffset,
     isMobile,
     sidebarPillStyle,
     sidebarMoving,
+    isPillDragging,
     links,
     handleTouchStart,
     handleTouchMove,
@@ -81,7 +83,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
       {isMobile && (
         <div className="fixed top-6 right-4 z-50">
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
+            onClick={toggleMobileOpen}
             className={`mobile-nav-hamburger ${mobileOpen ? 'opacity-0 pointer-events-none' : ''}`}
             aria-label={t('ui.menu')}
             aria-expanded={mobileOpen}
@@ -97,7 +99,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
         <>
           <div
             className={`sidebar-overlay ${mobileOpen ? 'sidebar-overlay-open' : 'sidebar-overlay-closed'}`}
-            onClick={() => setMobileOpen(false)}
+            onClick={() => toggleMobileOpen()}
             aria-hidden="true"
           />
           <aside
@@ -113,7 +115,7 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
             inert={!mobileOpen || undefined}
           >
             <div className="sidebar-header">
-              <button onClick={(e) => { e.currentTarget.blur(); setMobileOpen(false); }} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
+              <button onClick={(e) => { e.currentTarget.blur(); toggleMobileOpen(); }} className="sidebar-close-btn" aria-label={t('ui.closeMenu')}>
                 <X size={24} className="stroke-[2.5]" />
               </button>
             </div>
@@ -123,8 +125,10 @@ const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
                 className="sidebar-pill-container"
                 onMouseDown={handlePillMouseDown}
               >
+              {/* Phase 4 & 5: pillElRef attached directly, isPillDragging drives class */}
               <div
-                className={`sidebar-pill ${sidebarMoving ? 'moving' : ''}`}
+                ref={pillElRef}
+                className={`sidebar-pill ${sidebarMoving ? 'moving' : ''} ${isPillDragging ? 'dragging' : ''}`}
                 style={{
                   transform: `translateY(${sidebarPillStyle.top}px)`,
                   height: `${sidebarPillStyle.height}px`

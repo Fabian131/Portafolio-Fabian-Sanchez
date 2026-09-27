@@ -1,42 +1,50 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
 import { MOBILE_MAX } from '../utils/breakpoints';
 import { useTranslation } from './useTranslation';
+import { navigationLinks } from '../data/navigation';
 
 export const useLiquidNav = ({ activeSection, onNavClick }) => {
   const { t, lang } = useTranslation();
   const navRef = useRef(null);
+  const sidebarPillRef = useRef(null);
+  // Direct ref to the pill DOM element — avoids querySelector in hot paths
+  const pillElRef = useRef(null);
+
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= MOBILE_MAX);
-  
+  const [isPillDragging, setIsPillDragging] = useState(false);  // Replaces classList mutation
+
   const touchStartX = useRef(null);
   const resizeTimeoutRef = useRef(null);
   const movingTimeoutRef = useRef(null);
   const pendingNavRef = useRef(null);
   const scrollAnimationRef = useRef(null);
-  const sidebarPillRef = useRef(null);
-  
+
   const [sidebarPillStyle, setSidebarPillStyle] = useState({ top: 0, height: 0 });
   const [sidebarMoving, setSidebarMoving] = useState(false);
   const sidebarMovingTimeoutRef = useRef(null);
-  
+
   const pillDraggingRef = useRef(false);
   const pillDragStartYRef = useRef(0);
   const pillDragStartTopRef = useRef(0);
   const pillDragLinkIndexRef = useRef(0);
   const pillDragCacheRef = useRef({ containerTop: 0, pillH: 0, minTop: 0, maxTop: 0 });
 
-  const links = useMemo(() => [
-    { id: 'inicio', label: t('nav.home') },
-    { id: 'sobre-mi', label: t('nav.about') },
-    { id: 'skills', label: t('nav.skills') },
-    { id: 'proyectos', label: t('nav.projects') },
-    { id: 'contacto', label: t('nav.contact') },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [t, lang]);
+  // ─── Phase 1: Single Source of Truth for nav links ───────────────────────
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const links = useMemo(() => navigationLinks.map(({ id, labelKey }) => ({
+    id,
+    label: t(labelKey)
+  })), [t, lang]);
+
+  // ─── Phase 2: Encapsulate mobile toggle in the hook ──────────────────────
+  const toggleMobileOpen = useCallback(() => {
+    setMobileOpen(prev => !prev);
+  }, []);
 
   const updateIndicator = useCallback((activeId) => {
     if (!navRef.current) return;
@@ -245,60 +253,58 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     return { index: bestIndex, link: links[bestIndex] };
   }, [links]);
 
-  const handlePillTouchStart = useCallback((e) => {
-    if (!sidebarPillRef.current) return;
-    const touch = e.touches[0];
-    const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-    if (!pillEl) return;
-    const pillRect = pillEl.getBoundingClientRect();
-    if (touch.clientY >= pillRect.top && touch.clientY <= pillRect.bottom) {
-      e.preventDefault();
-      e.stopPropagation();
-      pillDraggingRef.current = true;
-      pillDragStartYRef.current = pillRect.top + pillRect.height / 2;
-      pillDragStartTopRef.current = sidebarPillStyle.top;
-      pillDragLinkIndexRef.current = links.findIndex(l => l.id === activeSection);
-      pillEl.classList.add('dragging');
+  // ─── Phase 3: Register pill drag listeners only when dragging starts ──────
+  // ─── Phase 4: Use pillElRef to avoid querySelector in hot paths ───────────
+  // ─── Phase 5: Use React state (isPillDragging) instead of classList ───────
 
-      const containerRect = sidebarPillRef.current.getBoundingClientRect();
-      const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
-      const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
-      const lastLinkEl = lastEl[lastEl.length - 1];
-      const pillH = pillEl.offsetHeight;
-      pillDragCacheRef.current = {
-        containerTop: containerRect.top,
-        pillH,
-        minTop: firstEl ? firstEl.offsetTop : 0,
-        maxTop: lastLinkEl ? lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH : 0
-      };
-    }
+  const startPillDrag = useCallback((clientY) => {
+    const pillEl = pillElRef.current;
+    if (!pillEl || !sidebarPillRef.current) return false;
+    const pillRect = pillEl.getBoundingClientRect();
+    if (clientY < pillRect.top || clientY > pillRect.bottom) return false;
+
+    pillDraggingRef.current = true;
+    setIsPillDragging(true);
+    pillDragStartYRef.current = pillRect.top + pillRect.height / 2;
+    pillDragStartTopRef.current = sidebarPillStyle.top;
+    pillDragLinkIndexRef.current = links.findIndex(l => l.id === activeSection);
+
+    const containerRect = sidebarPillRef.current.getBoundingClientRect();
+    const linkEls = sidebarPillRef.current.querySelectorAll('a[data-id]');
+    const firstEl = linkEls[0];
+    const lastEl = linkEls[linkEls.length - 1];
+    const pillH = pillEl.offsetHeight;
+    pillDragCacheRef.current = {
+      containerTop: containerRect.top,
+      pillH,
+      minTop: firstEl ? firstEl.offsetTop : 0,
+      maxTop: lastEl ? lastEl.offsetTop + lastEl.offsetHeight - pillH : 0
+    };
+    return true;
   }, [sidebarPillStyle.top, activeSection, links]);
 
-  const handlePillTouchMove = useCallback((e) => {
-    if (!pillDraggingRef.current || !sidebarPillRef.current) return;
-    e.preventDefault();
-    const touch = e.touches[0];
+  const movePillDrag = useCallback((clientY) => {
+    if (!pillDraggingRef.current || !pillElRef.current || !sidebarPillRef.current) return;
     const { containerTop, pillH, minTop, maxTop } = pillDragCacheRef.current;
-    const relativeY = touch.clientY - containerTop;
-
+    const relativeY = clientY - containerTop;
     const newTop = Math.max(minTop, Math.min(maxTop, relativeY - pillH / 2));
-    const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-    if (pillEl) pillEl.style.transform = `translateY(${newTop}px)`;
 
-    const result = getPillLinkFromY(touch.clientY);
+    // Direct style mutation is acceptable for real-time drag animation
+    pillElRef.current.style.transform = `translateY(${newTop}px)`;
+
+    const result = getPillLinkFromY(clientY);
     if (result && pillDragLinkIndexRef.current !== result.index) {
       pillDragLinkIndexRef.current = result.index;
       onNavClick(result.link.id);
     }
   }, [getPillLinkFromY, onNavClick]);
 
-  const handlePillTouchEnd = useCallback(() => {
+  const endPillDrag = useCallback(() => {
     if (!pillDraggingRef.current) return;
     pillDraggingRef.current = false;
-    const pillEl = sidebarPillRef.current?.querySelector('.sidebar-pill');
-    if (pillEl) {
-      pillEl.classList.remove('dragging');
-      pillEl.style.transform = '';
+    setIsPillDragging(false);
+    if (pillElRef.current) {
+      pillElRef.current.style.transform = '';
     }
     setSidebarMoving(true);
     updateSidebarIndicator(activeSection || 'inicio');
@@ -306,33 +312,42 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     handleNavClick(activeSection || 'inicio');
   }, [updateSidebarIndicator, activeSection, handleNavClick]);
 
-  const handlePillMouseDown = useCallback((e) => {
-    if (!sidebarPillRef.current) return;
-    const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-    if (!pillEl) return;
-    const pillRect = pillEl.getBoundingClientRect();
-    if (e.clientY >= pillRect.top && e.clientY <= pillRect.bottom) {
+  // Touch handlers for sidebar pill drag
+  const handlePillTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    if (startPillDrag(touch.clientY)) {
       e.preventDefault();
-      pillDraggingRef.current = true;
-      pillDragStartYRef.current = pillRect.top + pillRect.height / 2;
-      pillDragStartTopRef.current = sidebarPillStyle.top;
-      pillDragLinkIndexRef.current = links.findIndex(l => l.id === activeSection);
-      pillEl.classList.add('dragging');
-
-      const containerRect = sidebarPillRef.current.getBoundingClientRect();
-      const firstEl = sidebarPillRef.current.querySelector('a[data-id]');
-      const lastEl = sidebarPillRef.current.querySelectorAll('a[data-id]');
-      const lastLinkEl = lastEl[lastEl.length - 1];
-      const pillH = pillEl.offsetHeight;
-      pillDragCacheRef.current = {
-        containerTop: containerRect.top,
-        pillH,
-        minTop: firstEl ? firstEl.offsetTop : 0,
-        maxTop: lastLinkEl ? lastLinkEl.offsetTop + lastLinkEl.offsetHeight - pillH : 0
-      };
+      e.stopPropagation();
     }
-  }, [sidebarPillStyle.top, activeSection, links]);
+  }, [startPillDrag]);
 
+  const handlePillTouchMove = useCallback((e) => {
+    if (!pillDraggingRef.current) return;
+    e.preventDefault();
+    movePillDrag(e.touches[0].clientY);
+  }, [movePillDrag]);
+
+  const handlePillTouchEnd = useCallback(() => {
+    endPillDrag();
+  }, [endPillDrag]);
+
+  // Mouse handler — starts drag, then registers move/up on document only for the duration
+  const handlePillMouseDown = useCallback((e) => {
+    if (!startPillDrag(e.clientY)) return;
+    e.preventDefault();
+
+    // Phase 3: Register move/up only while drag is active, not permanently
+    const handleMouseMove = (ev) => movePillDrag(ev.clientY);
+    const handleMouseUp = () => {
+      endPillDrag();
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [startPillDrag, movePillDrag, endPillDrag]);
+
+  // Register touch events on the sidebar pill container
   useEffect(() => {
     const container = sidebarPillRef.current;
     if (!container || !isMobile) return;
@@ -348,58 +363,21 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     };
   }, [handlePillTouchStart, handlePillTouchMove, handlePillTouchEnd, isMobile]);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!pillDraggingRef.current || !sidebarPillRef.current) return;
-      const { containerTop, pillH, minTop, maxTop } = pillDragCacheRef.current;
-      const relativeY = e.clientY - containerTop;
-
-      const newTop = Math.max(minTop, Math.min(maxTop, relativeY - pillH / 2));
-      const pillEl = sidebarPillRef.current.querySelector('.sidebar-pill');
-      if (pillEl) pillEl.style.transform = `translateY(${newTop}px)`;
-
-      const result = getPillLinkFromY(e.clientY);
-      if (result && pillDragLinkIndexRef.current !== result.index) {
-        pillDragLinkIndexRef.current = result.index;
-        onNavClick(result.link.id);
-      }
-    };
-
-    const handleMouseUp = () => {
-      if (!pillDraggingRef.current) return;
-      pillDraggingRef.current = false;
-      const pillEl = sidebarPillRef.current?.querySelector('.sidebar-pill');
-      if (pillEl) {
-        pillEl.classList.remove('dragging');
-        pillEl.style.transform = '';
-      }
-      setSidebarMoving(true);
-      updateSidebarIndicator(activeSection || 'inicio');
-      sidebarMovingTimeoutRef.current = setTimeout(() => setSidebarMoving(false), 400);
-      handleNavClick(activeSection || 'inicio');
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [getPillLinkFromY, onNavClick, updateSidebarIndicator, activeSection, handleNavClick]);
-
   return {
     t,
     navRef,
     sidebarPillRef,
+    pillElRef,
     indicatorStyle,
     mobileOpen,
-    setMobileOpen,
+    toggleMobileOpen,
     isMoving,
     isDragging,
     dragOffset,
     isMobile,
     sidebarPillStyle,
     sidebarMoving,
+    isPillDragging,
     links,
     handleTouchStart,
     handleTouchMove,
