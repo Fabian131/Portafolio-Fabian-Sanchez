@@ -1,8 +1,8 @@
 import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Globe, ChevronDown, Check } from 'lucide-react';
-import { useTranslation } from '../../hooks/useTranslation';
-import { AVAILABLE, LANGS } from '../../data/translations';
+import { useTranslation } from '../../../../hooks/useTranslation';
+import { AVAILABLE, LANGS } from '../../../../data/translations';
 
 const ITEM_H = 44;
 const PADDING = 8;
