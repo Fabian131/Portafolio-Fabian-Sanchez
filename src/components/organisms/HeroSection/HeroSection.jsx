@@ -1,14 +1,11 @@
-import React, { memo, } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { Github, Linkedin, GmailIcon } from '../../atoms/ui/Icons/Icons';
+import React, { memo } from 'react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import TypeAsync from '../../atoms/typography/TypeAsync/TypeAsync';
-import GooeyButton from '../../atoms/buttons/GooeyButton/GooeyButton';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
 import { useHeroSection } from '../../../hooks/useHeroSection';
 
 const HeroSection = memo((props) => {
-  const { t, socialLinks, isMobile, theme, onCVDownload } = useHeroSection(props);
+  const { t, dockItems, roles } = useHeroSection(props);
 
   return (
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">
@@ -30,7 +27,7 @@ Fabián Sánchez
           <ScrollReveal direction="up" delay={500}>
             <span className="block text-xl sm:text-2xl md:text-3xl lg:text-5xl mt-2 font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text">
               <span className="font-light text-gray-500 dark:text-gray-400 mr-3">{t('hero.fullStack')}</span>
-              <TypeAsync words={[t('hero.role1'), t('hero.role2'), t('hero.role3'), t('hero.role4')]} />
+              <TypeAsync words={roles} />
             </span>
           </ScrollReveal>
         </h1>
@@ -43,16 +40,8 @@ Fabián Sánchez
 
         <ScrollReveal direction="up" delay={900}>
           <div className="pt-10 flex flex-col items-center justify-center gap-8">
-
-            {!isMobile && (
-              <GooeyButton
-                text={t('hero.downloadCV')}
-                onClick={onCVDownload}
-              />
-            )}
-
-            <div className={`flex flex-wrap justify-center w-full max-w-sm mx-auto ${isMobile ? 'mt-2' : 'mt-6'}`}>
-              <GlassDock items={isMobile ? [...socialLinks, { name: t('hero.downloadCV'), href: '#', onClick: onCVDownload, iconKey: 'cv' }] : socialLinks} />
+            <div className={`flex flex-wrap justify-center w-full max-w-sm mx-auto mt-6`}>
+              <GlassDock items={dockItems} scale={1.45} />
             </div>
           </div>
         </ScrollReveal>
