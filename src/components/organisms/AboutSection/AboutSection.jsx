@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { User } from 'lucide-react';
 import ScrollReveal from '../../atoms/ScrollReveal';
 import DepthCarousel from '../../molecules/DepthCarousel/DepthCarousel';
+import SectionHeader from '../../molecules/SectionHeader';
 import { PROSE_CLASS } from '../../../utils/typography';
 import { useTranslation } from '../../../hooks/useTranslation';
 
@@ -61,14 +62,13 @@ const AboutSection = memo(() => {
       </div>
 
       <div className="lg:w-5/12 space-y-6 min-w-0 text-center lg:text-left">
-        <ScrollReveal direction="right" delay={200}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center lg:justify-start justify-center gap-3">
-            <User className="text-cyan-500 shrink-0" size={32} />
-            <span className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 dark:from-cyan-400 dark:via-blue-500 dark:to-purple-500 text-gradient-animated text-transparent bg-clip-text pb-1">
-              {t('about.title')}
-            </span>
-          </h2>
-        </ScrollReveal>
+        <SectionHeader 
+          icon={User} 
+          title={t('about.title')} 
+          direction="right" 
+          delay={200} 
+          className="mb-0! lg:justify-start" 
+        />
 
         <ScrollReveal direction="right" delay={300}>
           <p className={PROSE_CLASS}>
