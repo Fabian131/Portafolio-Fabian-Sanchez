@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Briefcase } from 'lucide-react';
 import ScrollReveal from '../../atoms/ScrollReveal';
 import ProjectCard from '../../molecules/ProjectCard/ProjectCard';
-import SectionHeader from '../../molecules/SectionHeader';
+import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import { useTranslation } from '../../../hooks/useTranslation';
 
 const ProjectsSection = memo(({ projects }) => {
