@@ -73,9 +73,7 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
       return;
     }
 
-    const speed = direction === 'left' ? -0.9 : 0.9;
-    const targetFPS = 45;
-    const frameInterval = 1000 / targetFPS;
+    const pixelsPerMs = direction === 'left' ? -0.06 : 0.06;
 
     const animate = (timestamp) => {
       if (!isVisible) {
@@ -83,26 +81,21 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
         return;
       }
 
-      if (timestamp - lastFrameTime.current < frameInterval) {
-        animationRef.current = requestAnimationFrame(animate);
-        return;
-      }
+      if (!lastFrameTime.current) lastFrameTime.current = timestamp;
+      const deltaTime = timestamp - lastFrameTime.current;
       lastFrameTime.current = timestamp;
 
-      positionRef.current += speed;
+      // Cap delta time to prevent massive jumps when tab becomes active again
+      const dt = Math.min(deltaTime, 50);
 
-      if (direction === 'left') {
-        if (positionRef.current <= -oneSetWidth) {
-          positionRef.current += oneSetWidth;
-        } else if (positionRef.current > 0) {
-          positionRef.current -= oneSetWidth;
-        }
-      } else {
-        if (positionRef.current >= 0) {
-          positionRef.current -= oneSetWidth;
-        } else if (positionRef.current < -oneSetWidth) {
-          positionRef.current += oneSetWidth;
-        }
+      positionRef.current += pixelsPerMs * dt;
+      
+      // Strict modulo normalization to keep position in (-oneSetWidth, 0]
+      while (positionRef.current > 0) {
+        positionRef.current -= oneSetWidth;
+      }
+      while (positionRef.current <= -oneSetWidth) {
+        positionRef.current += oneSetWidth;
       }
 
       if (trackRef.current) {
@@ -112,36 +105,37 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
       animationRef.current = requestAnimationFrame(animate);
     };
 
+    lastFrameTime.current = 0;
     animationRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationRef.current);
   }, [isDragging, oneSetWidth, direction, isVisible]);
 
   const normalizePosition = useCallback((pos) => {
     let normalized = pos;
-    const maxDrag = oneSetWidth * 2;
-
-    if (direction === 'left') {
-      while (normalized < -maxDrag) normalized += oneSetWidth;
-      while (normalized > oneSetWidth) normalized -= oneSetWidth;
-    } else {
-      while (normalized > 0) normalized -= oneSetWidth;
-      while (normalized < -maxDrag) normalized += oneSetWidth;
+    if (oneSetWidth === 0) return 0;
+    
+    // Strict modulo normalization to keep position in (-oneSetWidth, 0]
+    while (normalized > 0) {
+      normalized -= oneSetWidth;
     }
+    while (normalized <= -oneSetWidth) {
+      normalized += oneSetWidth;
+    }
+    
     return normalized;
-  }, [oneSetWidth, direction]);
+  }, [oneSetWidth]);
 
-  const handleMouseDown = useCallback((e) => {
-    e.preventDefault();
+  const handlePointerDown = useCallback((e) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
     setIsDragging(true);
     dragStartX.current = e.clientX;
     dragStartPos.current = positionRef.current;
     cancelAnimationFrame(animationRef.current);
   }, []);
 
-  const handleMouseMove = useCallback((e) => {
+  const handlePointerMove = useCallback((e) => {
     if (!isDragging || oneSetWidth === 0) return;
-    e.preventDefault();
-
+    
     const deltaX = e.clientX - dragStartX.current;
     positionRef.current = normalizePosition(dragStartPos.current + deltaX);
 
@@ -150,32 +144,8 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
     }
   }, [isDragging, oneSetWidth, normalizePosition]);
 
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (isDragging) setIsDragging(false);
-  }, [isDragging]);
-
-  const handleTouchStart = useCallback((e) => {
-    setIsDragging(true);
-    dragStartX.current = e.touches[0].clientX;
-    dragStartPos.current = positionRef.current;
-    cancelAnimationFrame(animationRef.current);
-  }, []);
-
-  const handleTouchMove = useCallback((e) => {
-    if (!isDragging || oneSetWidth === 0) return;
-    const deltaX = e.touches[0].clientX - dragStartX.current;
-    positionRef.current = normalizePosition(dragStartPos.current + deltaX);
-
-    if (trackRef.current) {
-      trackRef.current.style.transform = `translate3d(${positionRef.current}px, 0, 0)`;
-    }
-  }, [isDragging, oneSetWidth, normalizePosition]);
-
-  const handleTouchEnd = useCallback(() => {
+  const handlePointerUp = useCallback((e) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
     setIsDragging(false);
   }, []);
 
@@ -183,14 +153,11 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
     <div
       ref={containerRef}
       className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none h-24"
-      style={{ contain: 'layout' }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      style={{ contain: 'layout', touchAction: 'pan-y' }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       <div
         ref={trackRef}

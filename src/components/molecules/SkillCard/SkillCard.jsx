@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import './SkillCard.css';
 
 const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => {
@@ -9,7 +9,6 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
   };
 
   const colorClasses = colors[color] || colors.cyan;
-  const [isHovered, setIsHovered] = useState(false);
   const isLowPerf = performanceTier === 'low';
 
   const cardBg = isLowPerf
@@ -18,13 +17,11 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
 
   return (
     <div
-      className="flex-shrink-0 relative"
+      className="shrink-0 relative group"
       style={{ contain: 'layout style paint' }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`sketch-card px-3 py-2 flex items-center gap-2 rounded-xl ${cardBg} h-full relative overflow-hidden`}>
-        <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 ${isHovered && !isLowPerf ? 'animate' : 'opacity-0'}`}>
+      <div className={`sketch-card px-3 py-2 flex items-center gap-2 rounded-xl ${cardBg} h-full relative overflow-hidden group-hover:scale-105 group-hover:bg-white/10 dark:group-hover:bg-white/5 transition-all duration-300`}>
+        <div className={`sketch-lines absolute inset-0 pointer-events-none z-10 opacity-0 ${!isLowPerf ? 'group-hover:animate group-hover:opacity-100' : ''}`}>
           <svg className="absolute inset-0 w-full h-full dark:hidden" preserveAspectRatio="none">
             <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 8" pathLength="10" className="sketch-line"/>
           </svg>
@@ -39,10 +36,10 @@ const SkillCard = memo(({ skill, color = 'cyan', performanceTier = 'high' }) => 
           </svg>
         </div>
 
-        <div className={`p-2 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
+        <div className={`p-2 rounded-full ${colorClasses} relative z-20 transition-transform duration-300 group-hover:scale-110`}>
           <div className="scale-[1.15]">{skill.icon}</div>
         </div>
-        <span className={`font-medium text-xs whitespace-nowrap relative z-20 transition-colors duration-300 ${isHovered ? 'text-cyan-600 dark:text-cyan-400' : 'text-gray-700 dark:text-gray-300'}`}>{skill.name}</span>
+        <span className={`font-medium text-xs whitespace-nowrap relative z-20 transition-colors duration-300 text-gray-700 dark:text-gray-300 group-hover:text-cyan-600 dark:group-hover:text-cyan-400`}>{skill.name}</span>
       </div>
     </div>
   );
