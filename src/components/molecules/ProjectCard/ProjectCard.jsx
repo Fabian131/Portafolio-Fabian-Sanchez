@@ -1,26 +1,20 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo } from 'react';
 import { Play } from 'lucide-react';
 import GlassCard from '../../atoms/layout/GlassCard/GlassCard';
-import { useTranslation } from '../../../hooks/useTranslation';
-
-const getYouTubeId = (url) => {
-  if (!url || url === 'YOUTUBE_URL_AQUI') return null;
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
-  return match ? match[1] : null;
-};
+import { useProjectCard } from '../../../hooks/useProjectCard';
 
 const ProjectCard = memo(({ project }) => {
-  const { t } = useTranslation();
-  const { projectKey, title, description, tags, imageUrl, videoUrl } = project;
-  const [isPlaying, setIsPlaying] = useState(false);
-  const pKey = projectKey || '';
-  const transTitle = t(`projects.${pKey}.title`) || title;
-  const transDesc = t(`projects.${pKey}.description`) || description;
-
-  const videoId = getYouTubeId(videoUrl);
-  const hasVideo = videoId !== null;
-
-  const handlePlay = useCallback(() => setIsPlaying(true), []);
+  const {
+    t,
+    transTitle,
+    transDesc,
+    tags,
+    imageUrl,
+    videoId,
+    hasVideo,
+    isPlaying,
+    handlePlay
+  } = useProjectCard({ project });
 
   return (
     <GlassCard tilt={false} className="project-card flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
