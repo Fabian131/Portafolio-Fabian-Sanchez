@@ -49,23 +49,32 @@ const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', perf
   }, []);
 
   useEffect(() => {
-    if (trackRef.current && !isReady.current) {
-      requestAnimationFrame(() => {
-        if (trackRef.current) {
-          const totalWidth = trackRef.current.scrollWidth;
-          const oneSetWidth = totalWidth / duplicateCount;
-          setOneSetWidth(oneSetWidth);
+    const track = trackRef.current;
+    if (!track) return;
 
-          if (direction === 'right') {
-            positionRef.current = -oneSetWidth;
-            trackRef.current.style.transform = `translate3d(${positionRef.current}px, 0, 0)`;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        // scrollWidth is accurate for the overflowing flex container
+        const totalWidth = entry.target.scrollWidth;
+        const newOneSetWidth = totalWidth / duplicateCount;
+
+        if (newOneSetWidth > 0 && Math.abs(newOneSetWidth - oneSetWidth) > 1) {
+          setOneSetWidth(newOneSetWidth);
+
+          if (!isReady.current) {
+            if (direction === 'right') {
+              positionRef.current = -newOneSetWidth;
+              entry.target.style.transform = `translate3d(${positionRef.current}px, 0, 0)`;
+            }
+            isReady.current = true;
           }
-
-          isReady.current = true;
         }
-      });
-    }
-  }, [direction, duplicateCount]);
+      }
+    });
+
+    resizeObserver.observe(track);
+    return () => resizeObserver.disconnect();
+  }, [duplicateCount, direction, oneSetWidth]);
 
   useEffect(() => {
     if (isDragging || oneSetWidth === 0 || !isVisible) {
