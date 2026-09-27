@@ -5,10 +5,10 @@ import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import TypeAsync from '../../atoms/typography/TypeAsync/TypeAsync';
 import GooeyButton from '../../atoms/buttons/GooeyButton/GooeyButton';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { useHeroSection } from '../../../hooks/useHeroSection';
 
-const HeroSection = memo(({ socialLinks, isMobile, theme, onCVDownload }) => {
-  const { t } = useTranslation();
+const HeroSection = memo((props) => {
+  const { t, socialLinks, isMobile, theme, onCVDownload } = useHeroSection(props);
 
   return (
     <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">

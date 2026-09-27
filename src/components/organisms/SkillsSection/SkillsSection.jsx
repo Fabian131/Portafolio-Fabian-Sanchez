@@ -3,10 +3,11 @@ import { Wrench, Server, Layout } from 'lucide-react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import DraggableMarquee from '../../molecules/DraggableMarquee/DraggableMarquee';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { useSkillsSection } from '../../../hooks/useSkillsSection';
 
-const SkillsSection = memo(({ skills, performanceTier = 'high' }) => {
-  const { t } = useTranslation();
+const SkillsSection = memo((props) => {
+  const { t, skills, performanceTier } = useSkillsSection(props);
+
   return (
     <section id="skills" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-6xl mx-auto w-full overflow-x-hidden">
       <SectionHeader

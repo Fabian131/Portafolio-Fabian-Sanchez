@@ -4,10 +4,10 @@ import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import ContactForm from '../../molecules/ContactForm/ContactForm';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { useContactSection } from '../../../hooks/useContactSection';
 
-const ContactSection = memo(({ socialLinks }) => {
-  const { t } = useTranslation();
+const ContactSection = memo((props) => {
+  const { t, socialLinks } = useContactSection(props);
 
   return (
     <section

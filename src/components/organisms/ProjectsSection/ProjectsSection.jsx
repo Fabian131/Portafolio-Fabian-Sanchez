@@ -3,11 +3,10 @@ import { Briefcase } from 'lucide-react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import ProjectCard from '../../molecules/ProjectCard/ProjectCard';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
-import { useTranslation } from '../../../hooks/useTranslation';
+import { useProjectsSection } from '../../../hooks/useProjectsSection';
 
-const ProjectsSection = memo(({ projects }) => {
-  const { t } = useTranslation();
-  const cols = Math.min(projects.length, 4);
+const ProjectsSection = memo((props) => {
+  const { t, projects, cols } = useProjectsSection(props);
 
   return (
     <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-[1400px] mx-auto w-full overflow-hidden">
@@ -38,4 +37,3 @@ const ProjectsSection = memo(({ projects }) => {
 ProjectsSection.displayName = 'ProjectsSection';
 
 export default ProjectsSection;
-
