@@ -35,10 +35,11 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
   const pillDragCacheRef = useRef({ containerTop: 0, pillH: 0, minTop: 0, maxTop: 0 });
 
   // ─── Phase 1: Single Source of Truth for nav links ───────────────────────
+  // IDs come from navigation.js; labels are derived from translations.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const links = useMemo(() => navigationLinks.map(({ id, labelKey }) => ({
+  const links = useMemo(() => navigationLinks.map(({ id }) => ({
     id,
-    label: t(labelKey)
+    label: t(`nav.${id}`)
   })), [t, lang]);
 
   // ─── Phase 2: Encapsulate mobile toggle in the hook ──────────────────────
