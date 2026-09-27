@@ -23,7 +23,7 @@ const ProjectCard = memo(({ project }) => {
   const handlePlay = useCallback(() => setIsPlaying(true), []);
 
   return (
-    <GlassCard tilt={false} className="project-card flex flex-col cursor-pointer h-full min-h-140 border-t border-t-cyan-500/30">
+    <GlassCard tilt={false} className="project-card flex flex-col cursor-pointer h-full min-h-[560px] border-t border-t-cyan-500/30">
       {/* Image / Video — edge-to-edge, no padding */}
       <div className="w-full aspect-video overflow-hidden relative shrink-0">
         {hasVideo && isPlaying ? (
@@ -66,11 +66,11 @@ const ProjectCard = memo(({ project }) => {
           {transTitle}
         </h3>
 
-        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-7 min-h-40 mb-4">
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-[7] min-h-[160px] mb-4">
           {transDesc}
         </p>
 
-        <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs font-medium mt-auto min-h-13 content-start">
+        <div className="flex flex-wrap gap-2 text-[10px] sm:text-xs font-medium mt-auto min-h-[52px] content-start">
           {tags.map((tag) => (
             <span key={tag.label || tag} className="px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
               {typeof tag === 'string' ? tag : tag.label}
