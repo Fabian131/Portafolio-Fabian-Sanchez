@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { Github, Linkedin, GmailIcon, CVIcon } from '../../atoms/Icons';
+import { Github, Linkedin, GmailIcon, CVIcon } from '../../atoms/ui/Icons/Icons';
 
 const ICON_SIZE = 52;
 const MAG_RANGE = 140;

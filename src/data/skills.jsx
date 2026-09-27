@@ -1,4 +1,4 @@
-﻿import { JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, HtmlIcon, CssIcon, JavaScriptIcon, ReactIcon, ReactNativeIcon, TailwindIcon, BootstrapIcon, JsonIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, BashIcon, ScrumIcon } from '../components/atoms/Icons';
+import { JavaIcon, SpringBootIcon, PhpIcon, LaravelIcon, NodeJsIcon, CppIcon, PostgresqlIcon, MysqlIcon, HtmlIcon, CssIcon, JavaScriptIcon, ReactIcon, ReactNativeIcon, TailwindIcon, BootstrapIcon, JsonIcon, DockerIcon, GitIcon, GithubIcon, LinuxIcon, BashIcon, ScrumIcon } from '../components/atoms/ui/Icons/Icons';
 
 export const skills = {
   backend: [
