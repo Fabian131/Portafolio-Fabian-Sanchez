@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../../atoms/Icons';
 import ScrollReveal from '../../atoms/ScrollReveal';
 import TypeAsync from '../../atoms/TypeAsync';
-import GooeyButton from '../../atoms/GooeyButton';
+import GooeyButton from '../../atoms/buttons/GooeyButton/GooeyButton';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
 import { useTranslation } from '../../../hooks/useTranslation';
 
