@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, memo } from "react";
+import React, { memo } from "react";
+import { useGooeyButton } from "../../../../hooks/useGooeyButton";
 
 function GooeyButton({
   text,
@@ -8,29 +9,7 @@ function GooeyButton({
   dark = "#755ad0",
   darkest = "#1a2a6c"
 }) {
-  const innerRef = useRef(null);
-
-  useEffect(() => {
-    if (innerRef.current) {
-      const rect = innerRef.current.getBoundingClientRect();
-      innerRef.current.style.setProperty("--width", `${rect.width}px`);
-      innerRef.current.style.setProperty("--height", `${rect.height}px`);
-    }
-  }, []);
-
-  const handleMouseMove = (e) => {
-    const inner = innerRef.current;
-    if (!inner) return;
-
-    const rect = inner.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    inner.style.setProperty("--x", `${x}px`);
-    inner.style.setProperty("--y", `${y}px`);
-    inner.style.setProperty("--height", `${rect.height}px`);
-    inner.style.setProperty("--width", `${rect.width}px`);
-  };
+  const { innerRef, handleMouseMove } = useGooeyButton();
 
   return (
     <div
