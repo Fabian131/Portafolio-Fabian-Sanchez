@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import LanguageSwitcher from '../../atoms/ui/LanguageSwitcher/LanguageSwitcher';
+import './LiquidNav.css';
 import { useLiquidNav } from '../../../hooks/useLiquidNav';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
