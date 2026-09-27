@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useRef, memo, useCallback,
 import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
 import ScrollReveal from '../../atoms/ScrollReveal';
-import LanguageSwitcher from '../../atoms/LanguageSwitcher';
+import LanguageSwitcher from '../../atoms/ui/LanguageSwitcher/LanguageSwitcher';
 import { MOBILE_MAX } from '../../../utils/breakpoints';
 import { useTranslation } from '../../../hooks/useTranslation';
 
