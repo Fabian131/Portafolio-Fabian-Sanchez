@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useTranslation } from '../../hooks/useTranslation';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 const Footer = memo(() => {
   const { t } = useTranslation();

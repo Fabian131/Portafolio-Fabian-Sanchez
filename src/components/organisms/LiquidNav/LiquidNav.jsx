@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Moon, Sun, X } from 'lucide-react';
-import ScrollReveal from '../atoms/ScrollReveal';
-import LanguageSwitcher from '../atoms/LanguageSwitcher';
-import { MOBILE_MAX } from '../../utils/breakpoints';
-import { useTranslation } from '../../hooks/useTranslation';
+import ScrollReveal from '../../atoms/ScrollReveal';
+import LanguageSwitcher from '../../atoms/LanguageSwitcher';
+import { MOBILE_MAX } from '../../../utils/breakpoints';
+import { useTranslation } from '../../../hooks/useTranslation';
 
 const LiquidNav = memo(({ activeSection, toggleTheme, isDark, onNavClick }) => {
   const { t, lang } = useTranslation();
