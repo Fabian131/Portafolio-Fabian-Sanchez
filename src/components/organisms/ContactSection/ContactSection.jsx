@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Mail } from 'lucide-react';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import ContactForm from '../../molecules/ContactForm/ContactForm';

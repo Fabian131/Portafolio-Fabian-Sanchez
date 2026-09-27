@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 
 const SectionHeader = memo(({ icon: Icon, title, direction = 'up', delay = 0, className = '' }) => {
   return (

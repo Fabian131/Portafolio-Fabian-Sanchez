@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Wrench, Server, Layout } from 'lucide-react';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import DraggableMarquee from '../../molecules/DraggableMarquee/DraggableMarquee';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import { useTranslation } from '../../../hooks/useTranslation';

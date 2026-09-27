@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Briefcase } from 'lucide-react';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import ProjectCard from '../../molecules/ProjectCard/ProjectCard';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import { useTranslation } from '../../../hooks/useTranslation';

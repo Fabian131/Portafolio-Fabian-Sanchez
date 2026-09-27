@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { User } from 'lucide-react';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import DepthCarousel from '../../molecules/DepthCarousel/DepthCarousel';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
 import { PROSE_CLASS } from '../../../utils/typography';

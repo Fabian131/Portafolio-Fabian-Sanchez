@@ -1,7 +1,7 @@
 import React, { memo, } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Github, Linkedin, GmailIcon } from '../../atoms/Icons';
-import ScrollReveal from '../../atoms/ScrollReveal';
+import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import TypeAsync from '../../atoms/TypeAsync';
 import GooeyButton from '../../atoms/buttons/GooeyButton/GooeyButton';
 import GlassDock from '../../molecules/GlassDock/GlassDock';
