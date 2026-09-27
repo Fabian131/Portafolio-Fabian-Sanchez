@@ -1,6 +1,6 @@
 import React, { memo, useRef } from 'react';
 import { Send, Loader2 } from 'lucide-react';
-import GlassCard from '../../atoms/GlassCard';
+import GlassCard from '../../atoms/layout/GlassCard/GlassCard';
 import { ToastContainer } from '../GlassToast/GlassToast';
 import { useTranslation } from '../../../hooks/useTranslation';
 import { useContactForm } from '../../../hooks/useContactForm';

@@ -1,6 +1,6 @@
 import React, { memo, useState, useCallback } from 'react';
 import { Play } from 'lucide-react';
-import GlassCard from '../../atoms/GlassCard';
+import GlassCard from '../../atoms/layout/GlassCard/GlassCard';
 import { useTranslation } from '../../../hooks/useTranslation';
 
 const getYouTubeId = (url) => {
