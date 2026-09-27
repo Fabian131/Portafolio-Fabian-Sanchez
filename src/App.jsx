@@ -4,7 +4,7 @@ import LiquidNav from './components/organisms/LiquidNav';
 import BackgroundOrganism from './components/organisms/BackgroundOrganism';
 import HeroSection from './components/organisms/HeroSection';
 import AboutSection from './components/organisms/AboutSection/AboutSection';
-import SkillsSection from './components/organisms/SkillsSection';
+import SkillsSection from './components/organisms/SkillsSection/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection';
 import ContactSection from './components/organisms/ContactSection';
 import Footer from './components/organisms/Footer';
