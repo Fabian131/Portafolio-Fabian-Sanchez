@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import LiquidNav from './components/organisms/LiquidNav';
 import BackgroundOrganism from './components/organisms/BackgroundOrganism';
 import HeroSection from './components/organisms/HeroSection';
-import AboutSection from './components/organisms/AboutSection';
+import AboutSection from './components/organisms/AboutSection/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection';
 import ContactSection from './components/organisms/ContactSection';

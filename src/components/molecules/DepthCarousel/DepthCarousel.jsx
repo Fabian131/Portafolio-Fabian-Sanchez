@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
-import ImageLightbox from './ImageLightbox';
+import ImageLightbox from '../ImageLightbox/ImageLightbox';
 import './DepthCarousel.css';
 
 const DEFAULT_ITEMS = [
