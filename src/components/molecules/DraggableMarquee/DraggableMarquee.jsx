@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import SkillCard from '../SkillCard/SkillCard';
-import { MOBILE_MAX } from '../../utils/breakpoints';
+import { MOBILE_MAX } from '../../../utils/breakpoints';
 
 const DraggableMarquee = memo(({ items, direction = 'left', color = 'cyan', performanceTier = 'high' }) => {
   const trackRef = useRef(null);
