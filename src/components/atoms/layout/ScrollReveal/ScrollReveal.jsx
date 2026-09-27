@@ -1,6 +1,6 @@
 import React, { useCallback, memo } from 'react';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useIntersectionObserver } from '../../../../hooks/useIntersectionObserver';
+import { useReducedMotion } from '../../../../hooks/useReducedMotion';
 
 const ScrollReveal = memo(({ children, delay = 0, direction = 'up', className = '' }) => {
   const [targetRef, isInView] = useIntersectionObserver({ threshold: 0.1, once: true });

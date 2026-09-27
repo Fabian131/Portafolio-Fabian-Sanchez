@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, memo } from 'react';
-import { MOBILE_MAX } from '../../utils/breakpoints';
+import { MOBILE_MAX } from '../../../../utils/breakpoints';
 
 const GlassCard = memo(({ children, className = '', tilt = false, isNavbar = false, performanceTier = 'high' }) => {
   const wrapperRef = useRef(null);
