@@ -15,8 +15,8 @@
   }
 }
 
-.sketch-lines.animate .sketch-line,
-.sketch-lines.animate .sketch-line-blur {
+.group:hover .sketch-lines.allow-animation .sketch-line,
+.group:hover .sketch-lines.allow-animation .sketch-line-blur {
   animation: sketchStroke 0.8s ease-out forwards;
 }
 
