@@ -27,7 +27,7 @@ const ContactSection = memo((props) => {
         <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400 mb-2">
           {t('contact.findMe') || 'Find me on'}
         </p>
-        <GlassDock items={dockItems} scale={1.45} />
+        <GlassDock items={dockItems} scale={1.16} />
       </ScrollReveal>
 
       {/* ── Centered Form Container ── */}

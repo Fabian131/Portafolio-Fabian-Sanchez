@@ -41,7 +41,7 @@ Fabián Sánchez
         <ScrollReveal direction="up" delay={900}>
           <div className="pt-10 flex flex-col items-center justify-center gap-8">
             <div className={`flex flex-wrap justify-center w-full max-w-sm mx-auto mt-6`}>
-              <GlassDock items={dockItems} scale={1.45} />
+              <GlassDock items={dockItems} scale={1.16} />
             </div>
           </div>
         </ScrollReveal>
