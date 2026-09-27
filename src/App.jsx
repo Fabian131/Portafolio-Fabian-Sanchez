@@ -7,7 +7,7 @@ import AboutSection from './components/organisms/AboutSection/AboutSection';
 import SkillsSection from './components/organisms/SkillsSection/SkillsSection';
 import ProjectsSection from './components/organisms/ProjectsSection/ProjectsSection';
 import ContactSection from './components/organisms/ContactSection/ContactSection';
-import Footer from './components/organisms/Footer';
+import Footer from './components/organisms/Footer/Footer';
 
 import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
