@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
-import LiquidNav from './components/organisms/LiquidNav';
+import LiquidNav from './components/organisms/LiquidNav/LiquidNav';
 import BackgroundOrganism from './components/organisms/BackgroundOrganism';
 import HeroSection from './components/organisms/HeroSection/HeroSection';
 import AboutSection from './components/organisms/AboutSection/AboutSection';
