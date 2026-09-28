@@ -164,8 +164,19 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
     let firstFrame = true;
     const startTime = performance.now();
 
+    let isVisible = true;
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+    }, { rootMargin: '100px' });
+    intersectionObserver.observe(mountElement);
+
     const animate = (currentTime) => {
       animationFrameRef.current = requestAnimationFrame(animate);
+
+      if (!isVisible) {
+        lastTime = currentTime;
+        return;
+      }
 
       const deltaTime = currentTime - lastTime;
       if (deltaTime < frameInterval) return;
@@ -256,6 +267,7 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
 
       if (geometry) geometry.dispose();
       if (material) material.dispose();
