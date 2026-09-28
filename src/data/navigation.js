@@ -4,9 +4,9 @@
  * DO NOT add label/labelKey here — that belongs in translations/.
  */
 export const navigationLinks = [
-  { id: 'inicio'    },
-  { id: 'sobre-mi'  },
-  { id: 'skills'    },
-  { id: 'proyectos' },
-  { id: 'contacto'  },
+  { id: 'home'     },
+  { id: 'about'    },
+  { id: 'skills'   },
+  { id: 'projects' },
+  { id: 'contact'  },
 ];

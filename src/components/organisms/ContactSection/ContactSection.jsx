@@ -11,7 +11,7 @@ const ContactSection = memo((props) => {
 
   return (
     <section
-      id="contacto"
+      id="contact"
       className="min-h-screen py-20 md:py-28 px-5 sm:px-6 flex flex-col justify-center items-center w-full relative"
     >
       <SectionHeader icon={Mail} title={t('contact.title')} />

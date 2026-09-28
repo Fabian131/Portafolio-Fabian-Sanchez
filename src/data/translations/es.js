@@ -3,11 +3,11 @@ export default {
   native: 'Español',
   dict: {
     nav: {
-      inicio: 'Inicio',
-      'sobre-mi': 'Sobre Mí',
+      home: 'Inicio',
+      about: 'Sobre Mí',
       skills: 'Skills',
-      proyectos: 'Proyectos',
-      contacto: 'Contacto',
+      projects: 'Proyectos',
+      contact: 'Contacto',
     },
     hero: {
       downloadCV: 'Descargar CV',

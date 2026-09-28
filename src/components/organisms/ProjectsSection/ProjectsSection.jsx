@@ -9,7 +9,7 @@ const ProjectsSection = memo((props) => {
   const { t, projects, cols } = useProjectsSection(props);
 
   return (
-    <section id="proyectos" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-[1400px] mx-auto w-full overflow-hidden">
+    <section id="projects" className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-[1400px] mx-auto w-full overflow-hidden">
       <SectionHeader
         icon={Briefcase}
         title={t('projects.title')}

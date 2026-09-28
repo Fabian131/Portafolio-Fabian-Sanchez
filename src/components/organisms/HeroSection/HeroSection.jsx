@@ -8,7 +8,7 @@ const HeroSection = memo((props) => {
   const { t, dockItems, roles } = useHeroSection(props);
 
   return (
-    <section id="inicio" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">
+    <section id="home" className="min-h-screen flex flex-col items-center justify-center px-4 pt-20 w-full relative">
       <div className="text-center max-w-5xl mx-auto space-y-6 relative z-10">
         <div className="mb-8 hero-photo-reveal">
            <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 mx-auto shadow-[0_0_60px_rgba(14,165,233,0.3)] border-4 border-white/40 dark:border-white/10 relative p-1 group">

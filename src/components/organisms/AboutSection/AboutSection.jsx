@@ -11,7 +11,7 @@ const AboutSection = memo(() => {
 
   return (
     <section
-      id="sobre-mi"
+      id="about"
       className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full"
     >
       <div className="lg:w-7/12 flex justify-center w-full">
