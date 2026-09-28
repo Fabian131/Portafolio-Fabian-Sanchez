@@ -13,6 +13,7 @@ import { projects } from './data/projects';
 import { skills } from './data/skills.jsx';
 import { usePerformanceMonitor } from './hooks/usePerformanceMonitor';
 import { useTranslation } from './hooks/useTranslation';
+import { navigationLinks } from './data/navigation';
 import { MOBILE_MAX } from './utils/breakpoints';
 
 export default function App() {
@@ -53,7 +54,7 @@ export default function App() {
   useEffect(() => {
     let ticking = false;
 
-    const sections = ['inicio', 'sobre-mi', 'skills', 'proyectos', 'contacto'];
+    const sections = navigationLinks.map(link => link.id);
 
     const getCurrentSection = () => {
       let current = '';
