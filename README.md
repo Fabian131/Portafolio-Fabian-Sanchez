@@ -1,196 +1,109 @@
 # Portafolio Personal - Fabian Sanchez Salinas
 
-Portfolio web moderno e interactivo construido con React, Vite y tecnologías de vanguardia.
+Portfolio web moderno, interactivo y de alto rendimiento construido con React, Vite y tecnologías de vanguardia. Diseñado siguiendo estrictamente **Clean Architecture** y **Atomic Design** para una máxima escalabilidad y separación de responsabilidades.
 
 **[Ver online](https://portafolio-fabian-sanchez-salinas.netlify.app/)**
 
 ---
 
-## Tecnologías
+## 🚀 Tecnologías
 
 ### Core
 - **React 19** - Librería principal de UI
-- **Vite 8** - Herramienta de build y desarrollo (HMR)
-- **Tailwind CSS 4** - Framework CSS via `@tailwindcss/vite`
+- **Vite 8** - Herramienta de build y desarrollo ultra-rápida
+- **Tailwind CSS 4** - Framework CSS utilitario para diseño responsivo y moderno
 
-### 3D y Efectos Visuales
-- **Three.js 0.183** - Sistema de partículas 3D interactivas (2000 partículas con interacción de mouse)
-- **@developer-hub/liquid-glass** - Efectos glassmorphism avanzados
-- **liquid-glass-react** - Componentes con efecto cristal
+### Efectos Visuales y 3D
+- **Three.js 0.183** - Sistema de partículas 3D interactivas. Optimizado agresivamente delegando cálculos trigonométricos masivos a la GPU mediante `material.onBeforeCompile`.
+- **Framer Motion 12** - Animaciones fluidas, físicas de resorte y transiciones complejas.
+- **Glassmorphism** - Componentes translúcidos con efectos de desenfoque nativos.
 
-### Animaciones
-- **Framer Motion 12** - Animaciones fluidas y transiciones
-- **react-magic-ui** - Componentes UI con efectos mágicos
-
-### Texto y Renderizado
-- **@chenglou/pretext** - Motor de renderizado ultra-rápido basado en Canvas (evita reflows del DOM, segmentación inteligente de texto)
-
-### Iconos y UI
-- **Lucide React** - Iconos modernos
-- **ESLint** - Linting con flat config
+### Funcionalidades Avanzadas
+- **i18n Nativo** - Sistema de internacionalización propio (Inglés/Español) gestionado globalmente.
+- **Lucide React** - Iconografía moderna y ligera.
 
 ---
 
-## Estructura del Proyecto
+## 🏗️ Arquitectura y Diseño
 
-```
+El proyecto ha sido completamente refactorizado para separar la lógica de negocio de la interfaz de usuario:
+
+1. **Clean Architecture:** Toda la lógica pesada, estados, llamadas de ciclos de vida y animaciones complejas residen exclusivamente en **Hooks** (`src/hooks/`). Los componentes son "tontos" (dumb components) y solo se encargan del renderizado visual.
+2. **Atomic Design:** La interfaz se descompone en piezas reutilizables y escalables:
+   - **Átomos:** Botones, iconos, tipografías, componentes base (Ej. `BlobButton`, `Background3D`).
+   - **Moléculas:** Composiciones simples de átomos (Ej. `GlassCard`, `ProjectCard`, `SectionHeader`).
+   - **Organismos:** Secciones complejas de la página que agrupan moléculas y manejan su propio lazy loading (Ej. `HeroSection`, `AboutSection`, `BackgroundOrganism`).
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
 portafolio/
-├── public/
-│   └── favicon.svg
 ├── src/
-│   ├── assets/                 # Logos e imágenes (hero.png, react.svg, vite.svg)
-│   ├── components/
-│   │   ├── atoms/             # Componentes base
-│   │   │   ├── BlobButton.jsx       # Botones con morfismo fluido
-│   │   │   ├── GooeyButton.jsx      # Botones con efecto gooey
-│   │   │   ├── Icons.jsx            # Iconos SVG personalizados
-│   │   │   ├── MagneticButton.jsx   # Botones con efecto magnético
-│   │   │   ├── PretextParagraph.jsx # Renderizado ultra-rápido de texto
-│   │   │   ├── ScrollReveal.jsx     # Animaciones al hacer scroll
-│   │   │   └── TypeAsync.jsx        # Efecto typewriter asíncrono
-│   │   ├── molecules/
-│   │   │   ├── GlassCard.jsx        # Tarjetas con tilt 3D y glassmorfismo
-│   │   │   ├── ProjectCard.jsx       # Card de proyecto
-│   │   │   ├── SectionHeader.jsx    # Header con animaciones
-│   │   │   └── SkillCard.jsx        # Card de habilidad
-│   │   └── organisms/
-│   │       ├── AboutSection.jsx     # Sección "Sobre mí"
-│   │       ├── Background3D.jsx      # Fondo con partículas 3D (Three.js)
-│   │       ├── ContactSection.jsx   # Sección de contacto
-│   │       ├── DraggableMarquee.jsx  # Carrusel de skills arrastrable
-│   │       ├── Footer.jsx           # Footer
-│   │       ├── HeroSection.jsx      # Hero principal
-│   │       ├── LiquidNav.jsx        # Navegación líquida con indicadores
-│   │       ├── ProjectsSection.jsx   # Galería de proyectos
-│   │       └── SkillsSection.jsx     # Sección de habilidades
-│   ├── data/                   # Datos del portfolio
-│   │   ├── navigation.js       # Rutas de navegación
-│   │   ├── projects.js         # Información de proyectos
-│   │   ├── skills.js          # Habilidades (backend, frontend, devops)
-│   │   └── social.js           # Redes sociales
-│   ├── hooks/                  # Hooks personalizados
-│   │   ├── useIntersectionObserver.js  # Lazy loading optimizado
-│   │   ├── usePerformanceMonitor.js    # Monitor de FPS
-│   │   └── useThrottle.js            # Control de frecuencia de eventos
-│   ├── utils/
-│   │   └── performance.js      # Utilidades de rendimiento
-│   ├── App.jsx                 # Componente principal
-│   ├── App.css
-│   ├── index.css
-│   └── main.jsx
-├── eslint.config.js
-├── index.html
+│   ├── assets/                 # Recursos estáticos e imágenes
+│   ├── components/             # Capa de Vista (Atomic Design)
+│   │   ├── atoms/              # Botones, fondos, iconos, textos
+│   │   ├── molecules/          # Cards, carruseles, formularios, headers
+│   │   └── organisms/          # Secciones completas (Hero, About, Projects, etc.)
+│   ├── constants/              # Variables globales y configuraciones (Ej. config 3D)
+│   ├── data/                   # Capa de Datos
+│   │   ├── translations/       # Diccionarios de idiomas (en.js, es.js)
+│   │   └── ...                 # Datos duros (proyectos, skills, redes sociales)
+│   ├── hooks/                  # Capa de Lógica de Negocio (Clean Architecture)
+│   │   └── ...                 # useBackground3D, useHeroSection, useTranslation, etc.
+│   ├── utils/                  # Utilidades puras (breakpoints, optimización)
+│   ├── App.jsx                 # Layout principal
+│   └── main.jsx                # Punto de entrada de React
+├── public/                     # Archivos estáticos
+├── dist/                       # Build de producción (generado)
 ├── package.json
-├── tailwind.config.js
-└── vite.config.js
+└── tailwind.config.mjs
 ```
 
 ---
 
-## Comandos Disponibles
+## ✨ Características Técnicas Destacadas
+
+*   **Fondo WebGL Acelerado por GPU:** El lienzo 3D de esferas está optimizado a nivel de *shaders*. En lugar de usar la CPU para iterar cálculos matemáticos en cada fotograma, se modifican los shaders de Three.js dinámicamente (`onBeforeCompile`), logrando 60 FPS estables incluso en móviles de gama baja.
+*   **Lazy Loading:** Componentes pesados (como el lienzo 3D) se cargan de forma diferida (`React.lazy`).
+*   **Time Accumulator:** El fondo 3D utiliza un acumulador dinámico basado en `deltaTime` capado a 50ms, evitando saltos bruscos en las olas si el usuario cambia de pestaña.
+*   **Navegación Líquida:** El `LiquidNav` incluye un sistema físico de arrastre que mapea dinámicamente la sección activa usando el contexto global de scroll.
+
+---
+
+## 💻 Instalación y Uso
+
+### Comandos Disponibles
 
 ```bash
-npm run dev      # Servidor desarrollo (http://localhost:5173)
-npm run build    # Build de producción
-npm run preview  # Previsualizar build
-npm run lint     # Verificar código con ESLint
+npm run dev      # Iniciar servidor de desarrollo (http://localhost:5173)
+npm run build    # Compilar aplicación para producción en la carpeta /dist
+npm run preview  # Servir localmente la versión de producción compilada
+npm run lint     # Ejecutar análisis estático de código
 ```
 
----
+### Cómo ejecutarlo localmente
 
-## Como Clonar y Ejecutar
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/tu-usuario/Portafolio-Fabian-Sanchez.git
+   ```
+2. Entra al directorio del proyecto:
+   ```bash
+   cd Portafolio-Fabian-Sanchez
+   ```
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+4. Inicia el entorno de desarrollo:
+   ```bash
+   npm run dev
+   ```
 
-```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/Portafolio-Fabian-Sanchez.git
-cd Portafolio-Fabian-Sanchez
-
-# Instalar dependencias
-npm install
-
-# Ejecutar en desarrollo
-npm run dev
-```
-
----
-
-## Como Verlo en Móvil
-
-### Opción 1: Ver online
-**[https://portafolio-fabian-sanchez-salinas.netlify.app/](https://portafolio-fabian-sanchez-salinas.netlify.app/)**
-
-### Opción 2: Ver en tu dispositivo local
-1. Ejecuta `npm run dev` en tu computadora
-2. Anota tu IP local (ej: `192.168.1.x`)
-3. En tu móvil, conecta a la misma red WiFi
-4. Abre `http://tu-ip:5173` en el navegador del móvil
-
-### Opción 3: Usando ngrok (para testing externo)
-```bash
-npm run dev
-# En otra terminal:
-npx ngrok http 5173
-# Abre la URL que ngrok te da en tu móvil
-```
-
----
-
-## Secciones del Portfolio
-
-1. **Hero** - Introducción con efecto typewriter y fondo 3D interactivo
-2. **Sobre Mí** - Información personal con animaciones scroll-reveal
-3. **Habilidades** - Tecnologías divididas en backend, frontend y devops
-4. **Proyectos** - Portfolio de trabajos con glassmorfismo
-5. **Contacto** - Formulario y enlaces a redes sociales
-
----
-
-## Detalle de Características Técnicas
-
-### Three.js - Sistema de Partículas 3D
-- 2000 partículas con interacción de mouse
-- Efecto de niebla atmosférica (fog exp2)
-- Optimización de memoria con cleanup adecuado
-- Frame limiting a 60 FPS
-
-### @chenglou/pretext - Pretext
-- Motor de renderizado basado en Canvas
-- Evita reflows del DOM
-- Segmentación inteligente para análisis ultra-rápido de texto
-- SEO friendly con contenido accesible via sr-only
-
-### Liquid Navigation
-- Navegación con efecto líquido
-- Indicadores dinámicos animados
-- Transiciones fluidas entre secciones
-
-### Magnetic Buttons
-- Botones con efecto de atracción magnética al pasar el cursor
-- Uso de requestAnimationFrame para animaciones suaves
-
-### Glass Cards
-- Tarjetas con efecto glassmorfismo
-- Transformaciones 3D (tilt) al interactuar
-- Sombras y profundidad
-
-### Scroll Reveal
-- Animaciones de aparición al hacer scroll
-- Uso de Intersection Observer para detección eficiente
-
-### Code Splitting (Build Optimizado)
-- **vendor**: ~187 KB (React core)
-- **three**: ~502 KB (Three.js)
-- **framer**: ~129 KB (Framer Motion)
-- **icons**: Lucide icons
-
----
-
-## Uso y Créditos
-
-Este proyecto fue creado por **Fabian Sanchez Salinas**.
-
-Cualquier persona puede usar, modificar y adaptar este código para sus propios propósitos, dando el crédito apropiado al autor original.
-
----
-
-Desarrollado por **Fabian Sanchez Salinas**
+### Pruebas en Móvil
+Para probar el rendimiento de GPU en tu celular:
+1. Conecta tu móvil a la misma red WiFi que tu computadora.
+2. En tu computadora corre `npm run dev -- --host` o simplemente mira la IP que te da Vite en la terminal (ej: `http://192.168.1.5:5173`).
+3. Ingresa esa IP en el navegador de tu teléfono celular.
