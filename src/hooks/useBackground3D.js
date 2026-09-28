@@ -104,6 +104,28 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
       depthWrite: false
     });
 
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = { value: 0 };
+      material.userData.shader = shader;
+
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <common>',
+        `
+        #include <common>
+        uniform float uTime;
+        `
+      );
+
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `
+        vec3 transformed = vec3( position );
+        transformed.y = sin(transformed.x * ${ANIMATION_CONFIG.waveSpeed} + uTime) * ${ANIMATION_CONFIG.waveAmplitude} + 
+                        cos(transformed.z * ${ANIMATION_CONFIG.waveSpeed} + uTime) * ${ANIMATION_CONFIG.waveAmplitude};
+        `
+      );
+    };
+
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
 
@@ -164,19 +186,8 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
     let firstFrame = true;
     const startTime = performance.now();
 
-    let isVisible = true;
-    const intersectionObserver = new IntersectionObserver((entries) => {
-      isVisible = entries[0].isIntersecting;
-    }, { rootMargin: '100px' });
-    intersectionObserver.observe(mountElement);
-
     const animate = (currentTime) => {
       animationFrameRef.current = requestAnimationFrame(animate);
-
-      if (!isVisible) {
-        lastTime = currentTime;
-        return;
-      }
 
       const deltaTime = currentTime - lastTime;
       if (deltaTime < frameInterval) return;
@@ -233,14 +244,9 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
         }
       }
 
-      const positionsArr = particles.geometry.attributes.position.array;
-      for (let i = 0; i < particleCount * 3; i += 3) {
-        const x = positionsArr[i];
-        const z = positionsArr[i + 2];
-        positionsArr[i + 1] = Math.sin(x * ANIMATION_CONFIG.waveSpeed + time) * ANIMATION_CONFIG.waveAmplitude + 
-                              Math.cos(z * ANIMATION_CONFIG.waveSpeed + time) * ANIMATION_CONFIG.waveAmplitude;
+      if (material.userData.shader) {
+        material.userData.shader.uniforms.uTime.value = time;
       }
-      particles.geometry.attributes.position.needsUpdate = true;
 
       if (!isMobile) {
         scrollY += (targetScrollY - scrollY) * 0.05;
@@ -267,7 +273,6 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       resizeObserver.disconnect();
-      intersectionObserver.disconnect();
 
       if (geometry) geometry.dispose();
       if (material) material.dispose();
