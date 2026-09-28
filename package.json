@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.6",
     "@emailjs/browser": "^4.4.1",
     "@phosphor-icons/react": "^2.1.10",
     "framer-motion": "^13.2.0",
