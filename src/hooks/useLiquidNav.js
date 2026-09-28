@@ -310,7 +310,14 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     pillDraggingRef.current = false;
     setIsPillDragging(false);
     if (pillElRef.current) {
-      pillElRef.current.style.transform = '';
+      // Instead of clearing the transform and hoping React restores it
+      // (which it won't if the state hasn't changed), we manually sync it.
+      const activeEl = sidebarPillRef.current?.querySelector(`a[data-id="${activeSection || 'home'}"]`);
+      if (activeEl) {
+        pillElRef.current.style.transform = `translateY(${activeEl.offsetTop}px)`;
+      } else {
+        pillElRef.current.style.transform = '';
+      }
     }
     setSidebarMoving(true);
     updateSidebarIndicator(activeSection || 'home');
