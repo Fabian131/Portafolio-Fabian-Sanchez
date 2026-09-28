@@ -67,6 +67,9 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     if (pillDraggingRef.current) return;
     const activeEl = sidebarPillRef.current.querySelector(`a[data-id="${activeId}"]`);
     if (!activeEl) return;
+    
+    // Prevent pill from jumping to 0 if layout is not yet calculated
+    if (activeEl.offsetTop === 0 && activeId !== 'home') return;
 
     setSidebarMoving(true);
     clearTimeout(sidebarMovingTimeoutRef.current);
@@ -79,10 +82,11 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
   }, []);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    const timer = setTimeout(() => {
       updateIndicator(activeSection || 'home');
       updateSidebarIndicator(activeSection || 'home');
-    });
+    }, 50);
+    return () => clearTimeout(timer);
   }, [lang, activeSection, updateIndicator, updateSidebarIndicator]);
 
   useEffect(() => {
@@ -197,9 +201,10 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
 
   useEffect(() => {
     if (mobileOpen) {
-      requestAnimationFrame(() => {
+      const timer = setTimeout(() => {
         updateSidebarIndicator(activeSection || 'home');
-      });
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [mobileOpen, activeSection, updateSidebarIndicator]);
 
