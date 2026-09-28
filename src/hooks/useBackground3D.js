@@ -180,11 +180,13 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
     };
     window.addEventListener('resize', onResize, { passive: true });
 
-    let lastTime = 0;
     const targetFPS = isMobile ? ANIMATION_CONFIG.mobileTargetFPS : ANIMATION_CONFIG.desktopTargetFPS;
     const frameInterval = 1000 / targetFPS;
     let firstFrame = true;
-    const startTime = performance.now();
+    
+    // Acumulador dinámico para evitar saltos bruscos
+    let accumulatedTime = 0;
+    let lastTime = performance.now();
 
     const animate = (currentTime) => {
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -193,7 +195,11 @@ export const useBackground3D = ({ theme, performanceTier = 'high' }) => {
       if (deltaTime < frameInterval) return;
 
       lastTime = currentTime - (deltaTime % frameInterval);
-      const time = (currentTime - startTime) * ANIMATION_CONFIG.timeMultiplier;
+      
+      // Cap deltaTime to max 50ms (prevents massive jumps when switching tabs)
+      const cappedDelta = Math.min(deltaTime, 50);
+      accumulatedTime += cappedDelta * ANIMATION_CONFIG.timeMultiplier;
+      const time = accumulatedTime;
 
       if (activeThemeTarget !== themeRef.current) {
         activeThemeTarget = themeRef.current;
