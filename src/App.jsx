@@ -18,11 +18,11 @@ import { MOBILE_MAX } from './utils/breakpoints';
 export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const { lang } = useTranslation();
-  const [activeSection, setActiveSection] = useState('inicio');
+  const [activeSection, setActiveSection] = useState('home');
   const cursorGlowRef = useRef(null);
   const manualScrollTimeoutRef = useRef(null);
   const isManualRef = useRef(false);
-  const activeSectionRef = useRef('inicio');
+  const activeSectionRef = useRef('home');
 
   const setActive = useCallback((section) => {
     activeSectionRef.current = section;

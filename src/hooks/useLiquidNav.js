@@ -80,8 +80,8 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      updateIndicator(activeSection || 'inicio');
-      updateSidebarIndicator(activeSection || 'inicio');
+      updateIndicator(activeSection || 'home');
+      updateSidebarIndicator(activeSection || 'home');
     });
   }, [lang, activeSection, updateIndicator, updateSidebarIndicator]);
 
@@ -89,8 +89,8 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
     const handleResize = () => {
       clearTimeout(resizeTimeoutRef.current);
       resizeTimeoutRef.current = setTimeout(() => {
-        updateIndicator(activeSection || 'inicio');
-        updateSidebarIndicator(activeSection || 'inicio');
+        updateIndicator(activeSection || 'home');
+        updateSidebarIndicator(activeSection || 'home');
         const mobile = window.innerWidth <= MOBILE_MAX;
         setIsMobile(mobile);
         if (!mobile) setMobileOpen(false);
@@ -198,7 +198,7 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
   useEffect(() => {
     if (mobileOpen) {
       requestAnimationFrame(() => {
-        updateSidebarIndicator(activeSection || 'inicio');
+        updateSidebarIndicator(activeSection || 'home');
       });
     }
   }, [mobileOpen, activeSection, updateSidebarIndicator]);
@@ -308,9 +308,9 @@ export const useLiquidNav = ({ activeSection, onNavClick }) => {
       pillElRef.current.style.transform = '';
     }
     setSidebarMoving(true);
-    updateSidebarIndicator(activeSection || 'inicio');
+    updateSidebarIndicator(activeSection || 'home');
     sidebarMovingTimeoutRef.current = setTimeout(() => setSidebarMoving(false), 400);
-    handleNavClick(activeSection || 'inicio');
+    handleNavClick(activeSection || 'home');
   }, [updateSidebarIndicator, activeSection, handleNavClick]);
 
   // Touch handlers for sidebar pill drag
