@@ -1,10 +1,20 @@
 import React, { memo } from 'react';
-import { User } from 'lucide-react';
+import { User, Database, BrainCircuit, GraduationCap, Target } from 'lucide-react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import DepthCarousel from '../../molecules/DepthCarousel/DepthCarousel';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
-import { PROSE_CLASS } from '../../../utils/typography';
 import { useAboutSection } from '../../../hooks/useAboutSection';
+import './AboutSection.css';
+
+const BentoPanel = ({ children, className = '', delay = 200, direction = 'up' }) => (
+  <ScrollReveal direction={direction} delay={delay} className={`h-full ${className}`}>
+    <div className="h-full rounded-3xl p-6 lg:p-8 about-bento-panel relative overflow-hidden group flex flex-col">
+      <div className="relative z-10 flex flex-col h-full">
+        {children}
+      </div>
+    </div>
+  </ScrollReveal>
+);
 
 const AboutSection = memo(() => {
   const { t, carouselItems } = useAboutSection();
@@ -12,63 +22,116 @@ const AboutSection = memo(() => {
   return (
     <section
       id="about"
-      className="min-h-screen py-20 md:py-24 px-5 sm:px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 w-full"
+      className="min-h-screen py-24 px-5 sm:px-6 max-w-7xl mx-auto flex flex-col items-center w-full relative"
     >
-      <div className="lg:w-7/12 flex justify-center w-full">
-        <ScrollReveal direction="left" delay={200} className="w-full">
-          <div style={{ height: '530px', position: 'relative', width: '100%', minWidth: '340px' }}>
+      <div className="w-full text-center mb-16">
+        <SectionHeader 
+          icon={User} 
+          title={t('about.title')} 
+          direction="down" 
+          delay={100} 
+          className="mb-0 lg:justify-center" 
+        />
+      </div>
+
+      {/* The Parent Grid: 12 Columns, 2 Rows on Desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_1fr] gap-6 lg:gap-8 w-full items-stretch">
+        
+        {/* div1: Profile (Top Left, Wider: 7/12) */}
+        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-1">
+          <BentoPanel delay={200} direction="right">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="p-3 rounded-2xl about-icon-container">
+                <GraduationCap className="w-6 h-6 text-slate-800 dark:text-white" />
+              </div>
+              <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel1Title')}</h3>
+            </div>
+            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+              {t('about.panel1')}
+            </p>
+          </BentoPanel>
+        </div>
+
+        {/* div2: Right Column (All remaining info, Narrower: 5/12, Spans both rows) */}
+        <div className="lg:col-span-5 lg:row-span-2 lg:col-start-8 lg:row-start-1">
+          <BentoPanel delay={400} direction="left" className="h-full">
+            <div className="flex flex-col gap-8 h-full justify-between">
+              
+              {/* Focus */}
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 rounded-2xl about-icon-container">
+                    <Target className="w-5 h-5 text-slate-800 dark:text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel2Title')}</h3>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                  {t('about.panel2')}
+                </p>
+              </div>
+
+              {/* Tech Stack */}
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 rounded-2xl about-icon-container">
+                    <Database className="w-5 h-5 text-slate-800 dark:text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel3Title')}</h3>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                  {t('about.panel3')}
+                </p>
+              </div>
+
+              {/* Soft Skills */}
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="p-3 rounded-2xl about-icon-container">
+                    <BrainCircuit className="w-5 h-5 text-slate-800 dark:text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel4Title')}</h3>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                  {t('about.panel4')}
+                </p>
+              </div>
+
+            </div>
+          </BentoPanel>
+        </div>
+
+        {/* div3: Carousel (Bottom Left, Wider: 7/12) */}
+        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-2 relative min-h-[450px] w-full rounded-3xl overflow-hidden flex items-center justify-center">
+          <ScrollReveal 
+            direction="up" 
+            delay={300} 
+            className="absolute inset-0 w-full h-full flex items-center justify-center"
+          >
             <DepthCarousel
               items={carouselItems}
-              depth={170}
-              spread={85}
-              tilt={18}
+              depth={150}
+              spread={80}
+              tilt={15}
               tiltDirection="right"
-              perspective={1200}
+              perspective={1000}
               visibleCards={3}
-              falloff={0.13}
+              falloff={0.15}
               blur={5.6}
               autoplay={true}
               loop
-              cardWidth={271}
-              cardHeight={402}
-              radius={20}
+              cardWidth={280}
+              cardHeight={380}
+              radius={24}
               tint="#c8cde0"
               duration={700}
               ease="power3.out"
               autoplayDelay={2100}
               showControls={false}
-              showIndicators
+              showIndicators={false}
             />
-          </div>
-        </ScrollReveal>
-      </div>
+          </ScrollReveal>
+        </div>
 
-      <div className="lg:w-5/12 space-y-6 min-w-0 text-center lg:text-left">
-        <SectionHeader 
-          icon={User} 
-          title={t('about.title')} 
-          direction="right" 
-          delay={200} 
-          className="mb-0! lg:justify-start" 
-        />
-
-        <ScrollReveal direction="right" delay={300}>
-          <p className={PROSE_CLASS}>
-            {t('about.p1')}
-          </p>
-        </ScrollReveal>
-
-        <ScrollReveal direction="right" delay={400}>
-          <p className={PROSE_CLASS}>
-            {t('about.p2')}
-          </p>
-        </ScrollReveal>
-
-        <ScrollReveal direction="right" delay={500}>
-          <p className={PROSE_CLASS}>
-            {t('about.p3')}
-          </p>
-        </ScrollReveal>
       </div>
     </section>
   );

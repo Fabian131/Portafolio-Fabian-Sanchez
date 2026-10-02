@@ -1,0 +1,52 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   AboutSection.css — Liquid Glass styles for the Bento Box panels
+───────────────────────────────────────────────────────────────────────────── */
+
+.about-bento-panel {
+  /* Fallback before background is loaded */
+  background-color: rgba(15, 17, 26, 0.85);
+  border: 1px solid transparent;
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent), 
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent), 
+    inset -1px -4px 1px -3px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 40%), transparent),
+    0 8px 32px -8px rgba(0, 0, 0, 0.1);
+  transition: background-color 400ms cubic-bezier(1, 0, 0.4, 1), box-shadow 400ms, transform 300ms ease-out;
+}
+
+html.bg-loaded .about-bento-panel {
+  /* Liquid glass effect matching LiquidNav */
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent), 
+    inset -2px -5px 1px -4px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent),
+    0 12px 40px -10px rgba(0, 0, 0, 0.2);
+}
+
+html.bg-loaded .about-bento-panel:hover {
+  background-color: color-mix(in srgb, var(--c-glass) 24%, transparent);
+  transform: translateY(-2px);
+  box-shadow: 
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 70%), transparent), 
+    inset -2px -5px 1px -4px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    0 16px 40px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon Container Styling */
+.about-icon-container {
+  background-color: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.5);
+  backdrop-filter: blur(6px) saturate(1.5);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 25%), transparent),
+    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 55%), transparent),
+    inset -1px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent);
+}

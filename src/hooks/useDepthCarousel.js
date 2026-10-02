@@ -85,23 +85,23 @@ export const useDepthCarousel = ({
         if (d > n / 2) d -= n;
       }
 
-      const back = Math.max(0, d);
       const az = Math.abs(d);
       const shown = az <= cfg.visibleCards + 0.5;
 
-      const tz = -cfg.depth * d;
+      // Symmetrical depth and tilt
+      const tz = -cfg.depth * az;
       const tx = dir * cfg.spread * d;
-      const ry = dir * cfg.tilt * clamp(d, 0, 1);
+      const ry = dir * cfg.tilt * clamp(d, -1, 1);
 
-      let opacity = d < 0 ? Math.max(0, 1 + d * 1.5) : 1;
-      if (d > cfg.visibleCards - 0.5) {
-        opacity *= clamp(1 - (d - (cfg.visibleCards - 0.5)), 0, 1);
+      let opacity = 1;
+      if (az > cfg.visibleCards - 0.5) {
+        opacity *= clamp(1 - (az - (cfg.visibleCards - 0.5)), 0, 1);
       }
-      if (d > cfg.visibleCards + 0.5) opacity = 0;
+      if (az > cfg.visibleCards + 0.5) opacity = 0;
 
-      const brightness = Math.max(0.15, 1 - back * cfg.falloff);
-      const blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
-      const zi = Math.round(2000 - d * 20);
+      const brightness = Math.max(0.15, 1 - az * cfg.falloff);
+      const blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (az / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
+      const zi = Math.round(2000 - az * 20);
 
       el.style.transform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
       el.style.opacity = opacity.toFixed(3);
@@ -110,7 +110,7 @@ export const useDepthCarousel = ({
       el.style.pointerEvents = shown && opacity > 0.05 ? 'auto' : 'none';
 
       const ov = overlayRefs.current[i];
-      if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+      if (ov) ov.style.opacity = clamp(az * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
     }
   }, []);
 
