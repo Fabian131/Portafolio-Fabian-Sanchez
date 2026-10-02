@@ -103,14 +103,24 @@ export const useDepthCarousel = ({
       const blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (az / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
       const zi = Math.round(2000 - az * 20);
 
-      el.style.transform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
-      el.style.opacity = opacity.toFixed(3);
-      el.style.filter = `brightness(${brightness.toFixed(3)}) blur(${blurPx.toFixed(2)}px)`;
-      el.style.zIndex = String(zi);
-      el.style.pointerEvents = shown && opacity > 0.05 ? 'auto' : 'none';
+      const newTransform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
+      const newOpacity = opacity.toFixed(3);
+      const newFilter = `brightness(${brightness.toFixed(3)}) blur(${blurPx.toFixed(2)}px)`;
+      const newZ = String(zi);
+      const newPointer = shown && opacity > 0.05 ? 'auto' : 'none';
+
+      // DOM Caching: Only update the DOM if the values actually changed
+      if (el._tx !== newTransform) { el.style.transform = newTransform; el._tx = newTransform; }
+      if (el._op !== newOpacity) { el.style.opacity = newOpacity; el._op = newOpacity; }
+      if (el._fl !== newFilter) { el.style.filter = newFilter; el._fl = newFilter; }
+      if (el._zi !== newZ) { el.style.zIndex = newZ; el._zi = newZ; }
+      if (el._pe !== newPointer) { el.style.pointerEvents = newPointer; el._pe = newPointer; }
 
       const ov = overlayRefs.current[i];
-      if (ov) ov.style.opacity = clamp(az * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+      if (ov) {
+        const newOvOp = clamp(az * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+        if (ov._op !== newOvOp) { ov.style.opacity = newOvOp; ov._op = newOvOp; }
+      }
     }
   }, []);
 
