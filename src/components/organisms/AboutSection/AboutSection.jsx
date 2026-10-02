@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { User, Database, BrainCircuit, GraduationCap, Target } from 'lucide-react';
+import { User } from 'lucide-react';
 import ScrollReveal from '../../atoms/layout/ScrollReveal/ScrollReveal';
 import DepthCarousel from '../../molecules/DepthCarousel/DepthCarousel';
 import SectionHeader from '../../molecules/SectionHeader/SectionHeader';
@@ -40,60 +40,38 @@ const AboutSection = memo(() => {
         {/* div1: Profile (Top Left, Wider: 7/12) */}
         <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-1">
           <BentoPanel delay={200} direction="right">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 rounded-2xl about-icon-container">
-                <GraduationCap className="w-6 h-6 text-slate-800 dark:text-white" />
-              </div>
-              <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel1Title')}</h3>
+            <div className="about-text-block">
+              <div className="about-accent-line" />
+              <p className="about-text">{t('about.panel1')}</p>
             </div>
-            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-              {t('about.panel1')}
-            </p>
           </BentoPanel>
         </div>
 
         {/* div2: Right Column (All remaining info, Narrower: 5/12, Spans both rows) */}
         <div className="lg:col-span-5 lg:row-span-2 lg:col-start-8 lg:row-start-1">
           <BentoPanel delay={400} direction="left" className="h-full">
-            <div className="flex flex-col gap-8 h-full justify-between">
+            <div className="flex flex-col h-full justify-evenly gap-2">
               
               {/* Focus */}
-              <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 rounded-2xl about-icon-container">
-                    <Target className="w-5 h-5 text-slate-800 dark:text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel2Title')}</h3>
-                </div>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                  {t('about.panel2')}
-                </p>
+              <div className="about-text-block">
+                <div className="about-accent-line" />
+                <p className="about-text">{t('about.panel2')}</p>
               </div>
+
+              <div className="about-divider" />
 
               {/* Tech Stack */}
-              <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 rounded-2xl about-icon-container">
-                    <Database className="w-5 h-5 text-slate-800 dark:text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel3Title')}</h3>
-                </div>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                  {t('about.panel3')}
-                </p>
+              <div className="about-text-block">
+                <div className="about-accent-line" />
+                <p className="about-text">{t('about.panel3')}</p>
               </div>
 
+              <div className="about-divider" />
+
               {/* Soft Skills */}
-              <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 rounded-2xl about-icon-container">
-                    <BrainCircuit className="w-5 h-5 text-slate-800 dark:text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">{t('about.panel4Title')}</h3>
-                </div>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                  {t('about.panel4')}
-                </p>
+              <div className="about-text-block">
+                <div className="about-accent-line" />
+                <p className="about-text">{t('about.panel4')}</p>
               </div>
 
             </div>
@@ -101,7 +79,7 @@ const AboutSection = memo(() => {
         </div>
 
         {/* div3: Carousel (Bottom Left, Wider: 7/12) */}
-        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-2 relative min-h-[450px] w-full rounded-3xl overflow-hidden flex items-center justify-center">
+        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-2 relative min-h-112.5 w-full rounded-3xl overflow-hidden flex items-center justify-center">
           <ScrollReveal 
             direction="up" 
             delay={300} 
@@ -140,3 +118,4 @@ const AboutSection = memo(() => {
 AboutSection.displayName = 'AboutSection';
 
 export default AboutSection;
+
