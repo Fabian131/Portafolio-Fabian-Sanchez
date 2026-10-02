@@ -27,17 +27,7 @@ html.bg-loaded .about-bento-panel {
     0 12px 40px -10px rgba(0, 0, 0, 0.2);
 }
 
-html.bg-loaded .about-bento-panel:hover {
-  background-color: color-mix(in srgb, var(--c-glass) 24%, transparent);
-  transform: translateY(-2px);
-  box-shadow: 
-    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 45%), transparent),
-    inset 2px 2px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent), 
-    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 70%), transparent), 
-    inset -2px -5px 1px -4px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
-    0 16px 40px -8px rgba(0, 0, 0, 0.3);
-}
-
+/* Removed hover effect on panels as requested */
 /* ── Text Block with Accent Line ── */
 .about-text-block {
   position: relative;
