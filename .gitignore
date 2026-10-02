@@ -29,3 +29,6 @@ dist-ssr
 # Agents
 AGENTS.md
 .agents
+
+.atl/
+.codegraph/
