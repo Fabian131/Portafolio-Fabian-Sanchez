@@ -79,6 +79,22 @@
   z-index: 1;
 }
 
+/* GPU Crossfade Blur Layer */
+.depth-carousel__img-blur-layer {
+  position: absolute;
+  inset: -2px; /* Prevent sharp edges */
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  object-fit: contain;
+  filter: blur(8px) brightness(1.05) saturate(1.2);
+  opacity: 0;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  z-index: 2;
+  transform: translateZ(0); /* Hardware accelerate the static blur */
+  will-change: opacity, transform;
+}
+
 .depth-carousel__tint {
   position: absolute;
   inset: 0;

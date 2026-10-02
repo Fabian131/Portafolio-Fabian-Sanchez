@@ -34,6 +34,7 @@ export const useDepthCarousel = ({
   const stageRef = useRef(null);
   const cardRefs = useRef([]);
   const overlayRefs = useRef([]);
+  const blurRefs = useRef([]);
 
   const posRef = useRef(0);
   const focusRef = useRef(0);
@@ -99,27 +100,33 @@ export const useDepthCarousel = ({
       }
       if (az > cfg.visibleCards + 0.5) opacity = 0;
 
-      const brightness = Math.max(0.15, 1 - az * cfg.falloff);
-      const blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (az / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
       const zi = Math.round(2000 - az * 20);
 
       const newTransform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
       const newOpacity = opacity.toFixed(3);
-      const newFilter = `brightness(${brightness.toFixed(3)}) blur(${blurPx.toFixed(2)}px)`;
       const newZ = String(zi);
       const newPointer = shown && opacity > 0.05 ? 'auto' : 'none';
 
       // DOM Caching: Only update the DOM if the values actually changed
       if (el._tx !== newTransform) { el.style.transform = newTransform; el._tx = newTransform; }
       if (el._op !== newOpacity) { el.style.opacity = newOpacity; el._op = newOpacity; }
-      if (el._fl !== newFilter) { el.style.filter = newFilter; el._fl = newFilter; }
       if (el._zi !== newZ) { el.style.zIndex = newZ; el._zi = newZ; }
       if (el._pe !== newPointer) { el.style.pointerEvents = newPointer; el._pe = newPointer; }
 
       const ov = overlayRefs.current[i];
       if (ov) {
-        const newOvOp = clamp(az * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+        // Darken as it goes back
+        const darkening = clamp(az * cfg.falloff, 0, 0.85);
+        const newOvOp = darkening.toFixed(3);
         if (ov._op !== newOvOp) { ov.style.opacity = newOvOp; ov._op = newOvOp; }
+      }
+
+      const bl = blurRefs.current[i];
+      if (bl) {
+        // Fade in the blurred clone as it goes back
+        const blurIntensity = cfg.blur > 0 ? clamp(az / Math.max(1, cfg.visibleCards), 0, 1) : 0;
+        const newBlOp = blurIntensity.toFixed(3);
+        if (bl._op !== newBlOp) { bl.style.opacity = newBlOp; bl._op = newBlOp; }
       }
     }
   }, []);
@@ -184,8 +191,15 @@ export const useDepthCarousel = ({
     const ro = new ResizeObserver(entries => {
       const w = entries[0].contentRect.width;
       const cfg = cfgRef.current;
-      const needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 40;
-      scaleRef.current = clamp(w / needed, 0.45, 1.35);
+      
+      if (w < 640) {
+        // On mobile, let the card take up more relative space so it doesn't look like a tiny sliver.
+        scaleRef.current = clamp(w / (cfg.cardWidth + 20), 0.6, 1.1);
+      } else {
+        const needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 40;
+        scaleRef.current = clamp(w / needed, 0.45, 1.35);
+      }
+      
       layout(posRef.current);
     });
     ro.observe(root);
@@ -369,6 +383,7 @@ export const useDepthCarousel = ({
     stageRef,
     cardRefs,
     overlayRefs,
+    blurRefs,
     lightboxItem,
     setLightboxItem,
     onPointerDown,

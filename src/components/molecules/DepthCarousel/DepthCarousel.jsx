@@ -33,6 +33,7 @@ const DepthCarousel = memo((props) => {
     stageRef,
     cardRefs,
     overlayRefs,
+    blurRefs,
     lightboxItem,
     setLightboxItem,
     onPointerDown,
@@ -74,6 +75,17 @@ const DepthCarousel = memo((props) => {
             >
               <img className="depth-carousel__img-bg" src={item.image} alt="" draggable={false} aria-hidden="true" />
               <img className="depth-carousel__img" src={item.image} alt={item.alt || ''} draggable={false} />
+              
+              {/* GPU-composited crossfade blur layer */}
+              <img 
+                className="depth-carousel__img-blur-layer" 
+                src={item.image} 
+                alt="" 
+                draggable={false} 
+                aria-hidden="true" 
+                ref={el => (blurRefs.current[i] = el)}
+              />
+
               <span
                 className="depth-carousel__tint"
                 ref={el => (overlayRefs.current[i] = el)}
