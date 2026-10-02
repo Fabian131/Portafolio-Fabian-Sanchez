@@ -79,7 +79,7 @@ const AboutSection = memo(() => {
         </div>
 
         {/* div3: Carousel (Bottom Left, Wider: 7/12) */}
-        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-2 relative min-h-112.5 w-full rounded-3xl overflow-hidden flex items-center justify-center">
+        <div className="lg:col-span-7 lg:row-span-1 lg:col-start-1 lg:row-start-2 relative min-h-112.5 w-screen left-1/2 -translate-x-1/2 lg:w-full lg:left-0 lg:translate-x-0 lg:rounded-3xl lg:overflow-hidden flex items-center justify-center">
           <ScrollReveal 
             direction="up" 
             delay={300} 

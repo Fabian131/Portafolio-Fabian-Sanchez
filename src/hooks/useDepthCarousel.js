@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import gsap from 'gsap';
 
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
 const normalizeItem = it => (typeof it === 'string' ? { image: it, alt: '' } : it);
+const easePower3Out = (t) => 1 - Math.pow(1 - t, 3);
 
 export const useDepthCarousel = ({
   items,
@@ -141,24 +141,39 @@ export const useDepthCarousel = ({
 
   const tweenTo = useCallback(
     (target, animate) => {
-      tweenRef.current?.kill();
+      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
       const cfg = cfgRef.current;
-      const proxy = { p: posRef.current };
-      const dur = animate && !reducedRef.current ? cfg.duration / 1000 : 0;
-      tweenRef.current = gsap.to(proxy, {
-        p: target,
-        duration: dur,
-        ease: cfg.ease,
-        onUpdate: () => {
-          posRef.current = proxy.p;
-          layout(proxy.p);
-        },
-        onComplete: () => {
+      
+      if (!animate || reducedRef.current) {
+        posRef.current = target;
+        const n = cfg.count;
+        if (n > 0) posRef.current = ((posRef.current % n) + n) % n;
+        layout(posRef.current);
+        return;
+      }
+
+      const startPos = posRef.current;
+      const startTime = performance.now();
+      const durMs = cfg.duration || 700;
+
+      const step = (time) => {
+        let t = (time - startTime) / durMs;
+        if (t > 1) t = 1;
+        
+        posRef.current = startPos + (target - startPos) * easePower3Out(t);
+        layout(posRef.current);
+
+        if (t < 1) {
+          tweenRef.current = requestAnimationFrame(step);
+        } else {
           const n = cfg.count;
           if (n > 0) posRef.current = ((posRef.current % n) + n) % n;
           layout(posRef.current);
+          tweenRef.current = null;
         }
-      });
+      };
+      
+      tweenRef.current = requestAnimationFrame(step);
     },
     [layout]
   );
@@ -193,8 +208,9 @@ export const useDepthCarousel = ({
       const cfg = cfgRef.current;
       
       if (w < 640) {
-        // On mobile, let the card take up more relative space so it doesn't look like a tiny sliver.
-        scaleRef.current = clamp(w / (cfg.cardWidth + 20), 0.6, 1.1);
+        // Mobile: ensure the cards are scaled down enough so that side cards are clearly visible.
+        const neededMobile = cfg.cardWidth + Math.abs(cfg.spread) * 2.2;
+        scaleRef.current = clamp(w / neededMobile, 0.5, 0.9);
       } else {
         const needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 40;
         scaleRef.current = clamp(w / needed, 0.45, 1.35);
@@ -213,7 +229,7 @@ export const useDepthCarousel = ({
       const cfg = cfgRef.current;
       if (cfg.count < 2) return;
       e.preventDefault();
-      tweenRef.current?.kill();
+      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
       const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       const delta = e.deltaMode === 1 ? raw * 24 : raw;
       const step = clamp(delta / (cfg.cardWidth * 0.9), -0.6, 0.6);
@@ -232,7 +248,7 @@ export const useDepthCarousel = ({
   const onPointerDown = useCallback(e => {
     const cfg = cfgRef.current;
     if (cfg.count < 2) return;
-    tweenRef.current?.kill();
+    if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
     dragRef.current = {
       x: e.clientX,
       startPos: posRef.current,
@@ -368,7 +384,7 @@ export const useDepthCarousel = ({
 
   useEffect(
     () => () => {
-      tweenRef.current?.kill();
+      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
     },
