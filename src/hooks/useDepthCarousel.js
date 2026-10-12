@@ -344,9 +344,11 @@ export const useDepthCarousel = ({
         visibleCards: vc,
       } = cfgRef.current;
       const sides = visibleFor(n, vc) - 1;
+      // Narrow phones: the 82% card must still fit one neighbour per side, or the
+      // fan gets cropped by the viewport edges.
       const fitWidth =
         width < 640
-          ? (width * 0.82) / cw
+          ? Math.min((width * 0.82) / cw, width / (cw + Math.abs(s) * 2))
           : width / (cw + Math.abs(s) * 2 * Math.min(sides, 2) + 40);
       const fitHeight = (height - 90) / ch;
       scaleRef.current = clamp(Math.min(fitWidth, fitHeight), 0.55, 1.1);
