@@ -201,7 +201,7 @@ export default function App() {
           onCVDownload={handleCVDownload}
         />
 
-        <AboutSection />
+        <AboutSection performanceTier={performanceTier} isMobile={isMobile} />
 
         <SkillsSection skills={skills} performanceTier={performanceTier} />
 

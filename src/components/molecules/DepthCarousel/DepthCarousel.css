@@ -21,6 +21,7 @@
   outline: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
   cursor: grab;
 }
 
@@ -54,37 +55,80 @@
   box-shadow:
     0 30px 60px -18px rgba(0, 0, 0, 0.55),
     0 10px 24px -12px rgba(0, 0, 0, 0.4);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout style;
   cursor: pointer;
 }
 
-/* Fondo ambiental difuminado para llenar espacios residuales con la propia foto */
-.depth-carousel__img-bg {
+/* ── Capas ambientales ancladas para extender fotos contenidas ── */
+.depth-carousel__ambient-layer {
   position: absolute;
-  inset: -40px;
-  width: calc(100% + 80px);
-  height: calc(100% + 80px);
-  object-fit: cover;
-  display: block;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  -webkit-user-drag: none;
-  filter: blur(36px) saturate(1.25);
-  opacity: 0.92;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
   z-index: 1;
 }
 
-/* Imagen principal completa — 100% visible sin recortes ni sombras duras */
+.depth-carousel__ambient-slice {
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(28px) saturate(1.25);
+  opacity: 0.95;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.depth-carousel__ambient-slice--top {
+  top: -24px;
+  height: 55%;
+  background-position: top center;
+}
+
+.depth-carousel__ambient-slice--bottom {
+  bottom: -24px;
+  height: 55%;
+  background-position: bottom center;
+}
+
+/* ── Imagen principal ── */
 .depth-carousel__img {
   position: relative;
   width: 100%;
   height: 100%;
-  object-fit: contain;
   display: block;
   pointer-events: none;
   -webkit-user-drag: none;
   z-index: 2;
+}
+
+/* Full bleed: 100% borde a borde para imágenes con proporción compatible */
+.depth-carousel__img.is-cover {
+  object-fit: cover;
+}
+
+/* Contenida: fotos panorámicas completas con difuminado suave en extremos para fusionar sin cortes */
+.depth-carousel__img.is-contained {
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 6px,
+    black calc(100% - 6px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 6px,
+    black calc(100% - 6px),
+    transparent 100%
+  );
 }
 
 /* Glass rim drawn above the image and background (inset shadows sit under it). */
@@ -104,9 +148,9 @@
 }
 
 /* Modo claro: mantiene la luminosidad real del fondo ambiental */
-html:not(.dark) .depth-carousel__img-bg {
-  filter: blur(36px) saturate(1.2);
-  opacity: 0.95;
+html:not(.dark) .depth-carousel__ambient-slice {
+  filter: blur(28px) saturate(1.2);
+  opacity: 0.98;
 }
 
 /* ── Glass controls ── */
@@ -195,9 +239,21 @@ html:not(.dark) .depth-carousel__img-bg {
   background: var(--c-action);
 }
 
-/* Touch screens: swipe replaces arrows. */
-@media (max-width: 640px) {
-  .depth-carousel__arrow { display: none; }
+/* Touch screens: swipe replaces arrows, ambient blur disabled for 60fps performance */
+@media (max-width: 768px) {
+  .depth-carousel__arrow {
+    display: none;
+  }
+  .depth-carousel__ambient-layer {
+    display: none !important;
+  }
+  .depth-carousel__card {
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.45);
+  }
+  .depth-carousel__img.is-contained {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
 }
 
 /* ── Reduced motion ── */

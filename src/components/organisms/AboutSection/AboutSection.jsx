@@ -23,7 +23,7 @@ const BentoPanel = ({
   </ScrollReveal>
 );
 
-const AboutSection = memo(() => {
+const AboutSection = memo(({ performanceTier = "high", isMobile = false }) => {
   const { t, carouselItems } = useAboutSection();
 
   return (
@@ -98,9 +98,11 @@ const AboutSection = memo(() => {
               spread={85}
               perspective={1700}
               visibleCards={3}
-              blur={6}
+              blur={isMobile || performanceTier === "low" ? 0 : 6}
               autoplayDelay={2200}
               ariaLabel="Personal photos"
+              isMobile={isMobile}
+              performanceTier={performanceTier}
             />
           </ScrollReveal>
         </div>

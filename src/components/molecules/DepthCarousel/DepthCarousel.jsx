@@ -4,13 +4,14 @@ import { useDepthCarousel } from "../../../hooks/useDepthCarousel";
 import ImageLightbox from "../ImageLightbox/ImageLightbox";
 import "./DepthCarousel.css";
 
-// Cache for precomputed image edge gradients
-const gradientCache = new Map();
+// Cache for precomputed image edge metadata
+const imageMetaCache = new Map();
 
-function extractImageGradient(src, callback) {
+function analyzeImage(src, cardRatio, callback) {
   if (!src) return;
-  if (gradientCache.has(src)) {
-    callback(gradientCache.get(src));
+  const cacheKey = `${src}__${cardRatio.toFixed(3)}`;
+  if (imageMetaCache.has(cacheKey)) {
+    callback(imageMetaCache.get(cacheKey));
     return;
   }
   const img = new Image();
@@ -18,48 +19,65 @@ function extractImageGradient(src, callback) {
   img.src = src;
   img.onload = () => {
     try {
+      const w = img.naturalWidth || 1;
+      const h = img.naturalHeight || 1;
+      const imgRatio = w / h;
+      const diff = Math.abs(imgRatio - cardRatio) / cardRatio;
+
+      // When aspect ratio is within 9% of the card ratio, full-bleed provides edge-to-edge beauty without gaps
+      const isCover = diff <= 0.09;
+      const isLandscape = imgRatio > cardRatio;
+
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return;
-      canvas.width = 16;
-      canvas.height = 16;
-      ctx.drawImage(img, 0, 0, 16, 16);
-      const data = ctx.getImageData(0, 0, 16, 16).data;
+      let gradient = "none";
 
-      // Sample top row (row 0)
-      let rT = 0;
-      let gT = 0;
-      let bT = 0;
-      for (let x = 0; x < 16; x++) {
-        const idx = x * 4;
-        rT += data[idx];
-        gT += data[idx + 1];
-        bT += data[idx + 2];
+      if (ctx) {
+        canvas.width = 16;
+        canvas.height = 16;
+        ctx.drawImage(img, 0, 0, 16, 16);
+        const data = ctx.getImageData(0, 0, 16, 16).data;
+
+        // Sample top row
+        let rT = 0;
+        let gT = 0;
+        let bT = 0;
+        for (let x = 0; x < 16; x++) {
+          const idx = x * 4;
+          rT += data[idx];
+          gT += data[idx + 1];
+          bT += data[idx + 2];
+        }
+        rT = Math.round(rT / 16);
+        gT = Math.round(gT / 16);
+        bT = Math.round(bT / 16);
+
+        // Sample bottom row
+        let rB = 0;
+        let gB = 0;
+        let bB = 0;
+        for (let x = 0; x < 16; x++) {
+          const idx = (15 * 16 + x) * 4;
+          rB += data[idx];
+          gB += data[idx + 1];
+          bB += data[idx + 2];
+        }
+        rB = Math.round(rB / 16);
+        gB = Math.round(gB / 16);
+        bB = Math.round(bB / 16);
+
+        gradient = `linear-gradient(180deg, rgb(${rT}, ${gT}, ${bT}) 0%, rgb(${rB}, ${gB}, ${bB}) 100%)`;
       }
-      rT = Math.round(rT / 16);
-      gT = Math.round(gT / 16);
-      bT = Math.round(bT / 16);
 
-      // Sample bottom row (row 15)
-      let rB = 0;
-      let gB = 0;
-      let bB = 0;
-      for (let x = 0; x < 16; x++) {
-        const idx = (15 * 16 + x) * 4;
-        rB += data[idx];
-        gB += data[idx + 1];
-        bB += data[idx + 2];
-      }
-      rB = Math.round(rB / 16);
-      gB = Math.round(gB / 16);
-      bB = Math.round(bB / 16);
-
-      const gradient = `linear-gradient(180deg, rgb(${rT}, ${gT}, ${bT}) 0%, rgb(${rB}, ${gB}, ${bB}) 100%)`;
-      gradientCache.set(src, gradient);
-      callback(gradient);
+      const meta = { gradient, isCover, isLandscape };
+      imageMetaCache.set(cacheKey, meta);
+      callback(meta);
     } catch {
-      // Graceful fallback to solid background
+      callback({ gradient: "none", isCover: false, isLandscape: true });
     }
+  };
+  img.onerror = () => {
+    callback({ gradient: "none", isCover: false, isLandscape: true });
   };
 }
 
@@ -80,9 +98,11 @@ const DepthCarousel = memo(
     showIndicators = true,
     ariaLabel = "Image carousel",
     className = "",
+    isMobile = false,
+    performanceTier = "high",
   }) => {
     const [lightboxItem, setLightboxItem] = useState(null);
-    const [cardGradients, setCardGradients] = useState({});
+    const [cardMeta, setCardMeta] = useState({});
     const handleExpand = useCallback((item) => setLightboxItem(item), []);
     const handleClose = useCallback(() => setLightboxItem(null), []);
 
@@ -111,16 +131,17 @@ const DepthCarousel = memo(
       onExpand: handleExpand,
     });
 
-    // Extract dominant edge gradient for each image to eliminate letterbox contrast
+    // Analyze aspect ratios and edge gradients to provide optimal full-bleed or seamless ambient fill
     React.useEffect(() => {
       let isMounted = true;
+      const cardRatio = cardWidth / cardHeight;
       data.forEach((item, index) => {
         if (!item.image) return;
-        extractImageGradient(item.image, (grad) => {
+        analyzeImage(item.image, cardRatio, (meta) => {
           if (isMounted) {
-            setCardGradients((prev) => {
-              if (prev[index] === grad) return prev;
-              return { ...prev, [index]: grad };
+            setCardMeta((prev) => {
+              if (prev[index] === meta) return prev;
+              return { ...prev, [index]: meta };
             });
           }
         });
@@ -128,7 +149,7 @@ const DepthCarousel = memo(
       return () => {
         isMounted = false;
       };
-    }, [data]);
+    }, [data, cardWidth, cardHeight]);
 
     return (
       <>
@@ -143,46 +164,58 @@ const DepthCarousel = memo(
           {...rootHandlers}
         >
           <div className="depth-carousel__stage">
-            {data.map((item, i) => (
-              <div
-                key={item.id ?? i}
-                ref={(el) => {
-                  cardRefs.current[i] = el;
-                }}
-                className="depth-carousel__card"
-                style={{
-                  width: cardWidth,
-                  height: cardHeight,
-                  borderRadius: radius,
-                  backgroundColor: "#0d1117",
-                  backgroundImage: cardGradients[i] || "none",
-                }}
-                onClick={() => onCardClick(i)}
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`${i + 1} of ${count}`}
-                aria-hidden={active !== i}
-              >
-                {/* Fondo ambiental difuminado para extender la foto de forma continua */}
-                <img
-                  className="depth-carousel__img-bg"
-                  src={item.image}
-                  alt=""
-                  draggable={false}
-                  aria-hidden="true"
-                  decoding="async"
-                />
+            {data.map((item, i) => {
+              const meta = cardMeta[i] || {
+                gradient: "none",
+                isCover: false,
+                isLandscape: true,
+              };
+              return (
+                <div
+                  key={item.id ?? i}
+                  ref={(el) => {
+                    cardRefs.current[i] = el;
+                  }}
+                  className="depth-carousel__card"
+                  style={{
+                    width: cardWidth,
+                    height: cardHeight,
+                    borderRadius: radius,
+                    backgroundColor: "#0d1117",
+                    backgroundImage: meta.gradient || "none",
+                  }}
+                  onClick={() => onCardClick(i)}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${i + 1} of ${count}`}
+                  aria-hidden={active !== i}
+                >
+                  {/* Para imágenes que no cubren por completo, extender bordes con capas ambientales ancladas (solo escritorio) */}
+                  {!meta.isCover && !isMobile && performanceTier !== "low" && (
+                    <div className="depth-carousel__ambient-layer" aria-hidden="true">
+                      <div
+                        className="depth-carousel__ambient-slice depth-carousel__ambient-slice--top"
+                        style={{ backgroundImage: `url(${item.image})` }}
+                      />
+                      <div
+                        className="depth-carousel__ambient-slice depth-carousel__ambient-slice--bottom"
+                        style={{ backgroundImage: `url(${item.image})` }}
+                      />
+                    </div>
+                  )}
 
-                {/* Imagen principal completa y nítida */}
-                <img
-                  className="depth-carousel__img"
-                  src={item.image}
-                  alt={item.alt || ""}
-                  draggable={false}
-                  decoding="async"
-                />
-              </div>
-            ))}
+                  {/* Imagen principal: full-bleed cuando encaja de forma natural, o contenida con difuminado suave en los bordes */}
+                  <img
+                    className={`depth-carousel__img ${meta.isCover ? "is-cover" : "is-contained"}`}
+                    src={item.image}
+                    alt={item.alt || ""}
+                    draggable={false}
+                    decoding="async"
+                    loading={i < 3 ? "eager" : "lazy"}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {showControls && count > 1 && (

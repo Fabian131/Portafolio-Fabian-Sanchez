@@ -32,3 +32,4 @@ AGENTS.md
 
 .atl/
 .codegraph/
+*.orig

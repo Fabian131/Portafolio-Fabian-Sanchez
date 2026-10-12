@@ -50,6 +50,7 @@ export const useDepthCarousel = ({
   const posRef = useRef(0);
   const targetRef = useRef(0);
   const rafRef = useRef(0);
+  const dragRafRef = useRef(0);
   const scaleRef = useRef(1);
   const activeRef = useRef(0);
   const blurEnabledRef = useRef(true);
@@ -104,11 +105,16 @@ export const useDepthCarousel = ({
       style.zIndex = String(1000 - Math.round(az * 20));
       style.pointerEvents = opacity > 0.5 ? "auto" : "none";
 
-      // Filter writes are the costliest; skip them when the value did not change.
-      const filter = `brightness(${Math.max(0.7, 1 - az * 0.12).toFixed(2)})${blurStep ? ` blur(${(az * blurStep).toFixed(1)}px)` : ""}`;
-      if (filterCache.current[i] !== filter) {
-        filterCache.current[i] = filter;
-        style.filter = filter;
+      // On mobile / touch GPUs, skip filter writes completely for 60fps compositor performance
+      if (blurStep > 0 && blurEnabledRef.current) {
+        const filter = `brightness(${Math.max(0.7, 1 - az * 0.12).toFixed(2)}) blur(${(az * blurStep).toFixed(1)}px)`;
+        if (filterCache.current[i] !== filter) {
+          filterCache.current[i] = filter;
+          style.filter = filter;
+        }
+      } else if (filterCache.current[i] !== "") {
+        filterCache.current[i] = "";
+        style.filter = "";
       }
     }
   }, []);
@@ -175,8 +181,14 @@ export const useDepthCarousel = ({
     if (data[idx]) onExpand?.(data[idx]);
   }, [data, onExpand]);
 
-  const stepPx = () =>
-    Math.max(cfgRef.current.cardWidth * 0.55 * scaleRef.current, 50);
+  const stepPx = () => {
+    const isTouch =
+      typeof window !== "undefined" &&
+      (window.innerWidth <= 768 || navigator.maxTouchPoints > 0);
+    return isTouch
+      ? 200
+      : Math.max(cfgRef.current.cardWidth * 0.55 * scaleRef.current, 100);
+  };
 
   const onPointerDown = useCallback((e) => {
     if (
@@ -186,6 +198,10 @@ export const useDepthCarousel = ({
     )
       return;
     cancelAnimationFrame(rafRef.current);
+    if (dragRafRef.current) {
+      cancelAnimationFrame(dragRafRef.current);
+      dragRafRef.current = 0;
+    }
     targetRef.current = posRef.current;
     dragRef.current = {
       active: true,
@@ -220,7 +236,14 @@ export const useDepthCarousel = ({
 
       targetRef.current = posRef.current =
         drag.startPos - (e.clientX - drag.startX) / stepPx();
-      layout(posRef.current);
+
+      // Batch drag updates via requestAnimationFrame so touchmove never blocks the compositor
+      if (!dragRafRef.current) {
+        dragRafRef.current = requestAnimationFrame(() => {
+          dragRafRef.current = 0;
+          layout(posRef.current);
+        });
+      }
     },
     [layout],
   );
@@ -230,6 +253,10 @@ export const useDepthCarousel = ({
       const drag = dragRef.current;
       if (!drag.active || e.pointerId !== drag.id) return;
       drag.active = false;
+      if (dragRafRef.current) {
+        cancelAnimationFrame(dragRafRef.current);
+        dragRafRef.current = 0;
+      }
       if (!drag.moved) {
         // A tap interrupted an animation; resume it.
         goTo(activeRef.current);
@@ -317,9 +344,12 @@ export const useDepthCarousel = ({
         visibleCards: vc,
       } = cfgRef.current;
       const sides = visibleFor(n, vc) - 1;
-      const fitWidth = width / (cw + Math.abs(s) * 2 * sides + 40);
+      const fitWidth =
+        width < 640
+          ? (width * 0.82) / cw
+          : width / (cw + Math.abs(s) * 2 * Math.min(sides, 2) + 40);
       const fitHeight = (height - 90) / ch;
-      scaleRef.current = clamp(Math.min(fitWidth, fitHeight), 0.4, 1.1);
+      scaleRef.current = clamp(Math.min(fitWidth, fitHeight), 0.55, 1.1);
       layout(posRef.current);
     });
     ro.observe(root);
@@ -370,7 +400,13 @@ export const useDepthCarousel = ({
     };
   }, [autoplay, autoplayDelay, count, navigateBy]);
 
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(rafRef.current);
+      cancelAnimationFrame(dragRafRef.current);
+    },
+    [],
+  );
 
   return {
     data,
