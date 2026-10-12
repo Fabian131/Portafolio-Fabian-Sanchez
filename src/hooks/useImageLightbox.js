@@ -7,14 +7,18 @@ export const useImageLightbox = ({ isOpen, onClose }) => {
 
   // Open flow: closed → entering → open
   useEffect(() => {
-    if (isOpen && phase === 'closed') {
+    if (!isOpen) return;
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
       setPhase('entering');
-      // Allow the browser to paint the entering state, then transition to open
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setPhase('open'));
-      });
-    }
-  }, [isOpen, phase]);
+      raf2 = requestAnimationFrame(() => setPhase('open'));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [isOpen]);
 
   // Close flow: open → exiting → closed
   const handleClose = useCallback(() => {

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Token discipline: cap verbose tool results so they never flood the context.
+  // Defaults: 2000 lines / 51200 bytes. RTK compresses commands; this is the final ceiling.
+  "tool_output": {
+    "max_lines": 1000,
+    "max_bytes": 30000
+  },
+  // Context persistence: keep a healthy tail across automatic compactions.
+  "compaction": {
+    "auto": true,
+    "keep": { "tokens": 15000 },
+    "buffer": 20000
+  }
+}

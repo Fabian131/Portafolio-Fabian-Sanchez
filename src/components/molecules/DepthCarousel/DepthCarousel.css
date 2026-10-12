@@ -1,11 +1,20 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   DepthCarousel.css — 3D depth carousel with Liquid Glass chrome.
+   Cards are positioned from JS (transform / opacity / filter only).
+───────────────────────────────────────────────────────────────────────────── */
+
+.depth-carousel {
+  --dc-reflex: inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 35%), transparent),
+    inset 2px 2px 0 -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -1.5px -1px 0 -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -2px -5px 1px -4px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 50%), transparent);
+}
+
 .depth-carousel {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 360px;
   perspective: var(--dc-perspective, 1400px);
   perspective-origin: 50% 50%;
   touch-action: pan-y;
@@ -15,18 +24,15 @@
   cursor: grab;
 }
 
-.depth-carousel.is-dragging {
-  cursor: grabbing;
-}
-
+.depth-carousel.is-dragging,
 .depth-carousel.is-dragging * {
   cursor: grabbing !important;
 }
 
 .depth-carousel:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 4px;
-  border-radius: 12px;
+  outline: 2px solid color-mix(in srgb, var(--c-action) 70%, transparent);
+  outline-offset: -2px;
+  border-radius: 24px;
 }
 
 .depth-carousel__stage {
@@ -38,36 +44,38 @@
 /* ── Cards ── */
 .depth-carousel__card {
   position: absolute;
-  top: 50%;
+  top: calc(50% - 28px);
   left: 50%;
-  transform-origin: center center;
   overflow: hidden;
-  background: #0b0d12;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  background-color: #0d1117;
+  background-size: cover;
   box-shadow:
-    0 30px 60px -20px rgba(0, 0, 0, 0.65),
-    0 8px 20px -10px rgba(0, 0, 0, 0.5);
+    0 30px 60px -18px rgba(0, 0, 0, 0.55),
+    0 10px 24px -12px rgba(0, 0, 0, 0.4);
   will-change: transform, opacity, filter;
   cursor: pointer;
-  transform: translate(-50%, -50%);
 }
 
-/* Blurred background fill — covers entire card */
+/* Fondo ambiental difuminado para llenar espacios residuales con la propia foto */
 .depth-carousel__img-bg {
   position: absolute;
-  inset: -16px;
-  width: calc(100% + 32px);
-  height: calc(100% + 32px);
+  inset: -40px;
+  width: calc(100% + 80px);
+  height: calc(100% + 80px);
   object-fit: cover;
   display: block;
   pointer-events: none;
   -webkit-user-drag: none;
-  filter: blur(14px) brightness(1.05) saturate(1.3);
-  z-index: 0;
-  transform: translateZ(0); /* Hardware acceleration to cache the static blur */
+  filter: blur(36px) saturate(1.25);
+  opacity: 0.92;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
+  z-index: 1;
 }
 
-/* Main image — shown in full */
+/* Imagen principal completa — 100% visible sin recortes ni sombras duras */
 .depth-carousel__img {
   position: relative;
   width: 100%;
@@ -76,153 +84,124 @@
   display: block;
   pointer-events: none;
   -webkit-user-drag: none;
-  z-index: 1;
-}
-
-/* GPU Crossfade Blur Layer */
-.depth-carousel__img-blur-layer {
-  position: absolute;
-  inset: -2px; /* Prevent sharp edges */
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  object-fit: contain;
-  filter: blur(8px) brightness(1.05) saturate(1.2);
-  opacity: 0;
-  pointer-events: none;
-  -webkit-user-drag: none;
   z-index: 2;
-  transform: translateZ(0); /* Hardware accelerate the static blur */
-  will-change: opacity, transform;
 }
 
-.depth-carousel__tint {
+/* Glass rim drawn above the image and background (inset shadows sit under it). */
+.depth-carousel__card::after {
+  content: '';
   position: absolute;
   inset: 0;
-  opacity: 0;
+  border-radius: inherit;
   pointer-events: none;
-  mix-blend-mode: multiply;
+  box-shadow: var(--dc-reflex);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 18%), transparent) 0%,
+    transparent 38%
+  );
+  z-index: 3;
 }
 
-/* ── Arrows ── */
+/* Modo claro: mantiene la luminosidad real del fondo ambiental */
+html:not(.dark) .depth-carousel__img-bg {
+  filter: blur(36px) saturate(1.2);
+  opacity: 0.95;
+}
+
+/* ── Glass controls ── */
+.depth-carousel__arrow,
+.depth-carousel__dots {
+  border: none;
+  background: color-mix(in srgb, var(--c-glass) 16%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(var(--saturation));
+  backdrop-filter: blur(8px) saturate(var(--saturation));
+  box-shadow: var(--dc-reflex), 0 10px 30px -10px rgba(0, 0, 0, 0.35);
+}
+
 .depth-carousel__arrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 3000;
-  width: 42px;
-  height: 42px;
+  top: calc(50% - 28px);
+  z-index: 1200;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  background: rgba(18, 20, 26, 0.55);
-  backdrop-filter: blur(8px);
-  color: #fff;
+  border-radius: 50%;
+  color: var(--c-content);
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+  transform: translateY(-50%);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
 }
 
 .depth-carousel__arrow:hover {
-  background: rgba(28, 31, 40, 0.85);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: color-mix(in srgb, var(--c-glass) 30%, transparent);
+  transform: translateY(-50%) scale(1.06);
 }
 
 .depth-carousel__arrow:active {
   transform: translateY(-50%) scale(0.94);
 }
 
-.depth-carousel__arrow--prev {
-  left: 16px;
+.depth-carousel__arrow:focus-visible,
+.depth-carousel__dot:focus-visible {
+  outline: 2px solid var(--c-action);
+  outline-offset: 2px;
 }
 
-.depth-carousel__arrow--next {
-  right: 16px;
-}
+.depth-carousel__arrow--prev { left: 20px; }
+.depth-carousel__arrow--next { right: 20px; }
 
-/* ── Dots ── */
 .depth-carousel__dots {
   position: absolute;
-  bottom: 4%;
+  bottom: -1px;
   left: 50%;
-  transform: translateX(-50%);
-  z-index: 3000;
+  z-index: 1200;
   display: flex;
-  gap: 8px;
-  padding: 8px 12px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
   border-radius: 999px;
-  background: rgba(14, 16, 22, 0.4);
-  backdrop-filter: blur(6px);
+  transform: translateX(-50%);
+  cursor: default;
+  pointer-events: auto;
 }
 
 .depth-carousel__dot {
-  width: 7px;
-  height: 7px;
+  position: relative;
+  width: 10px;
+  height: 10px;
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.32);
+  background: color-mix(in srgb, var(--c-content) 30%, transparent);
   cursor: pointer;
-  transition:
-    width 0.25s ease,
-    background 0.25s ease;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+}
+
+/* Área táctil generosa para clics y toques precisos en móvil y escritorio */
+.depth-carousel__dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
 }
 
 .depth-carousel__dot.is-active {
-  width: 20px;
-  background: #fff;
+  width: 28px;
+  background: var(--c-action);
 }
 
-/* ═══════════════════════════════════════════
-   LIGHT MODE  (html without .dark class)
-   ═══════════════════════════════════════════ */
-
-html:not(.dark) .depth-carousel:focus-visible {
-  outline-color: rgba(59, 130, 246, 0.5);
-}
-
-html:not(.dark) .depth-carousel__card {
-  background: #f0f2f6;
-  box-shadow:
-    0 30px 60px -20px rgba(0, 0, 0, 0.18),
-    0 8px 20px -10px rgba(0, 0, 0, 0.1);
-}
-
-html:not(.dark) .depth-carousel__tint {
-  mix-blend-mode: screen;
-}
-
-html:not(.dark) .depth-carousel__arrow {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #1e293b;
-}
-
-html:not(.dark) .depth-carousel__arrow:hover {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.22);
-}
-
-html:not(.dark) .depth-carousel__dots {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-}
-
-html:not(.dark) .depth-carousel__dot {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-html:not(.dark) .depth-carousel__dot.is-active {
-  background: #3b82f6;
+/* Touch screens: swipe replaces arrows. */
+@media (max-width: 640px) {
+  .depth-carousel__arrow { display: none; }
 }
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .depth-carousel__card {
-    will-change: auto;
-  }
   .depth-carousel__arrow,
   .depth-carousel__dot {
     transition: none;

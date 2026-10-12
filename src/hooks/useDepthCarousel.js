@@ -1,221 +1,325 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
-const normalizeItem = it => (typeof it === 'string' ? { image: it, alt: '' } : it);
-const easePower3Out = (t) => 1 - Math.pow(1 - t, 3);
+const normalizeItem = (it) =>
+  typeof it === "string" ? { image: it, alt: "" } : it;
+const wrap = (v, n) => ((v % n) + n) % n;
+// Shortest signed distance on a ring of n slots.
+const ringOffset = (v, n) => {
+  const o = wrap(v, n);
+  return o > n / 2 ? o - n : o;
+};
+
+const EASE_PER_FRAME = 0.1;
+const FRAME_MS = 1000 / 60;
+const SETTLE_EPSILON = 0.001;
+const DRAG_THRESHOLD = 10;
+const FLING_MS = 200;
+// Max useful value is floor(n/2)+1: the farthest ring offset is floor(n/2), shown at full opacity.
+const visibleFor = (n, vc) => Math.max(1, Math.min(vc, Math.floor(n / 2) + 1));
 
 export const useDepthCarousel = ({
   items,
   cardWidth,
   cardHeight,
-  radius,
-  tint,
   depth,
   spread,
-  tilt,
-  tiltDirection,
-  perspective,
   visibleCards,
-  falloff,
   blur,
-  duration,
-  ease,
   autoplay,
   autoplayDelay,
-  loop,
-  showControls,
-  showIndicators,
-  onChange
+  paused,
+  onExpand,
 }) => {
-  const data = useMemo(() => (Array.isArray(items) ? items : []).map(normalizeItem), [items]);
+  const data = useMemo(
+    () => (Array.isArray(items) ? items : []).map(normalizeItem),
+    [items],
+  );
   const count = data.length;
 
   const rootRef = useRef(null);
-  const stageRef = useRef(null);
   const cardRefs = useRef([]);
-  const overlayRefs = useRef([]);
-  const blurRefs = useRef([]);
-
+  const filterCache = useRef([]);
   const posRef = useRef(0);
-  const focusRef = useRef(0);
-  const tweenRef = useRef(null);
+  const targetRef = useRef(0);
+  const rafRef = useRef(0);
   const scaleRef = useRef(1);
-  const cfgRef = useRef({});
-  const onChangeRef = useRef(onChange);
-
-  const dragRef = useRef(null);
-  const clickPosRef = useRef(0);
-  const wheelTimerRef = useRef(null);
-  const autoTimerRef = useRef(null);
+  const activeRef = useRef(0);
+  const blurEnabledRef = useRef(true);
   const reducedRef = useRef(false);
+  const pausedRef = useRef(paused);
+  const cfgRef = useRef({});
+  const dragRef = useRef({
+    active: false,
+    moved: false,
+    id: null,
+    startX: 0,
+    lastX: 0,
+    startPos: 0,
+    lastT: 0,
+    v: 0,
+  });
 
   const [active, setActive] = useState(0);
-  const [lightboxItem, setLightboxItem] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  onChangeRef.current = onChange;
-  cfgRef.current = {
-    count,
-    depth,
-    spread,
-    tilt,
-    tiltDirection,
-    visibleCards,
-    falloff,
-    blur,
-    duration,
-    ease,
-    loop,
-    cardWidth,
-    autoplayDelay
-  };
-
-  const layout = useCallback(pos => {
-    const cfg = cfgRef.current;
-    const n = cfg.count;
+  const layout = useCallback((pos) => {
+    const {
+      count: n,
+      depth: d,
+      spread: s,
+      visibleCards: vc,
+      blur: b,
+    } = cfgRef.current;
     if (!n) return;
-    const dir = cfg.tiltDirection === 'left' ? -1 : 1;
+
     const sc = scaleRef.current;
+    const visible = visibleFor(n, vc);
+    const blurStep = blurEnabledRef.current && b > 0 ? b / visible : 0;
 
     for (let i = 0; i < n; i++) {
       const el = cardRefs.current[i];
       if (!el) continue;
 
-      let d = i - pos;
-      if (cfg.loop && n > 1) {
-        d = ((d % n) + n) % n;
-        if (d > n / 2) d -= n;
+      const offset = n > 1 ? ringOffset(i - pos, n) : i - pos;
+      const az = Math.abs(offset);
+      const opacity = az > visible - 1 ? Math.max(0, visible - az) : 1;
+      const style = el.style;
+
+      if (opacity === 0) {
+        style.visibility = "hidden";
+        continue;
       }
 
-      const az = Math.abs(d);
-      const shown = az <= cfg.visibleCards + 0.5;
+      style.visibility = "visible";
+      style.transform = `translate(-50%, -50%) scale(${sc}) translate3d(${(offset * s).toFixed(2)}px, 0, ${(-az * d).toFixed(2)}px)`;
+      style.opacity = opacity.toFixed(3);
+      style.zIndex = String(1000 - Math.round(az * 20));
+      style.pointerEvents = opacity > 0.5 ? "auto" : "none";
 
-      // Symmetrical depth and tilt
-      const tz = -cfg.depth * az;
-      const tx = dir * cfg.spread * d;
-      const ry = dir * cfg.tilt * clamp(d, -1, 1);
-
-      let opacity = 1;
-      if (az > cfg.visibleCards - 0.5) {
-        opacity *= clamp(1 - (az - (cfg.visibleCards - 0.5)), 0, 1);
-      }
-      if (az > cfg.visibleCards + 0.5) opacity = 0;
-
-      const zi = Math.round(2000 - az * 20);
-
-      const newTransform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
-      const newOpacity = opacity.toFixed(3);
-      const newZ = String(zi);
-      const newPointer = shown && opacity > 0.05 ? 'auto' : 'none';
-
-      // DOM Caching: Only update the DOM if the values actually changed
-      if (el._tx !== newTransform) { el.style.transform = newTransform; el._tx = newTransform; }
-      if (el._op !== newOpacity) { el.style.opacity = newOpacity; el._op = newOpacity; }
-      if (el._zi !== newZ) { el.style.zIndex = newZ; el._zi = newZ; }
-      if (el._pe !== newPointer) { el.style.pointerEvents = newPointer; el._pe = newPointer; }
-
-      const ov = overlayRefs.current[i];
-      if (ov) {
-        // Darken as it goes back
-        const darkening = clamp(az * cfg.falloff, 0, 0.85);
-        const newOvOp = darkening.toFixed(3);
-        if (ov._op !== newOvOp) { ov.style.opacity = newOvOp; ov._op = newOvOp; }
-      }
-
-      const bl = blurRefs.current[i];
-      if (bl) {
-        // Fade in the blurred clone as it goes back
-        const blurIntensity = cfg.blur > 0 ? clamp(az / Math.max(1, cfg.visibleCards), 0, 1) : 0;
-        const newBlOp = blurIntensity.toFixed(3);
-        if (bl._op !== newBlOp) { bl.style.opacity = newBlOp; bl._op = newBlOp; }
+      // Filter writes are the costliest; skip them when the value did not change.
+      const filter = `brightness(${Math.max(0.7, 1 - az * 0.12).toFixed(2)})${blurStep ? ` blur(${(az * blurStep).toFixed(1)}px)` : ""}`;
+      if (filterCache.current[i] !== filter) {
+        filterCache.current[i] = filter;
+        style.filter = filter;
       }
     }
   }, []);
 
-  const notify = useCallback(
-    idx => {
-      setActive(idx);
-      onChangeRef.current?.(idx, data[idx]);
+  const startAnimation = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    if (reducedRef.current) {
+      posRef.current = targetRef.current;
+      layout(posRef.current);
+      return;
+    }
+
+    let last = performance.now();
+    const step = (now) => {
+      const dt = Math.min(now - last, 64);
+      last = now;
+
+      const diff = targetRef.current - posRef.current;
+      if (Math.abs(diff) < SETTLE_EPSILON) {
+        posRef.current = targetRef.current;
+      } else {
+        // Frame-rate independent easing (same feel at 60 Hz and 120 Hz).
+        posRef.current +=
+          diff * (1 - Math.pow(1 - EASE_PER_FRAME, dt / FRAME_MS));
+      }
+
+      layout(posRef.current);
+
+      if (posRef.current !== targetRef.current) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        // Offsets are ring-based, so wrapping the position is visually a no-op.
+        const n = cfgRef.current.count;
+        if (n) targetRef.current = posRef.current = wrap(targetRef.current, n);
+      }
+    };
+    rafRef.current = requestAnimationFrame(step);
+  }, [layout]);
+
+  const goTo = useCallback(
+    (rawIndex) => {
+      const n = cfgRef.current.count;
+      if (!n) return;
+      const idx = wrap(rawIndex, n);
+      targetRef.current += ringOffset(idx - targetRef.current, n);
+      if (idx !== activeRef.current) {
+        activeRef.current = idx;
+        setActive(idx);
+      }
+      startAnimation();
     },
-    [data]
+    [startAnimation],
   );
 
-  const tweenTo = useCallback(
-    (target, animate) => {
-      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
-      const cfg = cfgRef.current;
-      
-      if (!animate || reducedRef.current) {
-        posRef.current = target;
-        const n = cfg.count;
-        if (n > 0) posRef.current = ((posRef.current % n) + n) % n;
-        layout(posRef.current);
+  const navigateBy = useCallback(
+    (step) => {
+      goTo(Math.round(targetRef.current) + step);
+    },
+    [goTo],
+  );
+
+  const expandActive = useCallback(() => {
+    const idx = activeRef.current;
+    if (data[idx]) onExpand?.(data[idx]);
+  }, [data, onExpand]);
+
+  const stepPx = () =>
+    Math.max(cfgRef.current.cardWidth * 0.55 * scaleRef.current, 50);
+
+  const onPointerDown = useCallback((e) => {
+    if (
+      cfgRef.current.count < 2 ||
+      (e.pointerType === "mouse" && e.button !== 0) ||
+      e.target.closest("button, .depth-carousel__dots, .depth-carousel__arrow")
+    )
+      return;
+    cancelAnimationFrame(rafRef.current);
+    targetRef.current = posRef.current;
+    dragRef.current = {
+      active: true,
+      moved: false,
+      id: e.pointerId,
+      startX: e.clientX,
+      lastX: e.clientX,
+      startPos: posRef.current,
+      lastT: performance.now(),
+      v: 0,
+    };
+  }, []);
+
+  const onPointerMove = useCallback(
+    (e) => {
+      const drag = dragRef.current;
+      if (!drag.active || e.pointerId !== drag.id) return;
+
+      if (!drag.moved) {
+        if (Math.abs(e.clientX - drag.startX) <= DRAG_THRESHOLD) return;
+        drag.moved = true;
+        drag.startX = e.clientX;
+        setIsDragging(true);
+        // Capture only after a real drag, so plain taps still reach the cards.
+        rootRef.current?.setPointerCapture(e.pointerId);
+      }
+
+      const now = performance.now();
+      drag.v = (e.clientX - drag.lastX) / Math.max(now - drag.lastT, 1);
+      drag.lastX = e.clientX;
+      drag.lastT = now;
+
+      targetRef.current = posRef.current =
+        drag.startPos - (e.clientX - drag.startX) / stepPx();
+      layout(posRef.current);
+    },
+    [layout],
+  );
+
+  const onPointerUp = useCallback(
+    (e) => {
+      const drag = dragRef.current;
+      if (!drag.active || e.pointerId !== drag.id) return;
+      drag.active = false;
+      if (!drag.moved) {
+        // A tap interrupted an animation; resume it.
+        goTo(activeRef.current);
         return;
       }
-
-      const startPos = posRef.current;
-      const startTime = performance.now();
-      const durMs = cfg.duration || 700;
-
-      const step = (time) => {
-        let t = (time - startTime) / durMs;
-        if (t > 1) t = 1;
-        
-        posRef.current = startPos + (target - startPos) * easePower3Out(t);
-        layout(posRef.current);
-
-        if (t < 1) {
-          tweenRef.current = requestAnimationFrame(step);
-        } else {
-          const n = cfg.count;
-          if (n > 0) posRef.current = ((posRef.current % n) + n) % n;
-          layout(posRef.current);
-          tweenRef.current = null;
-        }
-      };
-      
-      tweenRef.current = requestAnimationFrame(step);
+      setIsDragging(false);
+      goTo(Math.round(targetRef.current - (drag.v * FLING_MS) / stepPx()));
     },
-    [layout]
+    [goTo],
   );
 
-  const setFocus = useCallback(
-    (rawIndex, animate = true) => {
-      const cfg = cfgRef.current;
-      const n = cfg.count;
-      if (!n) return;
-      const idx = cfg.loop ? ((rawIndex % n) + n) % n : clamp(rawIndex, 0, n - 1);
-      let delta = idx - posRef.current;
-      if (cfg.loop && n > 1) {
-        delta = ((delta % n) + n) % n;
-        if (delta > n / 2) delta -= n;
-      }
-      tweenTo(posRef.current + delta, animate);
-      if (idx !== focusRef.current) {
-        focusRef.current = idx;
-        notify(idx);
-      }
+  const onPointerLeave = useCallback(
+    (e) => {
+      // Without capture (no drag yet), a pointer that leaves never sends pointerup here.
+      if (dragRef.current.active && !dragRef.current.moved) onPointerUp(e);
     },
-    [tweenTo, notify]
+    [onPointerUp],
   );
 
-  const navigateBy = useCallback(step => setFocus(focusRef.current + step, true), [setFocus]);
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        navigateBy(e.key === "ArrowLeft" ? -1 : 1);
+      } else if (
+        (e.key === "Enter" || e.key === " ") &&
+        e.target === rootRef.current
+      ) {
+        e.preventDefault();
+        expandActive();
+      }
+    },
+    [navigateBy, expandActive],
+  );
+
+  const onCardClick = useCallback(
+    (index) => {
+      if (dragRef.current.moved) return;
+      if (index === activeRef.current) expandActive();
+      else goTo(index);
+    },
+    [goTo, expandActive],
+  );
+
+  // Sync config before paint so the first frame is already laid out.
+  useLayoutEffect(() => {
+    cfgRef.current = {
+      count,
+      depth,
+      spread,
+      visibleCards,
+      blur,
+      cardWidth,
+      cardHeight,
+    };
+    layout(posRef.current);
+  }, [count, depth, spread, visibleCards, blur, cardWidth, cardHeight, layout]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+
+  useEffect(() => {
+    reducedRef.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    // Animated blur is too expensive for touch GPUs; keep it for desktop pointers only.
+    blurEnabledRef.current = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+    filterCache.current = [];
+    layout(posRef.current);
+  }, [layout]);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const ro = new ResizeObserver(entries => {
-      const w = entries[0].contentRect.width;
-      const cfg = cfgRef.current;
-      
-      if (w < 640) {
-        // Mobile: ensure the cards are scaled down enough so that side cards are clearly visible.
-        const neededMobile = cfg.cardWidth + Math.abs(cfg.spread) * 2.2;
-        scaleRef.current = clamp(w / neededMobile, 0.5, 0.9);
-      } else {
-        const needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 40;
-        scaleRef.current = clamp(w / needed, 0.45, 1.35);
-      }
-      
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      const {
+        cardWidth: cw,
+        cardHeight: ch,
+        spread: s,
+        count: n,
+        visibleCards: vc,
+      } = cfgRef.current;
+      const sides = visibleFor(n, vc) - 1;
+      const fitWidth = width / (cw + Math.abs(s) * 2 * sides + 40);
+      const fitHeight = (height - 90) / ch;
+      scaleRef.current = clamp(Math.min(fitWidth, fitHeight), 0.4, 1.1);
       layout(posRef.current);
     });
     ro.observe(root);
@@ -223,191 +327,68 @@ export const useDepthCarousel = ({
   }, [layout]);
 
   useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const onWheel = e => {
-      const cfg = cfgRef.current;
-      if (cfg.count < 2) return;
-      e.preventDefault();
-      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
-      const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      const delta = e.deltaMode === 1 ? raw * 24 : raw;
-      const step = clamp(delta / (cfg.cardWidth * 0.9), -0.6, 0.6);
-      posRef.current += step;
-      layout(posRef.current);
-      if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-      wheelTimerRef.current = setTimeout(() => setFocus(Math.round(posRef.current), true), 130);
-    };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => {
-      el.removeEventListener('wheel', onWheel);
-      if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-    };
-  }, [layout, setFocus]);
-
-  const onPointerDown = useCallback(e => {
-    const cfg = cfgRef.current;
-    if (cfg.count < 2) return;
-    if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
-    dragRef.current = {
-      x: e.clientX,
-      startPos: posRef.current,
-      lastX: e.clientX,
-      lastT: performance.now(),
-      v: 0,
-      moved: false,
-      id: e.pointerId
-    };
-    clickPosRef.current = e.clientX;
-  }, []);
-
-  const onPointerMove = useCallback(
-    e => {
-      const drag = dragRef.current;
-      if (!drag) return;
-      const cfg = cfgRef.current;
-      const stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef.current, 40);
-      const dx = e.clientX - drag.x;
-      if (!drag.moved && Math.abs(dx) > 4) {
-        drag.moved = true;
-        if (rootRef.current) {
-          rootRef.current.classList.add('is-dragging');
-          try { rootRef.current.setPointerCapture(drag.id); } catch(err) {}
-        }
-      }
-      if (!drag.moved) return;
-      const now = performance.now();
-      const dt = Math.max(now - drag.lastT, 1);
-      drag.v = (e.clientX - drag.lastX) / dt;
-      drag.lastX = e.clientX;
-      drag.lastT = now;
-      posRef.current = drag.startPos - dx / stepPx;
-      layout(posRef.current);
-    },
-    [layout]
-  );
-
-  const onPointerEnd = useCallback((e) => {
-    const drag = dragRef.current;
-    if (!drag) return;
-    
-    if (rootRef.current) {
-      rootRef.current.classList.remove('is-dragging');
-      if (e && e.pointerId && rootRef.current.hasPointerCapture(e.pointerId)) {
-        try { rootRef.current.releasePointerCapture(e.pointerId); } catch(err) {}
-      }
-    }
-    
-    dragRef.current = null;
-    if (!drag.moved) return;
-    const cfg = cfgRef.current;
-    const stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef.current, 40);
-    const projected = posRef.current - (drag.v * 180) / stepPx;
-    setFocus(Math.round(projected), true);
-  }, [setFocus]);
-
-  const onKeyDown = useCallback(
-    e => {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        navigateBy(-1);
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        navigateBy(1);
-      }
-    },
-    [navigateBy]
-  );
-
-  const onCardClick = useCallback(
-    (index, e) => {
-      if (e && e.clientX !== 0 && Math.abs(e.clientX - clickPosRef.current) > 10) {
-        return;
-      }
-      if (index === focusRef.current) {
-        setLightboxItem(data[index] || null);
-        return;
-      }
-      setFocus(index, true);
-    },
-    [setFocus, data]
-  );
-
-  useEffect(() => {
-    reducedRef.current = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!autoplay || reducedRef.current || count < 2) return;
     const root = rootRef.current;
+    if (!root || !autoplay || count < 2 || reducedRef.current) return;
+
     let hovered = false;
-    let focused = false;
-    const stop = () => {
-      if (autoTimerRef.current) clearInterval(autoTimerRef.current);
-      autoTimerRef.current = null;
-    };
-    const start = () => {
-      stop();
-      autoTimerRef.current = window.setInterval(
-        () => {
-          if (!hovered && !focused) navigateBy(1);
-        },
-        Math.max(cfgRef.current.autoplayDelay, 600)
-      );
-    };
+    let inView = false;
     const onEnter = () => {
       hovered = true;
     };
     const onLeave = () => {
       hovered = false;
     };
-    const onFocusIn = () => {
-      focused = true;
-    };
-    const onFocusOut = () => {
-      focused = false;
-    };
-    root?.addEventListener('mouseenter', onEnter);
-    root?.addEventListener('mouseleave', onLeave);
-    root?.addEventListener('focusin', onFocusIn);
-    root?.addEventListener('focusout', onFocusOut);
-    start();
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { threshold: 0.15 },
+    );
+
+    io.observe(root);
+    root.addEventListener("mouseenter", onEnter);
+    root.addEventListener("mouseleave", onLeave);
+    const timer = setInterval(
+      () => {
+        if (
+          inView &&
+          !hovered &&
+          !document.hidden &&
+          !pausedRef.current &&
+          !dragRef.current.active
+        )
+          navigateBy(1);
+      },
+      Math.max(autoplayDelay, 1200),
+    );
+
     return () => {
-      stop();
-      root?.removeEventListener('mouseenter', onEnter);
-      root?.removeEventListener('mouseleave', onLeave);
-      root?.removeEventListener('focusin', onFocusIn);
-      root?.removeEventListener('focusout', onFocusOut);
+      clearInterval(timer);
+      io.disconnect();
+      root.removeEventListener("mouseenter", onEnter);
+      root.removeEventListener("mouseleave", onLeave);
     };
   }, [autoplay, autoplayDelay, count, navigateBy]);
 
-  useEffect(() => {
-    layout(posRef.current);
-  }, [layout, depth, spread, tilt, tiltDirection, visibleCards, falloff, blur, cardWidth, cardHeight, radius, count]);
-
-  useEffect(
-    () => () => {
-      if (tweenRef.current) cancelAnimationFrame(tweenRef.current);
-      if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-      if (autoTimerRef.current) clearInterval(autoTimerRef.current);
-    },
-    []
-  );
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
   return {
     data,
     count,
     active,
+    isDragging,
     rootRef,
-    stageRef,
     cardRefs,
-    overlayRefs,
-    blurRefs,
-    lightboxItem,
-    setLightboxItem,
-    onPointerDown,
-    onPointerMove,
-    onPointerEnd,
-    onKeyDown,
+    goTo,
+    navigateBy,
     onCardClick,
-    setFocus,
-    navigateBy
+    rootHandlers: {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+      onPointerCancel: onPointerUp,
+      onPointerLeave,
+      onKeyDown,
+    },
   };
 };
